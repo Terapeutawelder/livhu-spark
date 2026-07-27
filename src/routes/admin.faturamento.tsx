@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin-shell";
 import { Download, TrendingUp, AlertTriangle, CheckCircle2, Clock } from "lucide-react";

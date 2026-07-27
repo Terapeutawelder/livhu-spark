@@ -20,7 +20,16 @@ import { Route as ContatosRouteImport } from './routes/contatos'
 import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
 import { Route as AgentesRouteImport } from './routes/agentes'
 import { Route as AgendamentoRouteImport } from './routes/agendamento'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminWhiteLabelRouteImport } from './routes/admin.white-label'
+import { Route as AdminUsuariosRouteImport } from './routes/admin.usuarios'
+import { Route as AdminTenantsRouteImport } from './routes/admin.tenants'
+import { Route as AdminSuporteRouteImport } from './routes/admin.suporte'
+import { Route as AdminSistemaRouteImport } from './routes/admin.sistema'
+import { Route as AdminPlanosRouteImport } from './routes/admin.planos'
+import { Route as AdminFaturamentoRouteImport } from './routes/admin.faturamento'
 
 const RemarketingRoute = RemarketingRouteImport.update({
   id: '/remarketing',
@@ -77,14 +86,60 @@ const AgendamentoRoute = AgendamentoRouteImport.update({
   path: '/agendamento',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminWhiteLabelRoute = AdminWhiteLabelRouteImport.update({
+  id: '/white-label',
+  path: '/white-label',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsuariosRoute = AdminUsuariosRouteImport.update({
+  id: '/usuarios',
+  path: '/usuarios',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTenantsRoute = AdminTenantsRouteImport.update({
+  id: '/tenants',
+  path: '/tenants',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSuporteRoute = AdminSuporteRouteImport.update({
+  id: '/suporte',
+  path: '/suporte',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSistemaRoute = AdminSistemaRouteImport.update({
+  id: '/sistema',
+  path: '/sistema',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPlanosRoute = AdminPlanosRouteImport.update({
+  id: '/planos',
+  path: '/planos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFaturamentoRoute = AdminFaturamentoRouteImport.update({
+  id: '/faturamento',
+  path: '/faturamento',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/agendamento': typeof AgendamentoRoute
   '/agentes': typeof AgentesRoute
   '/configuracoes': typeof ConfiguracoesRoute
@@ -96,6 +151,14 @@ export interface FileRoutesByFullPath {
   '/mensagens': typeof MensagensRoute
   '/pagamentos': typeof PagamentosRoute
   '/remarketing': typeof RemarketingRoute
+  '/admin/faturamento': typeof AdminFaturamentoRoute
+  '/admin/planos': typeof AdminPlanosRoute
+  '/admin/sistema': typeof AdminSistemaRoute
+  '/admin/suporte': typeof AdminSuporteRoute
+  '/admin/tenants': typeof AdminTenantsRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
+  '/admin/white-label': typeof AdminWhiteLabelRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -110,10 +173,19 @@ export interface FileRoutesByTo {
   '/mensagens': typeof MensagensRoute
   '/pagamentos': typeof PagamentosRoute
   '/remarketing': typeof RemarketingRoute
+  '/admin/faturamento': typeof AdminFaturamentoRoute
+  '/admin/planos': typeof AdminPlanosRoute
+  '/admin/sistema': typeof AdminSistemaRoute
+  '/admin/suporte': typeof AdminSuporteRoute
+  '/admin/tenants': typeof AdminTenantsRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
+  '/admin/white-label': typeof AdminWhiteLabelRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/agendamento': typeof AgendamentoRoute
   '/agentes': typeof AgentesRoute
   '/configuracoes': typeof ConfiguracoesRoute
@@ -125,11 +197,20 @@ export interface FileRoutesById {
   '/mensagens': typeof MensagensRoute
   '/pagamentos': typeof PagamentosRoute
   '/remarketing': typeof RemarketingRoute
+  '/admin/faturamento': typeof AdminFaturamentoRoute
+  '/admin/planos': typeof AdminPlanosRoute
+  '/admin/sistema': typeof AdminSistemaRoute
+  '/admin/suporte': typeof AdminSuporteRoute
+  '/admin/tenants': typeof AdminTenantsRoute
+  '/admin/usuarios': typeof AdminUsuariosRoute
+  '/admin/white-label': typeof AdminWhiteLabelRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/agendamento'
     | '/agentes'
     | '/configuracoes'
@@ -141,6 +222,14 @@ export interface FileRouteTypes {
     | '/mensagens'
     | '/pagamentos'
     | '/remarketing'
+    | '/admin/faturamento'
+    | '/admin/planos'
+    | '/admin/sistema'
+    | '/admin/suporte'
+    | '/admin/tenants'
+    | '/admin/usuarios'
+    | '/admin/white-label'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -155,9 +244,18 @@ export interface FileRouteTypes {
     | '/mensagens'
     | '/pagamentos'
     | '/remarketing'
+    | '/admin/faturamento'
+    | '/admin/planos'
+    | '/admin/sistema'
+    | '/admin/suporte'
+    | '/admin/tenants'
+    | '/admin/usuarios'
+    | '/admin/white-label'
+    | '/admin'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/agendamento'
     | '/agentes'
     | '/configuracoes'
@@ -169,10 +267,19 @@ export interface FileRouteTypes {
     | '/mensagens'
     | '/pagamentos'
     | '/remarketing'
+    | '/admin/faturamento'
+    | '/admin/planos'
+    | '/admin/sistema'
+    | '/admin/suporte'
+    | '/admin/tenants'
+    | '/admin/usuarios'
+    | '/admin/white-label'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AgendamentoRoute: typeof AgendamentoRoute
   AgentesRoute: typeof AgentesRoute
   ConfiguracoesRoute: typeof ConfiguracoesRoute
@@ -265,6 +372,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AgendamentoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -272,11 +386,92 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/white-label': {
+      id: '/admin/white-label'
+      path: '/white-label'
+      fullPath: '/admin/white-label'
+      preLoaderRoute: typeof AdminWhiteLabelRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/usuarios': {
+      id: '/admin/usuarios'
+      path: '/usuarios'
+      fullPath: '/admin/usuarios'
+      preLoaderRoute: typeof AdminUsuariosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/tenants': {
+      id: '/admin/tenants'
+      path: '/tenants'
+      fullPath: '/admin/tenants'
+      preLoaderRoute: typeof AdminTenantsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/suporte': {
+      id: '/admin/suporte'
+      path: '/suporte'
+      fullPath: '/admin/suporte'
+      preLoaderRoute: typeof AdminSuporteRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sistema': {
+      id: '/admin/sistema'
+      path: '/sistema'
+      fullPath: '/admin/sistema'
+      preLoaderRoute: typeof AdminSistemaRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/planos': {
+      id: '/admin/planos'
+      path: '/planos'
+      fullPath: '/admin/planos'
+      preLoaderRoute: typeof AdminPlanosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/faturamento': {
+      id: '/admin/faturamento'
+      path: '/faturamento'
+      fullPath: '/admin/faturamento'
+      preLoaderRoute: typeof AdminFaturamentoRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminFaturamentoRoute: typeof AdminFaturamentoRoute
+  AdminPlanosRoute: typeof AdminPlanosRoute
+  AdminSistemaRoute: typeof AdminSistemaRoute
+  AdminSuporteRoute: typeof AdminSuporteRoute
+  AdminTenantsRoute: typeof AdminTenantsRoute
+  AdminUsuariosRoute: typeof AdminUsuariosRoute
+  AdminWhiteLabelRoute: typeof AdminWhiteLabelRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminFaturamentoRoute: AdminFaturamentoRoute,
+  AdminPlanosRoute: AdminPlanosRoute,
+  AdminSistemaRoute: AdminSistemaRoute,
+  AdminSuporteRoute: AdminSuporteRoute,
+  AdminTenantsRoute: AdminTenantsRoute,
+  AdminUsuariosRoute: AdminUsuariosRoute,
+  AdminWhiteLabelRoute: AdminWhiteLabelRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   AgendamentoRoute: AgendamentoRoute,
   AgentesRoute: AgentesRoute,
   ConfiguracoesRoute: ConfiguracoesRoute,
