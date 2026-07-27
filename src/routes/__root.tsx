@@ -160,6 +160,17 @@ function AppHeader() {
 
 function AppShell() {
   const { collapsed } = useSidebar();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isAdmin = pathname.startsWith("/admin");
+
+  if (isAdmin) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <Outlet />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AppSidebar />
