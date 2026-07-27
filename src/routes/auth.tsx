@@ -105,10 +105,10 @@ function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="grid min-h-screen lg:grid-cols-[1.5fr_1fr]">
-        {/* Image panel — banner on mobile, wider sidebar on desktop */}
-        <div className="relative flex min-h-[320px] flex-col overflow-hidden bg-sidebar sm:min-h-[400px] lg:min-h-screen">
+    <div className="flex min-h-svh items-center justify-center bg-background p-4 text-foreground sm:p-6 lg:p-8">
+      <div className="grid w-full max-w-5xl overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl lg:grid-cols-[1.5fr_1fr]">
+        {/* Image panel — banner on mobile, taller sidebar on desktop */}
+        <div className="relative flex min-h-[220px] overflow-hidden bg-sidebar sm:min-h-[280px] lg:min-h-[560px]">
           <img
             src={therapistImg}
             alt="Psicoterapeuta usando o LivHub"
@@ -117,44 +117,42 @@ function AuthPage() {
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
           {/* Subtle edge gradients for polish; no text overlay so the photo stays fully visible */}
-          <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/25 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/25 to-transparent" />
+          <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/25 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/25 to-transparent" />
         </div>
 
-
         {/* Content panel — logo, value prop and auth form */}
-        <div className="flex items-center justify-center px-4 py-10 sm:px-8 lg:px-12">
-          <div className="w-full max-w-md space-y-5">
+        <div className="flex items-center justify-center px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
+          <div className="w-full max-w-sm space-y-4">
             <Link to="/auth" className="inline-flex items-center">
               <img
                 src={livhubLogo}
                 alt="LivHub"
-                width={1536}
-                height={768}
-                className="h-12 w-auto drop-shadow-2xl sm:h-14"
+                width={1280}
+                height={640}
+                className="h-10 w-auto drop-shadow-xl sm:h-11"
               />
             </Link>
 
             <div className="space-y-1">
-              <h2 className="font-display text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
+              <h2 className="font-display text-xl font-bold leading-tight tracking-tight sm:text-2xl">
                 Sua prática, no ritmo dos seus pacientes.
               </h2>
-              <p className="text-sm text-muted-foreground sm:text-base">
+              <p className="text-sm text-muted-foreground">
                 WhatsApp, agenda, jornada do paciente e pagamentos em um só lugar.
-                Um sistema pensado para psicoterapeutas.
               </p>
             </div>
 
             <div>
-              <h1 className="font-display text-xl font-bold tracking-tight">{titles[mode]}</h1>
-              <p className="mt-1 text-sm text-muted-foreground">{subtitles[mode]}</p>
+              <h1 className="font-display text-lg font-bold tracking-tight">{titles[mode]}</h1>
+              <p className="mt-0.5 text-sm text-muted-foreground">{subtitles[mode]}</p>
             </div>
 
             {mode !== "forgot" && (
               <button
                 onClick={handleGoogle}
                 disabled={loading}
-                className="flex h-11 w-full items-center justify-center gap-3 rounded-lg border border-border bg-surface text-sm font-medium text-foreground transition hover:bg-muted disabled:opacity-60"
+                className="flex h-10 w-full items-center justify-center gap-3 rounded-lg border border-border bg-background text-sm font-medium text-foreground transition hover:bg-muted disabled:opacity-60"
               >
                 <GoogleIcon />
                 Continuar com Google
@@ -169,31 +167,31 @@ function AuthPage() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
               {mode === "signup" && (
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   <label className="text-xs font-medium text-foreground">Nome completo</label>
                   <input
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     required
-                    className="h-11 w-full rounded-lg border border-border bg-surface px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
+                    className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
                   />
                 </div>
               )}
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <label className="text-xs font-medium text-foreground">E-mail</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11 w-full rounded-lg border border-border bg-surface px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
+                  className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
                 />
               </div>
               {mode !== "forgot" && (
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-medium text-foreground">Senha</label>
                     {mode === "login" && (
@@ -212,14 +210,14 @@ function AuthPage() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={6}
-                    className="h-11 w-full rounded-lg border border-border bg-surface px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
+                    className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
                   />
                 </div>
               )}
               <button
                 type="submit"
                 disabled={loading}
-                className="h-11 w-full rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
+                className="h-10 w-full rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
               >
                 {loading
                   ? "Aguarde…"
