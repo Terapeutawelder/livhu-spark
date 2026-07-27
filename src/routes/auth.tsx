@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
 import therapistImg from "@/assets/auth-therapist.jpg";
-import livhubLogo from "@/assets/livhub-logo.png";
+import livhubLogo from "@/assets/livhub-logo-v2.png";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
