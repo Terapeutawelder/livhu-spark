@@ -1,5 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState, useRouter } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { ShieldCheck } from "lucide-react";
 import {
   LayoutDashboard,
   MessageSquare,
@@ -101,6 +104,45 @@ export function SidebarTrigger({ className = "" }: { className?: string }) {
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { collapsed } = useSidebar();
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const { data: session } = useQuery({
+    queryKey: ["auth-session"],
+    queryFn: async () => {
+      const [{ data: userRes }, { data: rolesRes }] = await Promise.all([
+        supabase.auth.getUser(),
+        supabase.from("user_roles").select("role"),
+      ]);
+      const user = userRes.user;
+      if (!user) return null;
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("full_name, avatar_url, email")
+        .eq("id", user.id)
+        .maybeSingle();
+      return {
+        email: user.email ?? profile?.email ?? "",
+        name: profile?.full_name || user.email?.split("@")[0] || "Usuário",
+        avatar: profile?.avatar_url ?? null,
+        isSuperAdmin: (rolesRes ?? []).some((r) => r.role === "super_admin"),
+      };
+    },
+  });
+
+  const initials = (session?.name ?? "U")
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  async function handleSignOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    router.navigate({ to: "/auth", replace: true });
+  }
 
   return (
     <aside
@@ -148,6 +190,20 @@ export function AppSidebar() {
             </Link>
           );
         })}
+
+        {session?.isSuperAdmin && (
+          <Link
+            to="/admin"
+            title={collapsed ? "Super Admin" : undefined}
+            className={
+              "mt-2 flex items-center rounded-lg border border-gold/30 bg-gold/10 text-sm text-gold transition-colors hover:bg-gold/20 " +
+              (collapsed ? "justify-center px-0 py-2.5" : "gap-3 px-3 py-2.5 font-semibold")
+            }
+          >
+            <ShieldCheck className="h-4 w-4 shrink-0" />
+            {!collapsed && <span>Super Admin</span>}
+          </Link>
+        )}
       </nav>
 
       {/* User card */}
@@ -155,9 +211,10 @@ export function AppSidebar() {
         {collapsed ? (
           <div className="flex flex-col items-center gap-2">
             <div className="grid h-9 w-9 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
-              HM
+              {initials}
             </div>
             <button
+              onClick={handleSignOut}
               aria-label="Sair"
               className="grid h-8 w-8 place-items-center rounded-md text-sidebar-muted hover:bg-white/10 hover:text-white"
             >
@@ -167,13 +224,18 @@ export function AppSidebar() {
         ) : (
           <div className="flex items-center gap-3">
             <div className="grid h-9 w-9 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
-              HM
+              {initials}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-semibold text-white">Dra. Helena</p>
-              <p className="truncate text-[11px] text-sidebar-muted">Psicoterapeuta</p>
+              <p className="truncate text-sm font-semibold text-white">
+                {session?.name ?? "Carregando…"}
+              </p>
+              <p className="truncate text-[11px] text-sidebar-muted">
+                {session?.email ?? "Psicoterapeuta"}
+              </p>
             </div>
             <button
+              onClick={handleSignOut}
               aria-label="Sair"
               className="grid h-8 w-8 place-items-center rounded-md text-sidebar-muted hover:bg-white/10 hover:text-white"
             >
