@@ -3,7 +3,7 @@ import { Link, useRouterState, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ShieldCheck } from "lucide-react";
-import livhubLogo from "@/assets/livhub-logo-v6.png";
+import livhubLogo from "@/assets/livhub-logo-v7.png";
 import {
   LayoutDashboard,
   MessageSquare,
@@ -166,7 +166,7 @@ export function AppSidebar() {
             width={512}
             height={128}
             className={
-              "h-auto w-auto object-contain " + (collapsed ? "h-8" : "h-7")
+              "h-auto w-auto object-contain " + (collapsed ? "h-9" : "h-8")
             }
           />
         </Link>
