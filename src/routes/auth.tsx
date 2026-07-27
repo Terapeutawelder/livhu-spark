@@ -151,12 +151,10 @@ function AuthPage() {
 
         <div className="flex items-center justify-center px-4 py-10 sm:px-8">
           <div className="w-full max-w-sm space-y-6">
-            <div className="lg:hidden flex items-center gap-2.5">
-              <div className="grid h-9 w-9 place-items-center rounded-lg bg-gold text-white">
-                <span className="font-display text-sm font-bold">L</span>
-              </div>
-              <span className="font-display text-lg font-bold">LivHub</span>
+            <div className="lg:hidden">
+              <img src={livhubLogo} alt="LivHub" className="h-10 w-auto" />
             </div>
+
 
             <div>
               <h1 className="font-display text-2xl font-bold tracking-tight">{titles[mode]}</h1>
