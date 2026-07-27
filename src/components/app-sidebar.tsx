@@ -156,15 +156,20 @@ export function AppSidebar() {
       {/* Brand */}
       <div
         className={
-          "flex h-16 items-center gap-2.5 " + (collapsed ? "justify-center px-2" : "px-6")
+          "flex h-16 items-center " + (collapsed ? "justify-center px-2" : "px-5")
         }
       >
-        <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-gold text-sidebar-active-foreground">
-          <span className="font-display text-sm font-bold">L</span>
-        </div>
-        {!collapsed && (
-          <span className="font-display text-lg font-bold tracking-tight text-white">LivHub</span>
-        )}
+        <Link to="/" className="inline-flex items-center">
+          <img
+            src={livhubLogo}
+            alt="LivHub"
+            width={512}
+            height={128}
+            className={
+              "h-auto w-auto object-contain " + (collapsed ? "h-8" : "h-7")
+            }
+          />
+        </Link>
       </div>
 
       {/* Nav */}
