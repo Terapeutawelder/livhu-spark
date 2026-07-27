@@ -134,6 +134,7 @@ function RootShell({ children }: { children: ReactNode }) {
 function AppHeader() {
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border bg-background/85 px-4 backdrop-blur-md sm:px-6 lg:px-8">
+      <SidebarTrigger />
       <div className="flex flex-1 items-center gap-2">
         <div className="relative hidden max-w-md flex-1 sm:block">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -158,22 +159,32 @@ function AppHeader() {
   );
 }
 
+function AppShell() {
+  const { collapsed } = useSidebar();
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <AppSidebar />
+      <div className={"transition-[padding] duration-200 " + (collapsed ? "lg:pl-16" : "lg:pl-60")}>
+        <AppHeader />
+        <main className="min-h-[calc(100vh-4rem)]">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <div className="min-h-screen bg-background text-foreground">
-          <AppSidebar />
-          <div className="lg:pl-60">
-            <AppHeader />
-            <main className="min-h-[calc(100vh-4rem)]">
-              <Outlet />
-            </main>
-          </div>
-        </div>
+        <SidebarProvider>
+          <AppShell />
+        </SidebarProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
 }
+
