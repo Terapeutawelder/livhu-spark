@@ -79,7 +79,8 @@ export function AppSidebar() {
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold text-white">Dra. Helena</p>
-            <p className="truncate text-[11px] text-sidebar-muted">Clínica MenteSã</p>
+            <p className="truncate text-[11px] text-sidebar-muted">Psicoterapeuta</p>
+
           </div>
           <button
             aria-label="Sair"
