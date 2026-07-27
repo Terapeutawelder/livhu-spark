@@ -24,7 +24,7 @@ const invoices = [
   { id: "INV-2026-0416", tenant: "Espaço Reconectar", plan: "Pro", value: 349, date: "14/07/2026", status: "Paga" },
 ];
 
-const statusIcon: Record<string, JSX.Element> = {
+const statusIcon: Record<string, ReactNode> = {
   Paga: <CheckCircle2 className="h-4 w-4 text-emerald-500" />,
   "Em aberto": <Clock className="h-4 w-4 text-amber-500" />,
   Vencida: <AlertTriangle className="h-4 w-4 text-rose-500" />,
