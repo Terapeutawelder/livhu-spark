@@ -11,9 +11,10 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ThemeProvider } from "../components/theme-provider";
-import { AppSidebar } from "../components/app-sidebar";
+import { AppSidebar, SidebarProvider, SidebarTrigger, useSidebar } from "../components/app-sidebar";
 import { ThemeToggle } from "../components/theme-toggle";
 import { Bell, Search } from "lucide-react";
+
 
 function NotFoundComponent() {
   return (
