@@ -4,6 +4,7 @@ import {
   MessageSquare,
   Users,
   KanbanSquare,
+  CalendarDays,
   Workflow,
   Megaphone,
   Send,
@@ -25,6 +26,7 @@ const items: NavItem[] = [
   { to: "/mensagens", label: "Mensagens", icon: MessageSquare },
   { to: "/contatos", label: "Contatos", icon: Users },
   { to: "/kanban", label: "Kanban", icon: KanbanSquare },
+  { to: "/agendamento", label: "Agendamento", icon: CalendarDays },
   { to: "/fluxos", label: "Fluxos", icon: Workflow },
   { to: "/remarketing", label: "Remarketing", icon: Megaphone },
   { to: "/disparos", label: "Disparos", icon: Send },
@@ -32,6 +34,7 @@ const items: NavItem[] = [
   { to: "/cursos", label: "Cursos", icon: GraduationCap },
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ];
+
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
