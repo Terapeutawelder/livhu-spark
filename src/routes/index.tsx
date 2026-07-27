@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import {
   MessageCircle,
-  Inbox,
-  CalendarCheck,
+  CheckCheck,
+  Timer,
   DollarSign,
   ArrowUpRight,
   Video,
@@ -18,8 +18,11 @@ import {
   BarChart,
   Bar,
   XAxis,
+  YAxis,
   Tooltip,
   CartesianGrid,
+  LineChart,
+  Line,
 } from "recharts";
 
 export const Route = createFileRoute("/")({
@@ -29,12 +32,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Visão geral do seu atendimento no WhatsApp: mensagens, faturamento, jornada dos pacientes e horários de pico.",
+          "Visão geral do atendimento no WhatsApp: taxa de resposta, tempo médio, faturamento e entregabilidade.",
       },
       { property: "og:title", content: "Dashboard — LivHub" },
       {
         property: "og:description",
-        content: "Visão geral do seu atendimento no WhatsApp: mensagens, faturamento, jornada dos pacientes e horários de pico.",
+        content:
+          "Visão geral do atendimento no WhatsApp: taxa de resposta, tempo médio, faturamento e entregabilidade.",
       },
     ],
   }),
@@ -43,18 +47,18 @@ export const Route = createFileRoute("/")({
 
 const kpis = [
   { label: "Mensagens", value: "1.284", delta: "+12%", icon: MessageCircle },
-  { label: "Novos leads", value: "45", delta: "+8%", icon: Inbox },
-  { label: "Sessões agendadas", value: "30", delta: "+4%", icon: CalendarCheck },
+  { label: "% Respondidas", value: "94%", delta: "+3%", icon: CheckCheck },
+  { label: "Tempo médio resp.", value: "2m 40s", delta: "-18%", icon: Timer },
   { label: "Faturamento", value: "R$ 15k", delta: "+18%", icon: DollarSign },
 ];
 
-const donutData = [
-  { name: "Ansiedade", value: 18, color: "var(--chart-4)" },
-  { name: "TCC", value: 12, color: "var(--chart-2)" },
-  { name: "Casais", value: 8, color: "var(--chart-1)" },
-  { name: "Infantil", value: 7, color: "var(--chart-3)" },
+const deliveryData = [
+  { name: "Entregue", value: 812, color: "var(--chart-2)" },
+  { name: "Lido", value: 634, color: "var(--chart-1)" },
+  { name: "Enviado", value: 96, color: "var(--chart-3)" },
+  { name: "Falhou", value: 22, color: "var(--chart-4)" },
 ];
-const donutTotal = donutData.reduce((a, b) => a + b.value, 0);
+const deliveryTotal = deliveryData.reduce((a, b) => a + b.value, 0);
 
 const barData = [
   { d: "Seg", enviadas: 180, recebidas: 120 },
@@ -66,10 +70,24 @@ const barData = [
   { d: "Dom", enviadas: 80, recebidas: 60 },
 ];
 
+const revenueData = [
+  { m: "Fev", v: 8200 },
+  { m: "Mar", v: 9600 },
+  { m: "Abr", v: 10400 },
+  { m: "Mai", v: 11800 },
+  { m: "Jun", v: 12600 },
+  { m: "Jul", v: 13100 },
+  { m: "Ago", v: 12900 },
+  { m: "Set", v: 13800 },
+  { m: "Out", v: 14200 },
+  { m: "Nov", v: 14900 },
+  { m: "Dez", v: 15000 },
+];
+
 const upcomingSessions = [
-  { title: "Triagem inicial", who: "Mariana Silva", time: "Hoje · 14:00", tag: "Video" },
-  { title: "Sessão semanal", who: "Roberto Alencar", time: "Hoje · 16:30", tag: "Video" },
-  { title: "Terapia de casal", who: "Ana & Felipe", time: "Amanhã · 10:00", tag: "Video" },
+  { title: "Triagem inicial", who: "Mariana Silva", time: "Hoje · 14:00" },
+  { title: "Sessão semanal", who: "Roberto Alencar", time: "Hoje · 16:30" },
+  { title: "Terapia de casal", who: "Ana & Felipe", time: "Amanhã · 10:00" },
 ];
 
 const upcomingTeam = [
@@ -116,7 +134,6 @@ function Dashboard() {
               </div>
             </div>
           </div>
-          {/* decorative gradient blob */}
           <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-white/15 blur-3xl" />
         </section>
 
@@ -124,6 +141,9 @@ function Dashboard() {
         <section className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
           {kpis.map((k) => {
             const Icon = k.icon;
+            const positive = !k.delta.startsWith("-");
+            // "Tempo médio" caindo é bom → forçar verde mesmo com sinal negativo
+            const isGood = k.label.startsWith("Tempo") ? true : positive;
             return (
               <div
                 key={k.label}
@@ -133,7 +153,13 @@ function Dashboard() {
                   <div className="grid h-9 w-9 place-items-center rounded-xl bg-gold/15 text-gold">
                     <Icon className="h-4 w-4" />
                   </div>
-                  <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                  <span
+                    className={
+                      isGood
+                        ? "inline-flex items-center gap-0.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400"
+                        : "inline-flex items-center gap-0.5 text-[11px] font-semibold text-red-600 dark:text-red-400"
+                    }
+                  >
                     <ArrowUpRight className="h-3 w-3" />
                     {k.delta}
                   </span>
@@ -143,6 +169,51 @@ function Dashboard() {
               </div>
             );
           })}
+        </section>
+
+        {/* Faturamento (line) */}
+        <section className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <h3 className="font-display text-sm font-bold">Faturamento</h3>
+              <p className="text-xs text-muted-foreground">Últimos 11 meses</p>
+            </div>
+            <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+              <ArrowUpRight className="h-3 w-3" /> +82% no período
+            </span>
+          </div>
+          <div className="h-56 w-full">
+            <ResponsiveContainer>
+              <LineChart data={revenueData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+                <CartesianGrid vertical={false} stroke="var(--color-border)" />
+                <XAxis dataKey="m" tickLine={false} axisLine={false} stroke="var(--color-muted-foreground)" fontSize={11} />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  stroke="var(--color-muted-foreground)"
+                  fontSize={11}
+                  tickFormatter={(v) => `R$${(v / 1000).toFixed(0)}k`}
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: "var(--color-surface)",
+                    border: "1px solid var(--color-border)",
+                    borderRadius: 12,
+                    fontSize: 12,
+                  }}
+                  formatter={(v: number) => [`R$ ${v.toLocaleString("pt-BR")}`, "Faturamento"]}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="v"
+                  stroke="var(--color-gold)"
+                  strokeWidth={2.5}
+                  dot={{ r: 3, fill: "var(--color-gold)" }}
+                  activeDot={{ r: 5 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
         </section>
 
         {/* Chart row */}
@@ -167,13 +238,7 @@ function Dashboard() {
               <ResponsiveContainer>
                 <BarChart data={barData} barCategoryGap={18}>
                   <CartesianGrid vertical={false} stroke="var(--color-border)" />
-                  <XAxis
-                    dataKey="d"
-                    tickLine={false}
-                    axisLine={false}
-                    stroke="var(--color-muted-foreground)"
-                    fontSize={11}
-                  />
+                  <XAxis dataKey="d" tickLine={false} axisLine={false} stroke="var(--color-muted-foreground)" fontSize={11} />
                   <Tooltip
                     cursor={{ fill: "var(--color-muted)", opacity: 0.4 }}
                     contentStyle={{
@@ -190,12 +255,12 @@ function Dashboard() {
             </div>
           </div>
 
-          {/* Donut: especialidades */}
+          {/* Donut: entregabilidade */}
           <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
             <div className="mb-2 flex items-center justify-between">
               <div>
-                <h3 className="font-display text-sm font-bold">Equipe clínica</h3>
-                <p className="text-xs text-muted-foreground">{donutTotal} terapeutas ativos</p>
+                <h3 className="font-display text-sm font-bold">Desempenho de entrega</h3>
+                <p className="text-xs text-muted-foreground">{deliveryTotal.toLocaleString("pt-BR")} mensagens</p>
               </div>
               <button className="text-muted-foreground hover:text-foreground">
                 <MoreHorizontal className="h-4 w-4" />
@@ -204,15 +269,8 @@ function Dashboard() {
             <div className="relative h-40">
               <ResponsiveContainer>
                 <PieChart>
-                  <Pie
-                    data={donutData}
-                    dataKey="value"
-                    innerRadius={45}
-                    outerRadius={65}
-                    paddingAngle={3}
-                    stroke="none"
-                  >
-                    {donutData.map((entry) => (
+                  <Pie data={deliveryData} dataKey="value" innerRadius={45} outerRadius={65} paddingAngle={3} stroke="none">
+                    {deliveryData.map((entry) => (
                       <Cell key={entry.name} fill={entry.color} />
                     ))}
                   </Pie>
@@ -220,19 +278,23 @@ function Dashboard() {
               </ResponsiveContainer>
               <div className="pointer-events-none absolute inset-0 grid place-items-center">
                 <div className="text-center">
-                  <p className="font-display text-2xl font-bold leading-none">{donutTotal}</p>
-                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">total</p>
+                  <p className="font-display text-2xl font-bold leading-none">
+                    {Math.round((deliveryData[1].value / deliveryTotal) * 100)}%
+                  </p>
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">lidas</p>
                 </div>
               </div>
             </div>
             <ul className="mt-3 space-y-2">
-              {donutData.map((d) => (
+              {deliveryData.map((d) => (
                 <li key={d.name} className="flex items-center justify-between text-xs">
                   <span className="flex items-center gap-2 text-foreground">
                     <span className="h-2 w-2 rounded-full" style={{ background: d.color }} />
                     {d.name}
                   </span>
-                  <span className="font-semibold text-muted-foreground">{d.value}</span>
+                  <span className="font-semibold text-muted-foreground">
+                    {d.value.toLocaleString("pt-BR")}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -255,10 +317,7 @@ function Dashboard() {
           </div>
           <ul className="space-y-2">
             {upcomingSessions.map((s) => (
-              <li
-                key={s.who}
-                className="flex items-center gap-3 rounded-xl border border-border bg-surface p-3"
-              >
+              <li key={s.who} className="flex items-center gap-3 rounded-xl border border-border bg-surface p-3">
                 <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-gold/15 text-gold">
                   <Video className="h-4 w-4" />
                 </div>
@@ -266,9 +325,7 @@ function Dashboard() {
                   <p className="truncate text-sm font-semibold">{s.title}</p>
                   <p className="truncate text-[11px] text-muted-foreground">{s.who}</p>
                 </div>
-                <span className="shrink-0 text-[10px] font-medium text-muted-foreground">
-                  {s.time}
-                </span>
+                <span className="shrink-0 text-[10px] font-medium text-muted-foreground">{s.time}</span>
               </li>
             ))}
           </ul>
@@ -280,10 +337,7 @@ function Dashboard() {
           </p>
           <ul className="space-y-2">
             {upcomingTeam.map((s) => (
-              <li
-                key={s.title}
-                className="flex items-center gap-3 rounded-xl border border-border bg-surface p-3"
-              >
+              <li key={s.title} className="flex items-center gap-3 rounded-xl border border-border bg-surface p-3">
                 <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-foreground/5 text-foreground">
                   <Users className="h-4 w-4" />
                 </div>
@@ -291,9 +345,7 @@ function Dashboard() {
                   <p className="truncate text-sm font-semibold">{s.title}</p>
                   <p className="truncate text-[11px] text-muted-foreground">{s.who}</p>
                 </div>
-                <span className="shrink-0 text-[10px] font-medium text-muted-foreground">
-                  {s.time}
-                </span>
+                <span className="shrink-0 text-[10px] font-medium text-muted-foreground">{s.time}</span>
               </li>
             ))}
           </ul>
@@ -305,10 +357,7 @@ function Dashboard() {
           </p>
           <ul className="space-y-2">
             {shoutouts.map((s) => (
-              <li
-                key={s.name}
-                className="flex items-center gap-3 rounded-xl border border-border bg-surface p-3"
-              >
+              <li key={s.name} className="flex items-center gap-3 rounded-xl border border-border bg-surface p-3">
                 <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
                   {s.initials}
                 </div>
