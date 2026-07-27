@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin-shell";
 import { Check, Plus, Pencil } from "lucide-react";
 
-export const Route = createFileRoute("/admin/planos")({
+export const Route = createFileRoute("/_authenticated/admin/planos")({
   head: () => ({
     meta: [
       { title: "Planos — Super Admin" },

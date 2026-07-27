@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin-shell";
 import { Activity, Database, Cpu, CheckCircle2, AlertTriangle, Flag } from "lucide-react";
 
-export const Route = createFileRoute("/admin/sistema")({
+export const Route = createFileRoute("/_authenticated/admin/sistema")({
   head: () => ({
     meta: [
       { title: "Sistema — Super Admin" },

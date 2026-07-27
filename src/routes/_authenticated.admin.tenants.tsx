@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin-shell";
 import { Plus, MoreHorizontal, Search, Filter } from "lucide-react";
 
-export const Route = createFileRoute("/admin/tenants")({
+export const Route = createFileRoute("/_authenticated/admin/tenants")({
   head: () => ({
     meta: [
       { title: "Tenants — Super Admin" },

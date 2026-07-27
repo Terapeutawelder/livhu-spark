@@ -29,7 +29,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export const Route = createFileRoute("/mensagens")({
+export const Route = createFileRoute("/_authenticated/mensagens")({
   head: () => ({
     meta: [
       { title: "Inbox — LivHub" },

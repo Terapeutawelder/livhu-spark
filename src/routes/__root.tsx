@@ -3,7 +3,6 @@ import {
   Outlet,
   createRootRouteWithContext,
   useRouter,
-  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -12,10 +11,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ThemeProvider } from "../components/theme-provider";
-import { AppSidebar, SidebarProvider, useSidebar } from "../components/app-sidebar";
-import { ThemeToggle } from "../components/theme-toggle";
-import { Bell, Search } from "lucide-react";
-
+import { supabase } from "@/integrations/supabase/client";
+import { Toaster } from "sonner";
 
 function NotFoundComponent() {
   return (
@@ -82,24 +79,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Dashboard — LivHub" },
+      { title: "LivHub — WhatsApp CRM para Psicoterapeutas" },
       {
         name: "description",
         content:
-          "Visão geral do seu atendimento no WhatsApp: mensagens, faturamento, jornada dos pacientes e horários de pico.",
+          "LivHub organiza WhatsApp, agenda, jornada dos pacientes e pagamentos em um só lugar para psicoterapeutas.",
       },
       { name: "author", content: "LivHub" },
-      { property: "og:title", content: "Dashboard — LivHub" },
+      { property: "og:title", content: "LivHub — WhatsApp CRM para Psicoterapeutas" },
       {
         property: "og:description",
-        content: "Visão geral do seu atendimento no WhatsApp: mensagens, faturamento, jornada dos pacientes e horários de pico.",
+        content:
+          "LivHub organiza WhatsApp, agenda, jornada dos pacientes e pagamentos em um só lugar para psicoterapeutas.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Dashboard — LivHub" },
-      { name: "twitter:description", content: "Visão geral do seu atendimento no WhatsApp: mensagens, faturamento, jornada dos pacientes e horários de pico." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1cde5a75-5dfd-4fb6-a6a2-ad570c6dfc9b/id-preview-aa26bce4--bbdeee67-f684-4d9e-99ca-35e051a038f4.lovable.app-1785178086737.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1cde5a75-5dfd-4fb6-a6a2-ad570c6dfc9b/id-preview-aa26bce4--bbdeee67-f684-4d9e-99ca-35e051a038f4.lovable.app-1785178086737.png" },
+      { name: "twitter:title", content: "LivHub — WhatsApp CRM para Psicoterapeutas" },
+      { name: "twitter:description", content: "LivHub organiza WhatsApp, agenda, jornada dos pacientes e pagamentos em um só lugar para psicoterapeutas." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -132,57 +128,16 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-function AppHeader() {
-  return (
-    <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border bg-background/85 px-4 backdrop-blur-md sm:px-6 lg:px-8">
-      <div className="flex flex-1 items-center gap-2">
-        <div className="relative hidden max-w-md flex-1 sm:block">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="search"
-            placeholder="Buscar pacientes, conversas, fluxos…"
-            className="h-9 w-full rounded-full border border-border bg-surface pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
-          />
-        </div>
-      </div>
-      <div className="flex items-center gap-2">
-        <ThemeToggle />
-        <button
-          aria-label="Notificações"
-          className="relative grid h-9 w-9 place-items-center rounded-full border border-border bg-surface text-foreground hover:bg-muted"
-        >
-          <Bell className="h-4 w-4" />
-          <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-gold" />
-        </button>
-      </div>
-    </header>
-  );
-}
-
-function AppShell() {
-  const { collapsed } = useSidebar();
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const isAdmin = pathname.startsWith("/admin");
-
-  if (isAdmin) {
-    return (
-      <div className="min-h-screen bg-background text-foreground">
-        <Outlet />
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <AppSidebar />
-      <div className={"transition-[padding] duration-200 " + (collapsed ? "lg:pl-16" : "lg:pl-60")}>
-        <AppHeader />
-        <main className="min-h-[calc(100vh-4rem)]">
-          <Outlet />
-        </main>
-      </div>
-    </div>
-  );
+function AuthSubscriber() {
+  const router = useRouter();
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      router.invalidate();
+    });
+    return () => sub.subscription.unsubscribe();
+  }, [router]);
+  return null;
 }
 
 function RootComponent() {
@@ -191,11 +146,10 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <SidebarProvider>
-          <AppShell />
-        </SidebarProvider>
+        <AuthSubscriber />
+        <Outlet />
+        <Toaster richColors position="top-right" />
       </ThemeProvider>
     </QueryClientProvider>
   );
 }
-

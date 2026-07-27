@@ -15,7 +15,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-export const Route = createFileRoute("/pagamentos")({
+export const Route = createFileRoute("/_authenticated/pagamentos")({
   head: () => ({
     meta: [
       { title: "Pagamentos — LivHub" },

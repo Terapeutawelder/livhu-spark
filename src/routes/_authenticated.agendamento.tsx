@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export const Route = createFileRoute("/agendamento")({
+export const Route = createFileRoute("/_authenticated/agendamento")({
   head: () => ({
     meta: [
       { title: "Agendamento — LivHub" },

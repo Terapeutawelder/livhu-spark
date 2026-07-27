@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin-shell";
 import { Download, TrendingUp, AlertTriangle, CheckCircle2, Clock } from "lucide-react";
 
-export const Route = createFileRoute("/admin/faturamento")({
+export const Route = createFileRoute("/_authenticated/admin/faturamento")({
   head: () => ({
     meta: [
       { title: "Faturamento — Super Admin" },
