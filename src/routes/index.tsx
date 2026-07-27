@@ -90,16 +90,17 @@ const upcomingSessions = [
   { title: "Terapia de casal", who: "Ana & Felipe", time: "Amanhã · 10:00" },
 ];
 
-const upcomingTeam = [
-  { title: "Supervisão clínica", who: "Equipe TCC", time: "Qua · 09:00" },
-  { title: "Estudo de caso", who: "Equipe Infantil", time: "Sex · 15:00" },
+const upcomingCommitments = [
+  { title: "Supervisão clínica", who: "Com Dra. Regina", time: "Qua · 09:00" },
+  { title: "Grupo de estudos TCC", who: "Online", time: "Sex · 15:00" },
 ];
 
-const shoutouts = [
-  { name: "Dr. Adão Reis", note: "Fechou 4 pacotes esta semana", initials: "AR" },
-  { name: "Johnny Cruz", note: "Melhor tempo de resposta (2m)", initials: "JC" },
-  { name: "Alice Turner", note: "Nota 5,0 em 12 sessões", initials: "AT" },
+const weekGoals = [
+  { name: "Responder em até 5min", note: "Meta batida em 92% das conversas", initials: "R" },
+  { name: "10 novas triagens", note: "7 de 10 concluídas", initials: "T" },
+  { name: "Fechar 3 pacotes", note: "2 fechados esta semana", initials: "P" },
 ];
+
 
 function Dashboard() {
   return (
