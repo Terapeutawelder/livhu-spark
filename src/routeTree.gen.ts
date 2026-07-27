@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RemarketingRouteImport } from './routes/remarketing'
+import { Route as PagamentosRouteImport } from './routes/pagamentos'
 import { Route as MensagensRouteImport } from './routes/mensagens'
 import { Route as KanbanRouteImport } from './routes/kanban'
 import { Route as FluxosRouteImport } from './routes/fluxos'
@@ -24,6 +25,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const RemarketingRoute = RemarketingRouteImport.update({
   id: '/remarketing',
   path: '/remarketing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PagamentosRoute = PagamentosRouteImport.update({
+  id: '/pagamentos',
+  path: '/pagamentos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MensagensRoute = MensagensRouteImport.update({
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/fluxos': typeof FluxosRoute
   '/kanban': typeof KanbanRoute
   '/mensagens': typeof MensagensRoute
+  '/pagamentos': typeof PagamentosRoute
   '/remarketing': typeof RemarketingRoute
 }
 export interface FileRoutesByTo {
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/fluxos': typeof FluxosRoute
   '/kanban': typeof KanbanRoute
   '/mensagens': typeof MensagensRoute
+  '/pagamentos': typeof PagamentosRoute
   '/remarketing': typeof RemarketingRoute
 }
 export interface FileRoutesById {
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/fluxos': typeof FluxosRoute
   '/kanban': typeof KanbanRoute
   '/mensagens': typeof MensagensRoute
+  '/pagamentos': typeof PagamentosRoute
   '/remarketing': typeof RemarketingRoute
 }
 export interface FileRouteTypes {
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/fluxos'
     | '/kanban'
     | '/mensagens'
+    | '/pagamentos'
     | '/remarketing'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/fluxos'
     | '/kanban'
     | '/mensagens'
+    | '/pagamentos'
     | '/remarketing'
   id:
     | '__root__'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/fluxos'
     | '/kanban'
     | '/mensagens'
+    | '/pagamentos'
     | '/remarketing'
   fileRoutesById: FileRoutesById
 }
@@ -170,6 +182,7 @@ export interface RootRouteChildren {
   FluxosRoute: typeof FluxosRoute
   KanbanRoute: typeof KanbanRoute
   MensagensRoute: typeof MensagensRoute
+  PagamentosRoute: typeof PagamentosRoute
   RemarketingRoute: typeof RemarketingRoute
 }
 
@@ -180,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/remarketing'
       fullPath: '/remarketing'
       preLoaderRoute: typeof RemarketingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pagamentos': {
+      id: '/pagamentos'
+      path: '/pagamentos'
+      fullPath: '/pagamentos'
+      preLoaderRoute: typeof PagamentosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mensagens': {
@@ -266,6 +286,7 @@ const rootRouteChildren: RootRouteChildren = {
   FluxosRoute: FluxosRoute,
   KanbanRoute: KanbanRoute,
   MensagensRoute: MensagensRoute,
+  PagamentosRoute: PagamentosRoute,
   RemarketingRoute: RemarketingRoute,
 }
 export const routeTree = rootRouteImport

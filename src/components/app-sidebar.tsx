@@ -11,10 +11,12 @@ import {
   Send,
   Bot,
   GraduationCap,
+  CreditCard,
   Settings,
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
+
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -35,8 +37,10 @@ const items: NavItem[] = [
   { to: "/disparos", label: "Disparos", icon: Send },
   { to: "/agentes", label: "Agentes IA", icon: Bot },
   { to: "/cursos", label: "Cursos", icon: GraduationCap },
+  { to: "/pagamentos", label: "Pagamentos", icon: CreditCard },
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ];
+
 
 interface SidebarCtx {
   collapsed: boolean;
