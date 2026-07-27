@@ -130,7 +130,7 @@ function AuthPage() {
                 alt="LivHub"
                 width={1280}
                 height={640}
-                className="h-10 w-auto drop-shadow-xl sm:h-11"
+                className="h-12 w-auto drop-shadow-xl sm:h-14"
               />
             </Link>
 
