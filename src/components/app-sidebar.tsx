@@ -1,3 +1,4 @@
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
@@ -12,6 +13,8 @@ import {
   GraduationCap,
   Settings,
   LogOut,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -35,60 +38,144 @@ const items: NavItem[] = [
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ];
 
+interface SidebarCtx {
+  collapsed: boolean;
+  toggle: () => void;
+}
+const SidebarContext = createContext<SidebarCtx | null>(null);
+
+const STORAGE_KEY = "livhub-sidebar-collapsed";
+
+export function SidebarProvider({ children }: { children: ReactNode }) {
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored === "1") setCollapsed(true);
+    } catch {}
+  }, []);
+
+  const toggle = () => {
+    setCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(STORAGE_KEY, next ? "1" : "0");
+      } catch {}
+      return next;
+    });
+  };
+
+  return (
+    <SidebarContext.Provider value={{ collapsed, toggle }}>{children}</SidebarContext.Provider>
+  );
+}
+
+export function useSidebar() {
+  const ctx = useContext(SidebarContext);
+  if (!ctx) throw new Error("useSidebar must be used within SidebarProvider");
+  return ctx;
+}
+
+export function SidebarTrigger({ className = "" }: { className?: string }) {
+  const { collapsed, toggle } = useSidebar();
+  const Icon = collapsed ? PanelLeftOpen : PanelLeftClose;
+  return (
+    <button
+      onClick={toggle}
+      aria-label={collapsed ? "Expandir menu" : "Encolher menu"}
+      className={
+        "hidden lg:grid h-9 w-9 place-items-center rounded-full border border-border bg-surface text-foreground hover:bg-muted " +
+        className
+      }
+    >
+      <Icon className="h-4 w-4" />
+    </button>
+  );
+}
 
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { collapsed } = useSidebar();
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col bg-sidebar text-sidebar-foreground lg:flex">
+    <aside
+      className={
+        "fixed inset-y-0 left-0 z-30 hidden flex-col bg-sidebar text-sidebar-foreground transition-[width] duration-200 lg:flex " +
+        (collapsed ? "w-16" : "w-60")
+      }
+    >
       {/* Brand */}
-      <div className="flex h-16 items-center gap-2.5 px-6">
-        <div className="grid h-8 w-8 place-items-center rounded-lg bg-gold text-sidebar-active-foreground">
+      <div
+        className={
+          "flex h-16 items-center gap-2.5 " + (collapsed ? "justify-center px-2" : "px-6")
+        }
+      >
+        <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-gold text-sidebar-active-foreground">
           <span className="font-display text-sm font-bold">L</span>
         </div>
-        <span className="font-display text-lg font-bold tracking-tight text-white">LivHub</span>
+        {!collapsed && (
+          <span className="font-display text-lg font-bold tracking-tight text-white">LivHub</span>
+        )}
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 space-y-1 px-3 py-4">
+      <nav className={"flex-1 space-y-1 py-4 " + (collapsed ? "px-2" : "px-3")}>
         {items.map((item) => {
           const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
           const Icon = item.icon;
+          const base =
+            "flex items-center rounded-lg text-sm transition-colors " +
+            (collapsed ? "justify-center px-0 py-2.5" : "gap-3 px-3 py-2.5");
           return (
             <Link
               key={item.to}
               to={item.to}
+              title={collapsed ? item.label : undefined}
               className={
                 active
-                  ? "flex items-center gap-3 rounded-lg bg-sidebar-active px-3 py-2.5 text-sm font-semibold text-sidebar-active-foreground shadow-sm"
-                  : "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-sidebar-muted transition-colors hover:bg-white/5 hover:text-sidebar-foreground"
+                  ? base + " bg-sidebar-active font-semibold text-sidebar-active-foreground shadow-sm"
+                  : base + " font-medium text-sidebar-muted hover:bg-white/5 hover:text-sidebar-foreground"
               }
             >
-              <Icon className="h-4 w-4" />
-              <span>{item.label}</span>
+              <Icon className="h-4 w-4 shrink-0" />
+              {!collapsed && <span>{item.label}</span>}
             </Link>
           );
         })}
       </nav>
 
       {/* User card */}
-      <div className="m-3 rounded-xl bg-white/5 p-3">
-        <div className="flex items-center gap-3">
-          <div className="grid h-9 w-9 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
-            HM
+      <div className={collapsed ? "m-2" : "m-3 rounded-xl bg-white/5 p-3"}>
+        {collapsed ? (
+          <div className="flex flex-col items-center gap-2">
+            <div className="grid h-9 w-9 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
+              HM
+            </div>
+            <button
+              aria-label="Sair"
+              className="grid h-8 w-8 place-items-center rounded-md text-sidebar-muted hover:bg-white/10 hover:text-white"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold text-white">Dra. Helena</p>
-            <p className="truncate text-[11px] text-sidebar-muted">Psicoterapeuta</p>
-
+        ) : (
+          <div className="flex items-center gap-3">
+            <div className="grid h-9 w-9 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
+              HM
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-white">Dra. Helena</p>
+              <p className="truncate text-[11px] text-sidebar-muted">Psicoterapeuta</p>
+            </div>
+            <button
+              aria-label="Sair"
+              className="grid h-8 w-8 place-items-center rounded-md text-sidebar-muted hover:bg-white/10 hover:text-white"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
           </div>
-          <button
-            aria-label="Sair"
-            className="grid h-8 w-8 place-items-center rounded-md text-sidebar-muted hover:bg-white/10 hover:text-white"
-          >
-            <LogOut className="h-4 w-4" />
-          </button>
-        </div>
+        )}
       </div>
     </aside>
   );
