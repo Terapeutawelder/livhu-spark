@@ -106,8 +106,16 @@ function AuthPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="grid min-h-screen lg:grid-cols-2">
-        <div className="hidden bg-sidebar text-sidebar-foreground lg:flex lg:flex-col lg:justify-between lg:p-12">
-          <Link to="/auth" className="flex items-center gap-2.5">
+        <div className="relative hidden overflow-hidden bg-sidebar text-sidebar-foreground lg:flex lg:flex-col lg:justify-between lg:p-12">
+          <img
+            src={therapistImg}
+            alt="Psicoterapeuta usando o LivHub"
+            width={1200}
+            height={1600}
+            className="absolute inset-0 h-full w-full object-cover opacity-40"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-sidebar/70 via-sidebar/60 to-sidebar/95" />
+          <Link to="/auth" className="relative flex items-center gap-2.5">
             <div className="grid h-9 w-9 place-items-center rounded-lg bg-gold text-sidebar-active-foreground">
               <span className="font-display text-sm font-bold">L</span>
             </div>
@@ -118,7 +126,7 @@ function AuthPage() {
               </div>
             </div>
           </Link>
-          <div className="max-w-md space-y-4">
+          <div className="relative max-w-md space-y-4">
             <h2 className="font-display text-3xl font-bold text-white">
               Sua prática, no ritmo dos seus pacientes.
             </h2>
@@ -127,7 +135,7 @@ function AuthPage() {
               Um sistema pensado para psicoterapeutas.
             </p>
           </div>
-          <div className="text-xs text-sidebar-muted">© {new Date().getFullYear()} LivHub</div>
+          <div className="relative text-xs text-sidebar-muted">© {new Date().getFullYear()} LivHub</div>
         </div>
 
         <div className="flex items-center justify-center px-4 py-10 sm:px-8">
