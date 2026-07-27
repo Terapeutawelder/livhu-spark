@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-export const Route = createFileRoute("/kanban")({
+export const Route = createFileRoute("/_authenticated/kanban")({
   head: () => ({
     meta: [
       { title: "Jornada do Paciente — LivHub" },

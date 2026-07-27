@@ -21,7 +21,7 @@ import {
 } from "recharts";
 import { AdminShell } from "@/components/admin-shell";
 
-export const Route = createFileRoute("/admin/")({
+export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
       { title: "Super Admin — LivHub" },

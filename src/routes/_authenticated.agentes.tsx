@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 
-export const Route = createFileRoute("/agentes")({
+export const Route = createFileRoute("/_authenticated/agentes")({
   head: () => ({
     meta: [
       { title: "Agentes IA — LivHub" },

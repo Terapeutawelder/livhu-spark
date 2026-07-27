@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin-shell";
 import { LifeBuoy, MessageSquare, Clock } from "lucide-react";
 
-export const Route = createFileRoute("/admin/suporte")({
+export const Route = createFileRoute("/_authenticated/admin/suporte")({
   head: () => ({
     meta: [
       { title: "Suporte — Super Admin" },

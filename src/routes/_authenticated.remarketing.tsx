@@ -5,7 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 
-export const Route = createFileRoute("/remarketing")({
+export const Route = createFileRoute("/_authenticated/remarketing")({
   head: () => ({
     meta: [
       { title: "Remarketing — LivHub" },

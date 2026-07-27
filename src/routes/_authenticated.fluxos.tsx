@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 
-export const Route = createFileRoute("/fluxos")({
+export const Route = createFileRoute("/_authenticated/fluxos")({
   head: () => ({
     meta: [
       { title: "Fluxos de Automação — LivHub" },

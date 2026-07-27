@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AdminShell } from "@/components/admin-shell";
 import { Globe, Palette, Mail, Image as ImageIcon, Check } from "lucide-react";
 
-export const Route = createFileRoute("/admin/white-label")({
+export const Route = createFileRoute("/_authenticated/admin/white-label")({
   head: () => ({
     meta: [
       { title: "White-label — Super Admin" },

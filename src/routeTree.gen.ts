@@ -9,207 +9,216 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as RemarketingRouteImport } from './routes/remarketing'
-import { Route as PagamentosRouteImport } from './routes/pagamentos'
-import { Route as MensagensRouteImport } from './routes/mensagens'
-import { Route as KanbanRouteImport } from './routes/kanban'
-import { Route as FluxosRouteImport } from './routes/fluxos'
-import { Route as DisparosRouteImport } from './routes/disparos'
-import { Route as CursosRouteImport } from './routes/cursos'
-import { Route as ContatosRouteImport } from './routes/contatos'
-import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
-import { Route as AgentesRouteImport } from './routes/agentes'
-import { Route as AgendamentoRouteImport } from './routes/agendamento'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as AdminWhiteLabelRouteImport } from './routes/admin.white-label'
-import { Route as AdminUsuariosRouteImport } from './routes/admin.usuarios'
-import { Route as AdminTenantsRouteImport } from './routes/admin.tenants'
-import { Route as AdminSuporteRouteImport } from './routes/admin.suporte'
-import { Route as AdminSistemaRouteImport } from './routes/admin.sistema'
-import { Route as AdminPlanosRouteImport } from './routes/admin.planos'
-import { Route as AdminFaturamentoRouteImport } from './routes/admin.faturamento'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated.index'
+import { Route as AuthenticatedRemarketingRouteImport } from './routes/_authenticated.remarketing'
+import { Route as AuthenticatedPagamentosRouteImport } from './routes/_authenticated.pagamentos'
+import { Route as AuthenticatedMensagensRouteImport } from './routes/_authenticated.mensagens'
+import { Route as AuthenticatedKanbanRouteImport } from './routes/_authenticated.kanban'
+import { Route as AuthenticatedFluxosRouteImport } from './routes/_authenticated.fluxos'
+import { Route as AuthenticatedDisparosRouteImport } from './routes/_authenticated.disparos'
+import { Route as AuthenticatedCursosRouteImport } from './routes/_authenticated.cursos'
+import { Route as AuthenticatedContatosRouteImport } from './routes/_authenticated.contatos'
+import { Route as AuthenticatedConfiguracoesRouteImport } from './routes/_authenticated.configuracoes'
+import { Route as AuthenticatedAgentesRouteImport } from './routes/_authenticated.agentes'
+import { Route as AuthenticatedAgendamentoRouteImport } from './routes/_authenticated.agendamento'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
+import { Route as AuthenticatedAdminWhiteLabelRouteImport } from './routes/_authenticated.admin.white-label'
+import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated.admin.usuarios'
+import { Route as AuthenticatedAdminTenantsRouteImport } from './routes/_authenticated.admin.tenants'
+import { Route as AuthenticatedAdminSuporteRouteImport } from './routes/_authenticated.admin.suporte'
+import { Route as AuthenticatedAdminSistemaRouteImport } from './routes/_authenticated.admin.sistema'
+import { Route as AuthenticatedAdminPlanosRouteImport } from './routes/_authenticated.admin.planos'
+import { Route as AuthenticatedAdminFaturamentoRouteImport } from './routes/_authenticated.admin.faturamento'
 
-const RemarketingRoute = RemarketingRouteImport.update({
-  id: '/remarketing',
-  path: '/remarketing',
+const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
+  id: '/_authenticated/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PagamentosRoute = PagamentosRouteImport.update({
-  id: '/pagamentos',
+const AuthenticatedRemarketingRoute =
+  AuthenticatedRemarketingRouteImport.update({
+    id: '/_authenticated/remarketing',
+    path: '/remarketing',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedPagamentosRoute = AuthenticatedPagamentosRouteImport.update({
+  id: '/_authenticated/pagamentos',
   path: '/pagamentos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MensagensRoute = MensagensRouteImport.update({
-  id: '/mensagens',
+const AuthenticatedMensagensRoute = AuthenticatedMensagensRouteImport.update({
+  id: '/_authenticated/mensagens',
   path: '/mensagens',
   getParentRoute: () => rootRouteImport,
 } as any)
-const KanbanRoute = KanbanRouteImport.update({
-  id: '/kanban',
+const AuthenticatedKanbanRoute = AuthenticatedKanbanRouteImport.update({
+  id: '/_authenticated/kanban',
   path: '/kanban',
   getParentRoute: () => rootRouteImport,
 } as any)
-const FluxosRoute = FluxosRouteImport.update({
-  id: '/fluxos',
+const AuthenticatedFluxosRoute = AuthenticatedFluxosRouteImport.update({
+  id: '/_authenticated/fluxos',
   path: '/fluxos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DisparosRoute = DisparosRouteImport.update({
-  id: '/disparos',
+const AuthenticatedDisparosRoute = AuthenticatedDisparosRouteImport.update({
+  id: '/_authenticated/disparos',
   path: '/disparos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CursosRoute = CursosRouteImport.update({
-  id: '/cursos',
+const AuthenticatedCursosRoute = AuthenticatedCursosRouteImport.update({
+  id: '/_authenticated/cursos',
   path: '/cursos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ContatosRoute = ContatosRouteImport.update({
-  id: '/contatos',
+const AuthenticatedContatosRoute = AuthenticatedContatosRouteImport.update({
+  id: '/_authenticated/contatos',
   path: '/contatos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
-  id: '/configuracoes',
-  path: '/configuracoes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AgentesRoute = AgentesRouteImport.update({
-  id: '/agentes',
+const AuthenticatedConfiguracoesRoute =
+  AuthenticatedConfiguracoesRouteImport.update({
+    id: '/_authenticated/configuracoes',
+    path: '/configuracoes',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedAgentesRoute = AuthenticatedAgentesRouteImport.update({
+  id: '/_authenticated/agentes',
   path: '/agentes',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AgendamentoRoute = AgendamentoRouteImport.update({
-  id: '/agendamento',
-  path: '/agendamento',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
+const AuthenticatedAgendamentoRoute =
+  AuthenticatedAgendamentoRouteImport.update({
+    id: '/_authenticated/agendamento',
+    path: '/agendamento',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/_authenticated/admin',
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminWhiteLabelRoute = AdminWhiteLabelRouteImport.update({
-  id: '/white-label',
-  path: '/white-label',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminUsuariosRoute = AdminUsuariosRouteImport.update({
-  id: '/usuarios',
-  path: '/usuarios',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTenantsRoute = AdminTenantsRouteImport.update({
-  id: '/tenants',
-  path: '/tenants',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSuporteRoute = AdminSuporteRouteImport.update({
-  id: '/suporte',
-  path: '/suporte',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSistemaRoute = AdminSistemaRouteImport.update({
-  id: '/sistema',
-  path: '/sistema',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPlanosRoute = AdminPlanosRouteImport.update({
-  id: '/planos',
-  path: '/planos',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminFaturamentoRoute = AdminFaturamentoRouteImport.update({
-  id: '/faturamento',
-  path: '/faturamento',
-  getParentRoute: () => AdminRoute,
-} as any)
+const AuthenticatedAdminWhiteLabelRoute =
+  AuthenticatedAdminWhiteLabelRouteImport.update({
+    id: '/white-label',
+    path: '/white-label',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminUsuariosRoute =
+  AuthenticatedAdminUsuariosRouteImport.update({
+    id: '/usuarios',
+    path: '/usuarios',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminTenantsRoute =
+  AuthenticatedAdminTenantsRouteImport.update({
+    id: '/tenants',
+    path: '/tenants',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminSuporteRoute =
+  AuthenticatedAdminSuporteRouteImport.update({
+    id: '/suporte',
+    path: '/suporte',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminSistemaRoute =
+  AuthenticatedAdminSistemaRouteImport.update({
+    id: '/sistema',
+    path: '/sistema',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminPlanosRoute =
+  AuthenticatedAdminPlanosRouteImport.update({
+    id: '/planos',
+    path: '/planos',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminFaturamentoRoute =
+  AuthenticatedAdminFaturamentoRouteImport.update({
+    id: '/faturamento',
+    path: '/faturamento',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/agendamento': typeof AgendamentoRoute
-  '/agentes': typeof AgentesRoute
-  '/configuracoes': typeof ConfiguracoesRoute
-  '/contatos': typeof ContatosRoute
-  '/cursos': typeof CursosRoute
-  '/disparos': typeof DisparosRoute
-  '/fluxos': typeof FluxosRoute
-  '/kanban': typeof KanbanRoute
-  '/mensagens': typeof MensagensRoute
-  '/pagamentos': typeof PagamentosRoute
-  '/remarketing': typeof RemarketingRoute
-  '/admin/faturamento': typeof AdminFaturamentoRoute
-  '/admin/planos': typeof AdminPlanosRoute
-  '/admin/sistema': typeof AdminSistemaRoute
-  '/admin/suporte': typeof AdminSuporteRoute
-  '/admin/tenants': typeof AdminTenantsRoute
-  '/admin/usuarios': typeof AdminUsuariosRoute
-  '/admin/white-label': typeof AdminWhiteLabelRoute
-  '/admin/': typeof AdminIndexRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/agendamento': typeof AuthenticatedAgendamentoRoute
+  '/agentes': typeof AuthenticatedAgentesRoute
+  '/configuracoes': typeof AuthenticatedConfiguracoesRoute
+  '/contatos': typeof AuthenticatedContatosRoute
+  '/cursos': typeof AuthenticatedCursosRoute
+  '/disparos': typeof AuthenticatedDisparosRoute
+  '/fluxos': typeof AuthenticatedFluxosRoute
+  '/kanban': typeof AuthenticatedKanbanRoute
+  '/mensagens': typeof AuthenticatedMensagensRoute
+  '/pagamentos': typeof AuthenticatedPagamentosRoute
+  '/remarketing': typeof AuthenticatedRemarketingRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/admin/faturamento': typeof AuthenticatedAdminFaturamentoRoute
+  '/admin/planos': typeof AuthenticatedAdminPlanosRoute
+  '/admin/sistema': typeof AuthenticatedAdminSistemaRoute
+  '/admin/suporte': typeof AuthenticatedAdminSuporteRoute
+  '/admin/tenants': typeof AuthenticatedAdminTenantsRoute
+  '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/admin/white-label': typeof AuthenticatedAdminWhiteLabelRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/agendamento': typeof AgendamentoRoute
-  '/agentes': typeof AgentesRoute
-  '/configuracoes': typeof ConfiguracoesRoute
-  '/contatos': typeof ContatosRoute
-  '/cursos': typeof CursosRoute
-  '/disparos': typeof DisparosRoute
-  '/fluxos': typeof FluxosRoute
-  '/kanban': typeof KanbanRoute
-  '/mensagens': typeof MensagensRoute
-  '/pagamentos': typeof PagamentosRoute
-  '/remarketing': typeof RemarketingRoute
-  '/admin/faturamento': typeof AdminFaturamentoRoute
-  '/admin/planos': typeof AdminPlanosRoute
-  '/admin/sistema': typeof AdminSistemaRoute
-  '/admin/suporte': typeof AdminSuporteRoute
-  '/admin/tenants': typeof AdminTenantsRoute
-  '/admin/usuarios': typeof AdminUsuariosRoute
-  '/admin/white-label': typeof AdminWhiteLabelRoute
-  '/admin': typeof AdminIndexRoute
+  '/agendamento': typeof AuthenticatedAgendamentoRoute
+  '/agentes': typeof AuthenticatedAgentesRoute
+  '/configuracoes': typeof AuthenticatedConfiguracoesRoute
+  '/contatos': typeof AuthenticatedContatosRoute
+  '/cursos': typeof AuthenticatedCursosRoute
+  '/disparos': typeof AuthenticatedDisparosRoute
+  '/fluxos': typeof AuthenticatedFluxosRoute
+  '/kanban': typeof AuthenticatedKanbanRoute
+  '/mensagens': typeof AuthenticatedMensagensRoute
+  '/pagamentos': typeof AuthenticatedPagamentosRoute
+  '/remarketing': typeof AuthenticatedRemarketingRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/admin/faturamento': typeof AuthenticatedAdminFaturamentoRoute
+  '/admin/planos': typeof AuthenticatedAdminPlanosRoute
+  '/admin/sistema': typeof AuthenticatedAdminSistemaRoute
+  '/admin/suporte': typeof AuthenticatedAdminSuporteRoute
+  '/admin/tenants': typeof AuthenticatedAdminTenantsRoute
+  '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/admin/white-label': typeof AuthenticatedAdminWhiteLabelRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/agendamento': typeof AgendamentoRoute
-  '/agentes': typeof AgentesRoute
-  '/configuracoes': typeof ConfiguracoesRoute
-  '/contatos': typeof ContatosRoute
-  '/cursos': typeof CursosRoute
-  '/disparos': typeof DisparosRoute
-  '/fluxos': typeof FluxosRoute
-  '/kanban': typeof KanbanRoute
-  '/mensagens': typeof MensagensRoute
-  '/pagamentos': typeof PagamentosRoute
-  '/remarketing': typeof RemarketingRoute
-  '/admin/faturamento': typeof AdminFaturamentoRoute
-  '/admin/planos': typeof AdminPlanosRoute
-  '/admin/sistema': typeof AdminSistemaRoute
-  '/admin/suporte': typeof AdminSuporteRoute
-  '/admin/tenants': typeof AdminTenantsRoute
-  '/admin/usuarios': typeof AdminUsuariosRoute
-  '/admin/white-label': typeof AdminWhiteLabelRoute
-  '/admin/': typeof AdminIndexRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/_authenticated/agendamento': typeof AuthenticatedAgendamentoRoute
+  '/_authenticated/agentes': typeof AuthenticatedAgentesRoute
+  '/_authenticated/configuracoes': typeof AuthenticatedConfiguracoesRoute
+  '/_authenticated/contatos': typeof AuthenticatedContatosRoute
+  '/_authenticated/cursos': typeof AuthenticatedCursosRoute
+  '/_authenticated/disparos': typeof AuthenticatedDisparosRoute
+  '/_authenticated/fluxos': typeof AuthenticatedFluxosRoute
+  '/_authenticated/kanban': typeof AuthenticatedKanbanRoute
+  '/_authenticated/mensagens': typeof AuthenticatedMensagensRoute
+  '/_authenticated/pagamentos': typeof AuthenticatedPagamentosRoute
+  '/_authenticated/remarketing': typeof AuthenticatedRemarketingRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/admin/faturamento': typeof AuthenticatedAdminFaturamentoRoute
+  '/_authenticated/admin/planos': typeof AuthenticatedAdminPlanosRoute
+  '/_authenticated/admin/sistema': typeof AuthenticatedAdminSistemaRoute
+  '/_authenticated/admin/suporte': typeof AuthenticatedAdminSuporteRoute
+  '/_authenticated/admin/tenants': typeof AuthenticatedAdminTenantsRoute
+  '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
+  '/_authenticated/admin/white-label': typeof AuthenticatedAdminWhiteLabelRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/admin'
     | '/agendamento'
     | '/agentes'
@@ -222,6 +231,7 @@ export interface FileRouteTypes {
     | '/mensagens'
     | '/pagamentos'
     | '/remarketing'
+    | '/'
     | '/admin/faturamento'
     | '/admin/planos'
     | '/admin/sistema'
@@ -232,7 +242,6 @@ export interface FileRouteTypes {
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/agendamento'
     | '/agentes'
     | '/configuracoes'
@@ -244,6 +253,7 @@ export interface FileRouteTypes {
     | '/mensagens'
     | '/pagamentos'
     | '/remarketing'
+    | '/'
     | '/admin/faturamento'
     | '/admin/planos'
     | '/admin/sistema'
@@ -254,235 +264,236 @@ export interface FileRouteTypes {
     | '/admin'
   id:
     | '__root__'
-    | '/'
-    | '/admin'
-    | '/agendamento'
-    | '/agentes'
-    | '/configuracoes'
-    | '/contatos'
-    | '/cursos'
-    | '/disparos'
-    | '/fluxos'
-    | '/kanban'
-    | '/mensagens'
-    | '/pagamentos'
-    | '/remarketing'
-    | '/admin/faturamento'
-    | '/admin/planos'
-    | '/admin/sistema'
-    | '/admin/suporte'
-    | '/admin/tenants'
-    | '/admin/usuarios'
-    | '/admin/white-label'
-    | '/admin/'
+    | '/_authenticated/admin'
+    | '/_authenticated/agendamento'
+    | '/_authenticated/agentes'
+    | '/_authenticated/configuracoes'
+    | '/_authenticated/contatos'
+    | '/_authenticated/cursos'
+    | '/_authenticated/disparos'
+    | '/_authenticated/fluxos'
+    | '/_authenticated/kanban'
+    | '/_authenticated/mensagens'
+    | '/_authenticated/pagamentos'
+    | '/_authenticated/remarketing'
+    | '/_authenticated/'
+    | '/_authenticated/admin/faturamento'
+    | '/_authenticated/admin/planos'
+    | '/_authenticated/admin/sistema'
+    | '/_authenticated/admin/suporte'
+    | '/_authenticated/admin/tenants'
+    | '/_authenticated/admin/usuarios'
+    | '/_authenticated/admin/white-label'
+    | '/_authenticated/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRouteWithChildren
-  AgendamentoRoute: typeof AgendamentoRoute
-  AgentesRoute: typeof AgentesRoute
-  ConfiguracoesRoute: typeof ConfiguracoesRoute
-  ContatosRoute: typeof ContatosRoute
-  CursosRoute: typeof CursosRoute
-  DisparosRoute: typeof DisparosRoute
-  FluxosRoute: typeof FluxosRoute
-  KanbanRoute: typeof KanbanRoute
-  MensagensRoute: typeof MensagensRoute
-  PagamentosRoute: typeof PagamentosRoute
-  RemarketingRoute: typeof RemarketingRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+  AuthenticatedAgendamentoRoute: typeof AuthenticatedAgendamentoRoute
+  AuthenticatedAgentesRoute: typeof AuthenticatedAgentesRoute
+  AuthenticatedConfiguracoesRoute: typeof AuthenticatedConfiguracoesRoute
+  AuthenticatedContatosRoute: typeof AuthenticatedContatosRoute
+  AuthenticatedCursosRoute: typeof AuthenticatedCursosRoute
+  AuthenticatedDisparosRoute: typeof AuthenticatedDisparosRoute
+  AuthenticatedFluxosRoute: typeof AuthenticatedFluxosRoute
+  AuthenticatedKanbanRoute: typeof AuthenticatedKanbanRoute
+  AuthenticatedMensagensRoute: typeof AuthenticatedMensagensRoute
+  AuthenticatedPagamentosRoute: typeof AuthenticatedPagamentosRoute
+  AuthenticatedRemarketingRoute: typeof AuthenticatedRemarketingRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/remarketing': {
-      id: '/remarketing'
-      path: '/remarketing'
-      fullPath: '/remarketing'
-      preLoaderRoute: typeof RemarketingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pagamentos': {
-      id: '/pagamentos'
-      path: '/pagamentos'
-      fullPath: '/pagamentos'
-      preLoaderRoute: typeof PagamentosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mensagens': {
-      id: '/mensagens'
-      path: '/mensagens'
-      fullPath: '/mensagens'
-      preLoaderRoute: typeof MensagensRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/kanban': {
-      id: '/kanban'
-      path: '/kanban'
-      fullPath: '/kanban'
-      preLoaderRoute: typeof KanbanRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/fluxos': {
-      id: '/fluxos'
-      path: '/fluxos'
-      fullPath: '/fluxos'
-      preLoaderRoute: typeof FluxosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/disparos': {
-      id: '/disparos'
-      path: '/disparos'
-      fullPath: '/disparos'
-      preLoaderRoute: typeof DisparosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cursos': {
-      id: '/cursos'
-      path: '/cursos'
-      fullPath: '/cursos'
-      preLoaderRoute: typeof CursosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contatos': {
-      id: '/contatos'
-      path: '/contatos'
-      fullPath: '/contatos'
-      preLoaderRoute: typeof ContatosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/configuracoes': {
-      id: '/configuracoes'
-      path: '/configuracoes'
-      fullPath: '/configuracoes'
-      preLoaderRoute: typeof ConfiguracoesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/agentes': {
-      id: '/agentes'
-      path: '/agentes'
-      fullPath: '/agentes'
-      preLoaderRoute: typeof AgentesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/agendamento': {
-      id: '/agendamento'
-      path: '/agendamento'
-      fullPath: '/agendamento'
-      preLoaderRoute: typeof AgendamentoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/': {
-      id: '/'
+    '/_authenticated/': {
+      id: '/_authenticated/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/': {
-      id: '/admin/'
+    '/_authenticated/remarketing': {
+      id: '/_authenticated/remarketing'
+      path: '/remarketing'
+      fullPath: '/remarketing'
+      preLoaderRoute: typeof AuthenticatedRemarketingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/pagamentos': {
+      id: '/_authenticated/pagamentos'
+      path: '/pagamentos'
+      fullPath: '/pagamentos'
+      preLoaderRoute: typeof AuthenticatedPagamentosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/mensagens': {
+      id: '/_authenticated/mensagens'
+      path: '/mensagens'
+      fullPath: '/mensagens'
+      preLoaderRoute: typeof AuthenticatedMensagensRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/kanban': {
+      id: '/_authenticated/kanban'
+      path: '/kanban'
+      fullPath: '/kanban'
+      preLoaderRoute: typeof AuthenticatedKanbanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/fluxos': {
+      id: '/_authenticated/fluxos'
+      path: '/fluxos'
+      fullPath: '/fluxos'
+      preLoaderRoute: typeof AuthenticatedFluxosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/disparos': {
+      id: '/_authenticated/disparos'
+      path: '/disparos'
+      fullPath: '/disparos'
+      preLoaderRoute: typeof AuthenticatedDisparosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/cursos': {
+      id: '/_authenticated/cursos'
+      path: '/cursos'
+      fullPath: '/cursos'
+      preLoaderRoute: typeof AuthenticatedCursosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/contatos': {
+      id: '/_authenticated/contatos'
+      path: '/contatos'
+      fullPath: '/contatos'
+      preLoaderRoute: typeof AuthenticatedContatosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/configuracoes': {
+      id: '/_authenticated/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/configuracoes'
+      preLoaderRoute: typeof AuthenticatedConfiguracoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/agentes': {
+      id: '/_authenticated/agentes'
+      path: '/agentes'
+      fullPath: '/agentes'
+      preLoaderRoute: typeof AuthenticatedAgentesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/agendamento': {
+      id: '/_authenticated/agendamento'
+      path: '/agendamento'
+      fullPath: '/agendamento'
+      preLoaderRoute: typeof AuthenticatedAgendamentoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
       path: '/'
       fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/admin/white-label': {
-      id: '/admin/white-label'
+    '/_authenticated/admin/white-label': {
+      id: '/_authenticated/admin/white-label'
       path: '/white-label'
       fullPath: '/admin/white-label'
-      preLoaderRoute: typeof AdminWhiteLabelRouteImport
-      parentRoute: typeof AdminRoute
+      preLoaderRoute: typeof AuthenticatedAdminWhiteLabelRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/admin/usuarios': {
-      id: '/admin/usuarios'
+    '/_authenticated/admin/usuarios': {
+      id: '/_authenticated/admin/usuarios'
       path: '/usuarios'
       fullPath: '/admin/usuarios'
-      preLoaderRoute: typeof AdminUsuariosRouteImport
-      parentRoute: typeof AdminRoute
+      preLoaderRoute: typeof AuthenticatedAdminUsuariosRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/admin/tenants': {
-      id: '/admin/tenants'
+    '/_authenticated/admin/tenants': {
+      id: '/_authenticated/admin/tenants'
       path: '/tenants'
       fullPath: '/admin/tenants'
-      preLoaderRoute: typeof AdminTenantsRouteImport
-      parentRoute: typeof AdminRoute
+      preLoaderRoute: typeof AuthenticatedAdminTenantsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/admin/suporte': {
-      id: '/admin/suporte'
+    '/_authenticated/admin/suporte': {
+      id: '/_authenticated/admin/suporte'
       path: '/suporte'
       fullPath: '/admin/suporte'
-      preLoaderRoute: typeof AdminSuporteRouteImport
-      parentRoute: typeof AdminRoute
+      preLoaderRoute: typeof AuthenticatedAdminSuporteRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/admin/sistema': {
-      id: '/admin/sistema'
+    '/_authenticated/admin/sistema': {
+      id: '/_authenticated/admin/sistema'
       path: '/sistema'
       fullPath: '/admin/sistema'
-      preLoaderRoute: typeof AdminSistemaRouteImport
-      parentRoute: typeof AdminRoute
+      preLoaderRoute: typeof AuthenticatedAdminSistemaRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/admin/planos': {
-      id: '/admin/planos'
+    '/_authenticated/admin/planos': {
+      id: '/_authenticated/admin/planos'
       path: '/planos'
       fullPath: '/admin/planos'
-      preLoaderRoute: typeof AdminPlanosRouteImport
-      parentRoute: typeof AdminRoute
+      preLoaderRoute: typeof AuthenticatedAdminPlanosRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/admin/faturamento': {
-      id: '/admin/faturamento'
+    '/_authenticated/admin/faturamento': {
+      id: '/_authenticated/admin/faturamento'
       path: '/faturamento'
       fullPath: '/admin/faturamento'
-      preLoaderRoute: typeof AdminFaturamentoRouteImport
-      parentRoute: typeof AdminRoute
+      preLoaderRoute: typeof AuthenticatedAdminFaturamentoRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
   }
 }
 
-interface AdminRouteChildren {
-  AdminFaturamentoRoute: typeof AdminFaturamentoRoute
-  AdminPlanosRoute: typeof AdminPlanosRoute
-  AdminSistemaRoute: typeof AdminSistemaRoute
-  AdminSuporteRoute: typeof AdminSuporteRoute
-  AdminTenantsRoute: typeof AdminTenantsRoute
-  AdminUsuariosRoute: typeof AdminUsuariosRoute
-  AdminWhiteLabelRoute: typeof AdminWhiteLabelRoute
-  AdminIndexRoute: typeof AdminIndexRoute
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminFaturamentoRoute: typeof AuthenticatedAdminFaturamentoRoute
+  AuthenticatedAdminPlanosRoute: typeof AuthenticatedAdminPlanosRoute
+  AuthenticatedAdminSistemaRoute: typeof AuthenticatedAdminSistemaRoute
+  AuthenticatedAdminSuporteRoute: typeof AuthenticatedAdminSuporteRoute
+  AuthenticatedAdminTenantsRoute: typeof AuthenticatedAdminTenantsRoute
+  AuthenticatedAdminUsuariosRoute: typeof AuthenticatedAdminUsuariosRoute
+  AuthenticatedAdminWhiteLabelRoute: typeof AuthenticatedAdminWhiteLabelRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
-const AdminRouteChildren: AdminRouteChildren = {
-  AdminFaturamentoRoute: AdminFaturamentoRoute,
-  AdminPlanosRoute: AdminPlanosRoute,
-  AdminSistemaRoute: AdminSistemaRoute,
-  AdminSuporteRoute: AdminSuporteRoute,
-  AdminTenantsRoute: AdminTenantsRoute,
-  AdminUsuariosRoute: AdminUsuariosRoute,
-  AdminWhiteLabelRoute: AdminWhiteLabelRoute,
-  AdminIndexRoute: AdminIndexRoute,
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminFaturamentoRoute: AuthenticatedAdminFaturamentoRoute,
+  AuthenticatedAdminPlanosRoute: AuthenticatedAdminPlanosRoute,
+  AuthenticatedAdminSistemaRoute: AuthenticatedAdminSistemaRoute,
+  AuthenticatedAdminSuporteRoute: AuthenticatedAdminSuporteRoute,
+  AuthenticatedAdminTenantsRoute: AuthenticatedAdminTenantsRoute,
+  AuthenticatedAdminUsuariosRoute: AuthenticatedAdminUsuariosRoute,
+  AuthenticatedAdminWhiteLabelRoute: AuthenticatedAdminWhiteLabelRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
-const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AdminRoute: AdminRouteWithChildren,
-  AgendamentoRoute: AgendamentoRoute,
-  AgentesRoute: AgentesRoute,
-  ConfiguracoesRoute: ConfiguracoesRoute,
-  ContatosRoute: ContatosRoute,
-  CursosRoute: CursosRoute,
-  DisparosRoute: DisparosRoute,
-  FluxosRoute: FluxosRoute,
-  KanbanRoute: KanbanRoute,
-  MensagensRoute: MensagensRoute,
-  PagamentosRoute: PagamentosRoute,
-  RemarketingRoute: RemarketingRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+  AuthenticatedAgendamentoRoute: AuthenticatedAgendamentoRoute,
+  AuthenticatedAgentesRoute: AuthenticatedAgentesRoute,
+  AuthenticatedConfiguracoesRoute: AuthenticatedConfiguracoesRoute,
+  AuthenticatedContatosRoute: AuthenticatedContatosRoute,
+  AuthenticatedCursosRoute: AuthenticatedCursosRoute,
+  AuthenticatedDisparosRoute: AuthenticatedDisparosRoute,
+  AuthenticatedFluxosRoute: AuthenticatedFluxosRoute,
+  AuthenticatedKanbanRoute: AuthenticatedKanbanRoute,
+  AuthenticatedMensagensRoute: AuthenticatedMensagensRoute,
+  AuthenticatedPagamentosRoute: AuthenticatedPagamentosRoute,
+  AuthenticatedRemarketingRoute: AuthenticatedRemarketingRoute,
+  AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
