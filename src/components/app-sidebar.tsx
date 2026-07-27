@@ -85,11 +85,11 @@ export function SidebarTrigger({ className = "" }: { className?: string }) {
       onClick={toggle}
       aria-label={collapsed ? "Expandir menu" : "Encolher menu"}
       className={
-        "hidden lg:grid h-9 w-9 place-items-center rounded-full border border-border bg-surface text-foreground hover:bg-muted " +
+        "grid h-7 w-7 place-items-center rounded-full border border-border bg-surface text-foreground shadow-sm hover:bg-muted " +
         className
       }
     >
-      <Icon className="h-4 w-4" />
+      <Icon className="h-3.5 w-3.5" />
     </button>
   );
 }
@@ -105,6 +105,7 @@ export function AppSidebar() {
         (collapsed ? "w-16" : "w-60")
       }
     >
+      <SidebarTrigger className="absolute -right-3 top-6 z-40" />
       {/* Brand */}
       <div
         className={
