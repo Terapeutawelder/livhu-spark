@@ -114,9 +114,10 @@ function Dashboard() {
                 Bem-vinda, Dra. Helena
               </p>
               <p className="max-w-lg text-sm/relaxed text-sidebar-active-foreground/80">
-                Aqui está um resumo do atendimento no WhatsApp da Clínica MenteSã hoje. Comece pelas
-                triagens pendentes ou revise a agenda da equipe.
+                Aqui está um resumo do seu atendimento no WhatsApp hoje. Comece pelas triagens
+                pendentes ou revise sua agenda da semana.
               </p>
+
               <div className="flex flex-wrap gap-2 pt-1">
                 <button className="rounded-full bg-sidebar-active-foreground px-4 py-2 text-xs font-semibold text-gold shadow-sm transition hover:opacity-90">
                   Ver triagens pendentes
