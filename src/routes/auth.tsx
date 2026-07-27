@@ -107,42 +107,41 @@ function AuthPage() {
     <div className="min-h-screen bg-background text-foreground">
       <div className="grid min-h-screen lg:grid-cols-2">
         {/* Image + value prop panel — banner on mobile, sidebar on desktop */}
-        <div className="relative flex min-h-[260px] flex-col justify-between overflow-hidden bg-sidebar p-6 text-sidebar-foreground sm:min-h-[320px] sm:p-10 lg:min-h-screen lg:p-12">
+        <div className="relative flex min-h-[360px] flex-col justify-between overflow-hidden bg-sidebar p-6 text-sidebar-foreground sm:min-h-[420px] sm:p-10 lg:min-h-screen lg:p-12">
           <img
             src={therapistImg}
             alt="Psicoterapeuta usando o LivHub"
-            width={1200}
+            width={1280}
             height={1600}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
-          {/* Stronger multi-layer overlay for readability on all screen sizes */}
-          <div className="absolute inset-0 bg-sidebar/80" />
-          <div className="absolute inset-0 bg-gradient-to-t from-sidebar via-sidebar/70 to-sidebar/40" />
-          <div className="absolute inset-0 bg-gradient-to-r from-sidebar/60 via-transparent to-sidebar/60 lg:bg-gradient-to-r lg:from-sidebar/50 lg:via-transparent lg:to-sidebar/90" />
+          {/* Subtle bottom-only gradient — keeps the photo visible while ensuring text contrast */}
+          <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/50 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/85 via-black/55 to-transparent" />
 
           <Link to="/auth" className="relative flex items-center gap-2.5">
-            <div className="grid h-9 w-9 place-items-center rounded-lg bg-gold text-sidebar-active-foreground">
+            <div className="grid h-9 w-9 place-items-center rounded-lg bg-gold text-sidebar-active-foreground shadow-lg">
               <span className="font-display text-sm font-bold">L</span>
             </div>
             <div>
-              <div className="font-display text-lg font-bold text-white">LivHub</div>
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-gold">
+              <div className="font-display text-lg font-bold text-white drop-shadow">LivHub</div>
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-gold drop-shadow">
                 Psicoterapia Digital
               </div>
             </div>
           </Link>
 
           <div className="relative mx-auto max-w-md space-y-3 text-center lg:mx-0 lg:text-left">
-            <h2 className="font-display text-2xl font-bold text-white sm:text-3xl">
+            <h2 className="font-display text-2xl font-bold text-white drop-shadow-lg sm:text-3xl lg:text-4xl">
               Sua prática, no ritmo dos seus pacientes.
             </h2>
-            <p className="mx-auto max-w-xs text-sm text-sidebar-muted lg:mx-0 lg:max-w-md">
+            <p className="mx-auto max-w-xs text-sm text-white/85 drop-shadow lg:mx-0 lg:max-w-md">
               WhatsApp, agenda, jornada do paciente e pagamentos em um só lugar.
               Um sistema pensado para psicoterapeutas.
             </p>
           </div>
 
-          <div className="relative text-center text-xs text-sidebar-muted lg:text-left">
+          <div className="relative text-center text-xs text-white/70 drop-shadow lg:text-left">
             © {new Date().getFullYear()} LivHub
           </div>
         </div>
