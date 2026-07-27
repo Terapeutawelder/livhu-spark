@@ -106,9 +106,9 @@ function AuthPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <div className="grid min-h-screen lg:grid-cols-2">
-        {/* Image + value prop panel — banner on mobile, sidebar on desktop */}
-        <div className="relative flex min-h-[420px] flex-col justify-between overflow-hidden bg-sidebar p-6 text-sidebar-foreground sm:min-h-[480px] sm:p-10 lg:min-h-screen lg:p-12">
+      <div className="grid min-h-screen lg:grid-cols-[1.5fr_1fr]">
+        {/* Image panel — banner on mobile, wider sidebar on desktop */}
+        <div className="relative flex min-h-[320px] flex-col overflow-hidden bg-sidebar sm:min-h-[400px] lg:min-h-screen">
           <img
             src={therapistImg}
             alt="Psicoterapeuta usando o LivHub"
@@ -116,48 +116,37 @@ function AuthPage() {
             height={1600}
             className="absolute inset-0 h-full w-full object-cover object-center"
           />
-          {/* Top gradient — strong at top to protect logo + headline, fades out before the notebook */}
-          <div className="absolute inset-x-0 top-0 h-[55%] bg-gradient-to-b from-black/85 via-black/60 to-transparent" />
-          {/* Small bottom gradient just for footer */}
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/70 to-transparent" />
+          {/* Subtle edge gradients for polish; no text overlay so the photo stays fully visible */}
+          <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/25 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/25 to-transparent" />
+        </div>
 
-          <div className="relative space-y-6">
+
+        {/* Content panel — logo, value prop and auth form */}
+        <div className="flex items-center justify-center px-4 py-10 sm:px-8 lg:px-12">
+          <div className="w-full max-w-md space-y-5">
             <Link to="/auth" className="inline-flex items-center">
               <img
                 src={livhubLogo}
                 alt="LivHub"
                 width={1536}
                 height={768}
-                className="h-14 w-auto drop-shadow-2xl sm:h-16"
+                className="h-12 w-auto drop-shadow-2xl sm:h-14"
               />
             </Link>
 
-            <div className="max-w-md space-y-2">
-              <h2 className="font-display text-2xl font-bold leading-tight text-white drop-shadow-lg sm:text-3xl lg:text-[2.5rem] lg:leading-[1.15]">
+            <div className="space-y-1">
+              <h2 className="font-display text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
                 Sua prática, no ritmo dos seus pacientes.
               </h2>
-              <p className="max-w-md text-sm text-white/90 drop-shadow sm:text-base">
+              <p className="text-sm text-muted-foreground sm:text-base">
                 WhatsApp, agenda, jornada do paciente e pagamentos em um só lugar.
                 Um sistema pensado para psicoterapeutas.
               </p>
             </div>
-          </div>
-
-          <div className="relative text-xs text-white/80 drop-shadow">
-            © {new Date().getFullYear()} LivHub
-          </div>
-        </div>
-
-
-        <div className="flex items-center justify-center px-4 py-10 sm:px-8">
-          <div className="w-full max-w-sm space-y-6">
-            <div className="lg:hidden">
-              <img src={livhubLogo} alt="LivHub" className="h-10 w-auto" />
-            </div>
-
 
             <div>
-              <h1 className="font-display text-2xl font-bold tracking-tight">{titles[mode]}</h1>
+              <h1 className="font-display text-xl font-bold tracking-tight">{titles[mode]}</h1>
               <p className="mt-1 text-sm text-muted-foreground">{subtitles[mode]}</p>
             </div>
 
@@ -264,6 +253,10 @@ function AuthPage() {
                   Voltar ao login
                 </button>
               )}
+            </div>
+
+            <div className="text-center text-xs text-muted-foreground">
+              © {new Date().getFullYear()} LivHub
             </div>
           </div>
         </div>
