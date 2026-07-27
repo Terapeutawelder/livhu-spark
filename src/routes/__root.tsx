@@ -80,20 +80,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "LivHub — CRM & Automação para Saúde Mental" },
+      { title: "Dashboard — LivHub" },
       {
         name: "description",
         content:
-          "LivHub é a plataforma de CRM e automação de WhatsApp para clínicas, terapeutas e plataformas de telepsicoterapia.",
+          "Visão geral do seu atendimento no WhatsApp: mensagens, faturamento, jornada dos pacientes e horários de pico.",
       },
       { name: "author", content: "LivHub" },
-      { property: "og:title", content: "LivHub — CRM & Automação para Saúde Mental" },
+      { property: "og:title", content: "Dashboard — LivHub" },
       {
         property: "og:description",
-        content: "Atendimento humano + IA, kanban da jornada do paciente e agendamento online.",
+        content: "Visão geral do seu atendimento no WhatsApp: mensagens, faturamento, jornada dos pacientes e horários de pico.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Dashboard — LivHub" },
+      { name: "twitter:description", content: "Visão geral do seu atendimento no WhatsApp: mensagens, faturamento, jornada dos pacientes e horários de pico." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1cde5a75-5dfd-4fb6-a6a2-ad570c6dfc9b/id-preview-aa26bce4--bbdeee67-f684-4d9e-99ca-35e051a038f4.lovable.app-1785178086737.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1cde5a75-5dfd-4fb6-a6a2-ad570c6dfc9b/id-preview-aa26bce4--bbdeee67-f684-4d9e-99ca-35e051a038f4.lovable.app-1785178086737.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

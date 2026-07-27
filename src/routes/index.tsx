@@ -34,7 +34,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Dashboard — LivHub" },
       {
         property: "og:description",
-        content: "Painel operacional do LivHub para clínicas de saúde mental.",
+        content: "Visão geral do seu atendimento no WhatsApp: mensagens, faturamento, jornada dos pacientes e horários de pico.",
       },
     ],
   }),
