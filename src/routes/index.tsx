@@ -90,16 +90,17 @@ const upcomingSessions = [
   { title: "Terapia de casal", who: "Ana & Felipe", time: "Amanhã · 10:00" },
 ];
 
-const upcomingTeam = [
-  { title: "Supervisão clínica", who: "Equipe TCC", time: "Qua · 09:00" },
-  { title: "Estudo de caso", who: "Equipe Infantil", time: "Sex · 15:00" },
+const upcomingCommitments = [
+  { title: "Supervisão clínica", who: "Com Dra. Regina", time: "Qua · 09:00" },
+  { title: "Grupo de estudos TCC", who: "Online", time: "Sex · 15:00" },
 ];
 
-const shoutouts = [
-  { name: "Dr. Adão Reis", note: "Fechou 4 pacotes esta semana", initials: "AR" },
-  { name: "Johnny Cruz", note: "Melhor tempo de resposta (2m)", initials: "JC" },
-  { name: "Alice Turner", note: "Nota 5,0 em 12 sessões", initials: "AT" },
+const weekGoals = [
+  { name: "Responder em até 5min", note: "Meta batida em 92% das conversas", initials: "R" },
+  { name: "10 novas triagens", note: "7 de 10 concluídas", initials: "T" },
+  { name: "Fechar 3 pacotes", note: "2 fechados esta semana", initials: "P" },
 ];
+
 
 function Dashboard() {
   return (
@@ -114,9 +115,10 @@ function Dashboard() {
                 Bem-vinda, Dra. Helena
               </p>
               <p className="max-w-lg text-sm/relaxed text-sidebar-active-foreground/80">
-                Aqui está um resumo do atendimento no WhatsApp da Clínica MenteSã hoje. Comece pelas
-                triagens pendentes ou revise a agenda da equipe.
+                Aqui está um resumo do seu atendimento no WhatsApp hoje. Comece pelas triagens
+                pendentes ou revise sua agenda da semana.
               </p>
+
               <div className="flex flex-wrap gap-2 pt-1">
                 <button className="rounded-full bg-sidebar-active-foreground px-4 py-2 text-xs font-semibold text-gold shadow-sm transition hover:opacity-90">
                   Ver triagens pendentes
@@ -333,10 +335,10 @@ function Dashboard() {
 
         <section>
           <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
-            Encontros de equipe
+            Compromissos
           </p>
           <ul className="space-y-2">
-            {upcomingTeam.map((s) => (
+            {upcomingCommitments.map((s) => (
               <li key={s.title} className="flex items-center gap-3 rounded-xl border border-border bg-surface p-3">
                 <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-foreground/5 text-foreground">
                   <Users className="h-4 w-4" />
@@ -353,10 +355,10 @@ function Dashboard() {
 
         <section>
           <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
-            Reconhecimentos
+            Metas da semana
           </p>
           <ul className="space-y-2">
-            {shoutouts.map((s) => (
+            {weekGoals.map((s) => (
               <li key={s.name} className="flex items-center gap-3 rounded-xl border border-border bg-surface p-3">
                 <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
                   {s.initials}
@@ -370,6 +372,7 @@ function Dashboard() {
             ))}
           </ul>
         </section>
+
       </aside>
     </div>
   );

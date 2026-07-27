@@ -5,7 +5,7 @@ export const Route = createFileRoute("/configuracoes")({
   head: () => ({
     meta: [
       { title: "Configurações — LivHub" },
-      { name: "description", content: "Configurações do negócio: WhatsApp, integrações, equipe." },
+      { name: "description", content: "Configurações do seu consultório: WhatsApp, integrações e preferências." },
       { property: "og:title", content: "Configurações — LivHub" },
       { property: "og:description", content: "Configurações LivHub." },
     ],
