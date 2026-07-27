@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
 import therapistImg from "@/assets/auth-therapist.jpg";
-import livhubLogo from "@/assets/livhub-logo-v2.png";
+import livhubLogo from "@/assets/livhub-logo-v3.png";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -130,7 +130,7 @@ function AuthPage() {
                 alt="LivHub"
                 width={1280}
                 height={640}
-                className="h-10 w-auto drop-shadow-xl sm:h-11"
+                className="h-12 w-auto drop-shadow-xl sm:h-14"
               />
             </Link>
 
