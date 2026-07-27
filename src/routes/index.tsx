@@ -335,10 +335,10 @@ function Dashboard() {
 
         <section>
           <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
-            Encontros de equipe
+            Compromissos
           </p>
           <ul className="space-y-2">
-            {upcomingTeam.map((s) => (
+            {upcomingCommitments.map((s) => (
               <li key={s.title} className="flex items-center gap-3 rounded-xl border border-border bg-surface p-3">
                 <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-foreground/5 text-foreground">
                   <Users className="h-4 w-4" />
@@ -355,10 +355,10 @@ function Dashboard() {
 
         <section>
           <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
-            Reconhecimentos
+            Metas da semana
           </p>
           <ul className="space-y-2">
-            {shoutouts.map((s) => (
+            {weekGoals.map((s) => (
               <li key={s.name} className="flex items-center gap-3 rounded-xl border border-border bg-surface p-3">
                 <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
                   {s.initials}
@@ -372,6 +372,7 @@ function Dashboard() {
             ))}
           </ul>
         </section>
+
       </aside>
     </div>
   );
