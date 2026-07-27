@@ -3,6 +3,7 @@ import { Link, useRouterState, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ShieldCheck } from "lucide-react";
+import livhubLogo from "@/assets/livhub-logo-v6.png";
 import {
   LayoutDashboard,
   MessageSquare,
