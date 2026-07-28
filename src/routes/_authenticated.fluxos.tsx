@@ -107,7 +107,7 @@ function FluxosPage() {
         .select()
         .single();
       if (error) throw error;
-      return data as Flow;
+      return data as unknown as Flow;
     },
     onSuccess: (f) => {
       qc.invalidateQueries({ queryKey: ["flows"] });
