@@ -223,15 +223,17 @@ function AgendamentoPage() {
     },
   });
 
-  const openNew = (date?: Date) => {
+  const openNew = (date?: Date, kind: "appointment" | "block" = "appointment") => {
     setSelected(null);
     setPrefillStart(date ?? null);
+    setPrefillKind(kind);
     setOpenDialog(true);
   };
 
   const openEdit = (appt: Appointment) => {
     setSelected(appt);
     setPrefillStart(null);
+    setPrefillKind(appt.kind);
     setOpenDialog(true);
   };
 
