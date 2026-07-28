@@ -53,10 +53,10 @@ export const Route = createFileRoute("/_authenticated/")({
 });
 
 const kpis = [
-  { label: "Mensagens", value: "1.284", delta: "+12%", icon: MessageCircle },
-  { label: "% Respondidas", value: "94%", delta: "+3%", icon: CheckCheck },
-  { label: "Tempo médio resp.", value: "2m 40s", delta: "-18%", icon: Timer },
-  { label: "Faturamento", value: "R$ 15k", delta: "+18%", icon: DollarSign },
+  { label: "Mensagens", value: "1.284", delta: "+12%", icon: MessageCircle, trend: [4, 5, 6, 5, 7, 8, 7, 9, 10, 11, 12, 14] },
+  { label: "% Respondidas", value: "94%", delta: "+3%", icon: CheckCheck, trend: [80, 82, 84, 83, 86, 88, 90, 91, 92, 93, 93, 94] },
+  { label: "Tempo médio resp.", value: "2m 40s", delta: "-18%", icon: Timer, trend: [6, 6, 5, 5, 4, 4, 3, 3, 3, 3, 3, 2] },
+  { label: "Faturamento", value: "R$ 15k", delta: "+18%", icon: DollarSign, trend: [8, 9, 10, 11, 12, 13, 13, 14, 14, 15, 15, 16] },
 ];
 
 const deliveryData = [
