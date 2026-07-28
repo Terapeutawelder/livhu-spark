@@ -59,15 +59,15 @@ function KpiCard({
   hint?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-surface p-5">
-      <div className="grid h-10 w-10 place-items-center rounded-lg bg-gold/15 text-gold">
+    <div className="rounded-2xl border border-gold/60 bg-gold p-5 text-gold-foreground shadow-[0_10px_30px_-15px_color-mix(in_oklab,var(--gold)_55%,transparent)]">
+      <div className="grid h-10 w-10 place-items-center rounded-lg bg-gold-foreground/10 text-gold-foreground">
         <Icon className="h-5 w-5" />
       </div>
-      <p className="mt-4 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-gold-foreground/75">
         {label}
       </p>
-      <p className="mt-1 font-display text-2xl font-bold text-foreground">{value}</p>
-      {hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}
+      <p className="mt-1 font-display text-2xl font-bold text-gold-foreground">{value}</p>
+      {hint && <p className="mt-1 text-xs text-gold-foreground/70">{hint}</p>}
     </div>
   );
 }
