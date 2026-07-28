@@ -103,7 +103,7 @@
   --chart-5: oklch(0.5 0.05 60);
 }
 
-/* ---------- Dark theme (preto profundo + dourado, estilo premium) ---------- */
+/* ---------- Dark theme (preto profundo + laranja, estilo premium) ---------- */
 .dark {
   --background: oklch(0.09 0.004 60);          /* preto profundo */
   --foreground: oklch(0.96 0.008 80);
@@ -115,7 +115,7 @@
   --popover: oklch(0.13 0.005 60);
   --popover-foreground: oklch(0.96 0.008 80);
 
-  --primary: oklch(0.82 0.14 82);              /* dourado vibrante */
+  --primary: oklch(0.75 0.18 55);              /* laranja vibrante */
   --primary-foreground: oklch(0.1 0.004 60);
 
   --secondary: oklch(0.18 0.006 60);
@@ -124,11 +124,11 @@
   --muted: oklch(0.17 0.005 60);
   --muted-foreground: oklch(0.7 0.012 75);
 
-  --accent: oklch(0.82 0.14 82);
+  --accent: oklch(0.75 0.18 55);
   --accent-foreground: oklch(0.1 0.004 60);
 
-  --gold: oklch(0.82 0.14 82);
-  --gold-soft: oklch(0.42 0.09 82);
+  --gold: oklch(0.75 0.18 55);
+  --gold-soft: oklch(0.45 0.1 58);
   --gold-foreground: oklch(0.1 0.004 60);
 
   --destructive: oklch(0.68 0.22 27);
@@ -136,15 +136,15 @@
 
   --border: oklch(0.22 0.008 60);
   --input: oklch(0.22 0.008 60);
-  --ring: oklch(0.82 0.14 82);
+  --ring: oklch(0.75 0.18 55);
 
   --sidebar: oklch(0.06 0.003 60);             /* preto puro na sidebar */
   --sidebar-foreground: oklch(0.88 0.01 80);
   --sidebar-muted: oklch(0.55 0.01 70);
-  --sidebar-active: oklch(0.82 0.14 82);
+  --sidebar-active: oklch(0.75 0.18 55);
   --sidebar-active-foreground: oklch(0.08 0.004 60);
 
-  --chart-1: oklch(0.82 0.14 82);
+  --chart-1: oklch(0.75 0.18 55);
   --chart-2: oklch(0.65 0.15 240);
   --chart-3: oklch(0.7 0.18 30);
   --chart-4: oklch(0.75 0.16 140);
