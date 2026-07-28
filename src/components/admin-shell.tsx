@@ -36,8 +36,9 @@ const items: NavItem[] = [
   { to: "/admin/calendario", label: "Calendário", icon: CalendarDays },
   { to: "/admin/white-label", label: "White-label", icon: Palette },
   { to: "/admin/dominios", label: "Domínios", icon: Globe },
-
+  { to: "/admin/usuarios", label: "Usuários & Roles", icon: ShieldCheck },
   { to: "/admin/sistema", label: "Sistema", icon: Activity },
+
   { to: "/admin/configuracao", label: "Configuração", icon: Settings },
   { to: "/admin/suporte", label: "Suporte", icon: LifeBuoy },
 ];
