@@ -246,7 +246,8 @@ function AgendamentoPage() {
 
   const filteredAppointments = useMemo(() => {
     return appointments.filter((a) => {
-      if (typeFilter === "bloqueios") return false; // no blocked intervals yet
+      if (typeFilter === "agendamentos" && a.kind !== "appointment") return false;
+      if (typeFilter === "bloqueios" && a.kind !== "block") return false;
       if (statusFilter && a.status !== statusFilter) return false;
       if (search.trim()) {
         const q = search.trim().toLowerCase();
@@ -259,9 +260,11 @@ function AgendamentoPage() {
 
   const statusCounts = useMemo(() => {
     const c: Record<Status, number> = { scheduled: 0, confirmed: 0, completed: 0, canceled: 0, no_show: 0 };
-    appointments.forEach((a) => { c[a.status]++; });
+    appointments.filter((a) => a.kind === "appointment").forEach((a) => { c[a.status]++; });
     return c;
   }, [appointments]);
+
+  const blockCount = useMemo(() => appointments.filter((a) => a.kind === "block").length, [appointments]);
 
   return (
     <div className="p-4 md:p-6 space-y-6">
