@@ -103,9 +103,9 @@ const STATUS_LABEL: Record<Status, string> = {
 };
 
 const STATUS_BADGE: Record<Status, string> = {
-  scheduled: "bg-primary/10 text-primary border-primary/40",
-  confirmed: "bg-primary/20 text-primary border-primary/60",
-  completed: "bg-primary text-primary-foreground border-primary",
+  scheduled: "bg-gold/10 text-gold border-gold/40",
+  confirmed: "bg-gold/20 text-gold border-gold/60",
+  completed: "bg-gold text-gold-foreground border-gold",
   canceled: "bg-destructive/10 text-destructive border-destructive/40",
   no_show: "bg-muted text-muted-foreground border-border",
 };
@@ -355,9 +355,9 @@ function AgendamentoPage() {
 /* ---------------- Manage panel ---------------- */
 
 const STATUS_DOT: Record<Status, string> = {
-  scheduled: "bg-primary/50",
-  confirmed: "bg-primary/75",
-  completed: "bg-primary",
+  scheduled: "bg-gold/50",
+  confirmed: "bg-gold/75",
+  completed: "bg-gold",
   canceled: "bg-destructive",
   no_show: "bg-muted-foreground",
 };
@@ -393,7 +393,7 @@ function ManagePanel({
   const hasFilters = statusFilter !== null || search.trim().length > 0 || typeFilter !== "todos";
 
   return (
-    <Card className="p-5 h-fit lg:sticky lg:top-4 space-y-5">
+    <Card className="p-5 h-fit lg:sticky lg:top-4 space-y-5 bg-gold/5 border-gold/10">
       <h3 className="font-semibold">Gerenciar visualização</h3>
 
       <div className="space-y-2">
@@ -485,21 +485,21 @@ function WeekGrid({
 
   return (
     <div className="overflow-x-auto">
-      <div className="min-w-[820px] grid grid-cols-[64px_repeat(7,1fr)] border border-border rounded-lg">
-        <div className="bg-muted/40 border-b border-r border-border" />
+      <div className="min-w-[820px] grid grid-cols-[64px_repeat(7,1fr)] border border-border rounded-lg overflow-hidden">
+        <div className="bg-gold/5 border-b border-r border-border" />
         {days.map((d, i) => {
           const isToday = d.toDateString() === today.toDateString();
           return (
-            <div key={i} className={`px-2 py-2 text-center border-b border-border ${i < 6 ? "border-r" : ""} ${isToday ? "bg-primary/10" : "bg-muted/40"}`}>
-              <div className="text-[11px] font-medium text-muted-foreground uppercase">{WEEK_DAYS[i]}</div>
-              <div className={`text-sm font-semibold ${isToday ? "text-primary" : ""}`}>{d.getDate()}</div>
+            <div key={i} className={`px-2 py-2 text-center border-b border-border ${i < 6 ? "border-r" : ""} ${isToday ? "bg-gold/15" : "bg-gold/5"}`}>
+              <div className={`text-[11px] font-medium uppercase ${isToday ? "text-gold" : "text-muted-foreground"}`}>{WEEK_DAYS[i]}</div>
+              <div className={`text-sm font-semibold ${isToday ? "text-gold" : ""}`}>{d.getDate()}</div>
             </div>
           );
         })}
 
         {HOURS.map((h) => (
           <div key={`row-${h}`} className="contents">
-            <div className="text-[11px] text-muted-foreground px-2 py-2 border-r border-b border-border">{String(h).padStart(2, "0")}:00</div>
+            <div className="text-[11px] text-muted-foreground px-2 py-2 border-r border-b border-border bg-gold/5">{String(h).padStart(2, "0")}:00</div>
             {days.map((d, i) => {
               const slot = new Date(d);
               slot.setHours(h, 0, 0, 0);
@@ -514,7 +514,7 @@ function WeekGrid({
                   key={`${h}-${i}`}
                   type="button"
                   onClick={() => items.length === 0 && onSelectSlot(slot)}
-                  className={`relative min-h-[54px] border-b ${i < 6 ? "border-r" : ""} border-border p-1 text-left hover:bg-muted/40 transition`}
+                  className={`relative min-h-[54px] border-b ${i < 6 ? "border-r" : ""} border-border p-1 text-left hover:bg-gold/10 transition`}
                 >
                   {items.map((a) => {
                     const isBlock = a.kind === "block";
@@ -907,7 +907,7 @@ function AvailabilityCard({ tenantId, settings }: { tenantId: string | undefined
   };
 
   return (
-    <Card className="p-5 space-y-4">
+    <Card className="p-5 space-y-4 bg-gold/5 border-gold/10">
       <div className="flex items-center gap-2">
         <CalendarIcon className="w-4 h-4 text-primary" />
         <h3 className="font-semibold">Disponibilidade</h3>
@@ -999,7 +999,7 @@ function GoogleIntegrationCard({ tenantId, settings }: { tenantId: string | unde
   };
 
   return (
-    <Card className="p-5 space-y-4">
+    <Card className="p-5 space-y-4 bg-gold/5 border-gold/10">
       <div className="flex items-center gap-2">
         <Link2 className="w-4 h-4 text-primary" />
         <h3 className="font-semibold">Google Calendar & Meet</h3>
