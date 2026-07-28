@@ -119,9 +119,11 @@ function AgendamentoPage() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selected, setSelected] = useState<Appointment | null>(null);
   const [prefillStart, setPrefillStart] = useState<Date | null>(null);
+  const [prefillKind, setPrefillKind] = useState<"appointment" | "block">("appointment");
   const [typeFilter, setTypeFilter] = useState<"todos" | "agendamentos" | "bloqueios">("todos");
   const [statusFilter, setStatusFilter] = useState<Status | null>(null);
   const [search, setSearch] = useState("");
+  const settings = ((tenant as unknown as { settings?: TenantSettings } | null)?.settings ?? {}) as TenantSettings;
 
   const weekEnd = useMemo(() => addDays(weekStart, 7), [weekStart]);
 
