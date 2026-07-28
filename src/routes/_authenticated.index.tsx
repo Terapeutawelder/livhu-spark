@@ -27,6 +27,7 @@ import {
 
 import { redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { MetricCard } from "@/components/metric-card";
 
 export const Route = createFileRoute("/_authenticated/")({
   beforeLoad: async () => {
