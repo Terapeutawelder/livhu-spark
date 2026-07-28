@@ -852,7 +852,7 @@ function AppointmentDialog({
         <DialogFooter className="flex items-center justify-between gap-2 sm:justify-between">
           <div>
             {selected && (
-              <Button variant="ghost" className="text-rose-600" onClick={() => onDelete(selected.id)}>
+              <Button variant="ghost" className="text-destructive hover:text-destructive" onClick={() => onDelete(selected.id)}>
                 Excluir
               </Button>
             )}
