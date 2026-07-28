@@ -25,7 +25,14 @@ import {
   Line,
 } from "recharts";
 
+import { redirect } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
+
 export const Route = createFileRoute("/_authenticated/")({
+  beforeLoad: async () => {
+    const { data } = await supabase.from("user_roles").select("role").eq("role", "super_admin").maybeSingle();
+    if (data) throw redirect({ to: "/admin" });
+  },
   head: () => ({
     meta: [
       { title: "Dashboard — LivHub" },
