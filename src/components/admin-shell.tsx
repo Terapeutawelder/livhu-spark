@@ -134,8 +134,18 @@ export function AdminShell({
               <Bell className="h-4 w-4" />
               <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-gold" />
             </button>
-            <div className="ml-1 grid h-9 w-9 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
-              SA
+            <div className="ml-1 flex items-center gap-2 rounded-full border border-border bg-surface pl-1 pr-2">
+              <div className="grid h-8 w-8 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
+                SA
+              </div>
+              <button
+                onClick={handleSignOut}
+                aria-label="Sair"
+                title="Sair"
+                className="grid h-7 w-7 place-items-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
             </div>
           </div>
         </header>
