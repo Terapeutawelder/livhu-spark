@@ -103,11 +103,11 @@ const STATUS_LABEL: Record<Status, string> = {
 };
 
 const STATUS_BADGE: Record<Status, string> = {
-  scheduled: "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/40",
-  confirmed: "bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/40",
-  completed: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/40",
-  canceled: "bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/40",
-  no_show: "bg-zinc-500/15 text-zinc-700 dark:text-zinc-300 border-zinc-500/40",
+  scheduled: "bg-primary/10 text-primary border-primary/40",
+  confirmed: "bg-primary/20 text-primary border-primary/60",
+  completed: "bg-primary text-primary-foreground border-primary",
+  canceled: "bg-destructive/10 text-destructive border-destructive/40",
+  no_show: "bg-muted text-muted-foreground border-border",
 };
 
 function AgendamentoPage() {
@@ -355,11 +355,11 @@ function AgendamentoPage() {
 /* ---------------- Manage panel ---------------- */
 
 const STATUS_DOT: Record<Status, string> = {
-  scheduled: "bg-amber-500",
-  confirmed: "bg-blue-500",
-  completed: "bg-emerald-500",
-  canceled: "bg-rose-500",
-  no_show: "bg-zinc-500",
+  scheduled: "bg-primary/50",
+  confirmed: "bg-primary/75",
+  completed: "bg-primary",
+  canceled: "bg-destructive",
+  no_show: "bg-muted-foreground",
 };
 
 function ManagePanel({
@@ -423,7 +423,7 @@ function ManagePanel({
             <button
               type="button"
               onClick={() => { setStatusFilter(null); setSearch(""); setTypeFilter("todos"); }}
-              className="text-xs text-rose-500 hover:text-rose-600 flex items-center gap-1"
+              className="text-xs text-destructive hover:opacity-80 flex items-center gap-1"
             >
               <X className="w-3 h-3" /> Limpar tudo
             </button>
@@ -524,7 +524,7 @@ function WeekGrid({
                         onClick={(e) => { e.stopPropagation(); onSelectAppointment(a); }}
                         className={`text-[11px] leading-tight rounded-md px-1.5 py-1 mb-1 border cursor-pointer ${
                           isBlock
-                            ? "bg-[repeating-linear-gradient(45deg,rgba(148,163,184,0.25)_0_6px,transparent_6px_12px)] border-dashed border-zinc-500/50 text-zinc-600 dark:text-zinc-300"
+                            ? "bg-[repeating-linear-gradient(45deg,hsl(var(--muted-foreground)/0.15)_0_6px,transparent_6px_12px)] border-dashed border-muted-foreground/50 text-muted-foreground"
                             : STATUS_BADGE[a.status]
                         }`}
                         title={a.title}
@@ -852,7 +852,7 @@ function AppointmentDialog({
         <DialogFooter className="flex items-center justify-between gap-2 sm:justify-between">
           <div>
             {selected && (
-              <Button variant="ghost" className="text-rose-600" onClick={() => onDelete(selected.id)}>
+              <Button variant="ghost" className="text-destructive hover:text-destructive" onClick={() => onDelete(selected.id)}>
                 Excluir
               </Button>
             )}
@@ -1010,8 +1010,8 @@ function GoogleIntegrationCard({ tenantId, settings }: { tenantId: string | unde
 
       {gc.connected ? (
         <>
-          <div className="rounded-md border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs space-y-1">
-            <div className="flex items-center gap-2 font-medium text-emerald-700 dark:text-emerald-300">
+          <div className="rounded-md border border-primary/40 bg-primary/10 p-3 text-xs space-y-1">
+            <div className="flex items-center gap-2 font-medium text-primary">
               <CheckCircle2 className="w-3.5 h-3.5" /> Conectado
             </div>
             {gc.email && <div className="text-muted-foreground">{gc.email}</div>}
