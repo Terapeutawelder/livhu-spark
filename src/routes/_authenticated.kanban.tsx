@@ -1,95 +1,188 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
-import { Plus, Filter, Search, MoreVertical, MessageCircle, Calendar, Tag } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Plus, Filter, Search, MoreVertical, MessageCircle, Calendar, Tag, Loader2, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useCurrentTenant } from "@/hooks/use-tenant";
 
 export const Route = createFileRoute("/_authenticated/kanban")({
   head: () => ({
     meta: [
       { title: "Jornada do Paciente — LivHub" },
-      { name: "description", content: "Kanban visual da jornada: Lead, Triagem, Agendado, Em atendimento e Alta." },
+      { name: "description", content: "Kanban visual da jornada terapêutica com avanço automático por eventos." },
       { property: "og:title", content: "Jornada do Paciente — LivHub" },
-      { property: "og:description", content: "Kanban visual da jornada terapêutica." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { property: "og:description", content: "Kanban da jornada com avanço automático." },
     ],
   }),
   component: KanbanPage,
 });
 
-type Stage = "Lead" | "Triagem" | "Agendado" | "Em atendimento" | "Alta";
-type Card = {
+type Stage = {
   id: string;
+  tenant_id: string;
   name: string;
+  position: number;
+  color: string;
+  is_won: boolean;
+  is_lost: boolean;
+  auto_advance_on: string[];
+};
+
+type Contact = {
+  id: string;
+  tenant_id: string;
+  stage_id: string | null;
+  full_name: string;
+  phone: string | null;
+  email: string | null;
+  source: string | null;
   tags: string[];
-  value: number;
-  lastMsg: string;
-  source: string;
-};
-
-const stageMeta: Record<Stage, { color: string; dot: string }> = {
-  Lead: { color: "text-amber-700 dark:text-amber-300", dot: "bg-amber-500" },
-  Triagem: { color: "text-blue-700 dark:text-blue-300", dot: "bg-blue-500" },
-  Agendado: { color: "text-violet-700 dark:text-violet-300", dot: "bg-violet-500" },
-  "Em atendimento": { color: "text-emerald-700 dark:text-emerald-300", dot: "bg-emerald-500" },
-  Alta: { color: "text-slate-700 dark:text-slate-300", dot: "bg-slate-500" },
-};
-
-const initialData: Record<Stage, Card[]> = {
-  Lead: [
-    { id: "l1", name: "Marcos Vinícius", tags: ["ansiedade"], value: 0, lastMsg: "Há 6h", source: "Landing" },
-    { id: "l2", name: "Fernando Lima", tags: ["autoestima"], value: 0, lastMsg: "Há 2d", source: "Indicação" },
-    { id: "l3", name: "Bianca Souza", tags: ["urgente"], value: 0, lastMsg: "Há 20min", source: "Instagram" },
-  ],
-  Triagem: [
-    { id: "t1", name: "Juliana Prado", tags: ["luto"], value: 0, lastMsg: "Há 3h", source: "Google" },
-    { id: "t2", name: "Ricardo Barros", tags: ["burnout"], value: 0, lastMsg: "Ontem", source: "Indicação" },
-  ],
-  Agendado: [
-    { id: "a1", name: "Rafael Moreira", tags: ["burnout"], value: 300, lastMsg: "Há 1h", source: "Indicação" },
-    { id: "a2", name: "Sofia Ramos", tags: ["ansiedade", "TCC"], value: 300, lastMsg: "Ontem", source: "Instagram" },
-  ],
-  "Em atendimento": [
-    { id: "e1", name: "Ana Beatriz Costa", tags: ["ansiedade", "TCC"], value: 4200, lastMsg: "Há 12min", source: "Instagram" },
-    { id: "e2", name: "Camila Nogueira", tags: ["casal"], value: 6600, lastMsg: "Ontem", source: "Indicação" },
-    { id: "e3", name: "Diego Martins", tags: ["depressão"], value: 1800, lastMsg: "Há 2d", source: "Google" },
-  ],
-  Alta: [
-    { id: "al1", name: "Pedro Henrique Alves", tags: ["concluído"], value: 9000, lastMsg: "Há 2 sem", source: "Instagram" },
-  ],
+  value_cents: number;
+  last_interaction_at: string | null;
+  created_at: string;
 };
 
 function KanbanPage() {
-  const [columns, setColumns] = useState(initialData);
+  const { data: tenant, isLoading: loadingTenant } = useCurrentTenant();
+  const qc = useQueryClient();
   const [q, setQ] = useState("");
-  const [dragging, setDragging] = useState<{ id: string; from: Stage } | null>(null);
+  const [dragging, setDragging] = useState<{ id: string; from: string | null } | null>(null);
+  const [newOpen, setNewOpen] = useState<string | null>(null); // stage_id ou null
+  const [creating, setCreating] = useState({ name: "", phone: "", source: "" });
 
-  const stages = Object.keys(columns) as Stage[];
+  const { data: stages = [], isLoading: loadingStages } = useQuery({
+    enabled: !!tenant?.id,
+    queryKey: ["kanban-stages", tenant?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("kanban_stages")
+        .select("*")
+        .eq("tenant_id", tenant!.id)
+        .order("position", { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as Stage[];
+    },
+  });
 
-  const totals = useMemo(() => {
-    return stages.reduce((acc, s) => {
-      acc[s] = { count: columns[s].length, value: columns[s].reduce((a, c) => a + c.value, 0) };
-      return acc;
-    }, {} as Record<Stage, { count: number; value: number }>);
-  }, [columns]);
+  const { data: contacts = [], isLoading: loadingContacts } = useQuery({
+    enabled: !!tenant?.id,
+    queryKey: ["contacts", tenant?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("contacts")
+        .select("*")
+        .eq("tenant_id", tenant!.id)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as Contact[];
+    },
+  });
 
-  function moveCard(to: Stage) {
+  // Realtime: mantém o board sincronizado quando outro evento move um card
+  useEffect(() => {
+    if (!tenant?.id) return;
+    const ch = supabase
+      .channel(`kanban-${tenant.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "contacts", filter: `tenant_id=eq.${tenant.id}` },
+        () => qc.invalidateQueries({ queryKey: ["contacts", tenant.id] }),
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(ch);
+    };
+  }, [tenant?.id, qc]);
+
+  const moveMutation = useMutation({
+    mutationFn: async ({ contactId, toStageId }: { contactId: string; toStageId: string }) => {
+      const { error } = await supabase.from("contacts").update({ stage_id: toStageId }).eq("id", contactId);
+      if (error) throw error;
+    },
+    onMutate: async ({ contactId, toStageId }) => {
+      await qc.cancelQueries({ queryKey: ["contacts", tenant?.id] });
+      const prev = qc.getQueryData<Contact[]>(["contacts", tenant?.id]);
+      qc.setQueryData<Contact[]>(["contacts", tenant?.id], (old) =>
+        (old ?? []).map((c) => (c.id === contactId ? { ...c, stage_id: toStageId } : c)),
+      );
+      return { prev };
+    },
+    onError: (_e, _v, ctx) => {
+      if (ctx?.prev) qc.setQueryData(["contacts", tenant?.id], ctx.prev);
+      toast.error("Não foi possível mover o card");
+    },
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async () => {
+      if (!tenant?.id || !newOpen) throw new Error("faltando tenant/coluna");
+      const { data: userRes } = await supabase.auth.getUser();
+      const { error } = await supabase.from("contacts").insert({
+        tenant_id: tenant.id,
+        stage_id: newOpen,
+        full_name: creating.name.trim(),
+        phone: creating.phone.trim() || null,
+        source: creating.source.trim() || null,
+        created_by: userRes.user?.id ?? null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Contato criado");
+      setNewOpen(null);
+      setCreating({ name: "", phone: "", source: "" });
+      qc.invalidateQueries({ queryKey: ["contacts", tenant?.id] });
+    },
+    onError: (e: unknown) => {
+      const msg = e instanceof Error ? e.message : String(e);
+      toast.error("Erro ao criar", { description: msg });
+    },
+  });
+
+  const byStage = useMemo(() => {
+    const map: Record<string, Contact[]> = {};
+    for (const s of stages) map[s.id] = [];
+    for (const c of contacts) {
+      const key = c.stage_id ?? stages[0]?.id;
+      if (key && map[key]) map[key].push(c);
+    }
+    return map;
+  }, [stages, contacts]);
+
+  function moveCard(toStageId: string) {
     if (!dragging) return;
-    if (dragging.from === to) return setDragging(null);
-    setColumns((cur) => {
-      const card = cur[dragging.from].find((c) => c.id === dragging.id);
-      if (!card) return cur;
-      return {
-        ...cur,
-        [dragging.from]: cur[dragging.from].filter((c) => c.id !== dragging.id),
-        [to]: [card, ...cur[to]],
-      };
-    });
+    if (dragging.from === toStageId) return setDragging(null);
+    moveMutation.mutate({ contactId: dragging.id, toStageId });
     setDragging(null);
+  }
+
+  if (loadingTenant || loadingStages || loadingContacts) {
+    return (
+      <div className="grid h-[calc(100vh-4rem)] place-items-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (!tenant) {
+    return (
+      <div className="p-8 text-sm text-muted-foreground">Consultório ainda não configurado.</div>
+    );
   }
 
   return (
@@ -98,7 +191,8 @@ function KanbanPage() {
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Jornada do Paciente</h1>
           <p className="text-sm text-muted-foreground">
-            Arraste os cards entre as colunas para atualizar o estágio.
+            Arraste os cards para atualizar manualmente. Ícone{" "}
+            <Zap className="inline h-3.5 w-3.5 text-gold" /> indica avanço automático (agenda, mensagem, pagamento).
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -107,64 +201,80 @@ function KanbanPage() {
             <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar paciente..." className="pl-8 w-56" />
           </div>
           <Button variant="outline" size="icon"><Filter className="h-4 w-4" /></Button>
-          <Button size="sm" className="gap-2"><Plus className="h-4 w-4" /> Novo card</Button>
+          <Button size="sm" className="gap-2" onClick={() => setNewOpen(stages[0]?.id ?? null)}>
+            <Plus className="h-4 w-4" /> Novo contato
+          </Button>
         </div>
       </div>
 
       <div className="flex flex-1 gap-4 overflow-x-auto pb-2">
-        {stages.map((stage) => (
-          <div
-            key={stage}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={() => moveCard(stage)}
-            className="flex w-72 shrink-0 flex-col rounded-lg border bg-muted/30"
-          >
-            <div className="flex items-center justify-between border-b px-3 py-2.5">
-              <div className="flex items-center gap-2">
-                <span className={`h-2 w-2 rounded-full ${stageMeta[stage].dot}`} />
-                <span className={`text-sm font-semibold ${stageMeta[stage].color}`}>{stage}</span>
-                <Badge variant="secondary" className="h-5 rounded-full px-1.5 text-[10px]">{totals[stage].count}</Badge>
+        {stages.map((stage) => {
+          const items = (byStage[stage.id] ?? []).filter(
+            (c) => !q || c.full_name.toLowerCase().includes(q.toLowerCase()),
+          );
+          const total = items.reduce((a, c) => a + c.value_cents, 0);
+          return (
+            <div
+              key={stage.id}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={() => moveCard(stage.id)}
+              className="flex w-72 shrink-0 flex-col rounded-lg border bg-muted/30"
+            >
+              <div className="flex items-center justify-between border-b px-3 py-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full" style={{ background: stage.color }} />
+                  <span className="text-sm font-semibold">{stage.name}</span>
+                  <Badge variant="secondary" className="h-5 rounded-full px-1.5 text-[10px]">{items.length}</Badge>
+                  {stage.auto_advance_on.length > 0 && (
+                    <Zap className="h-3.5 w-3.5 text-gold" aria-label="Avança automaticamente" />
+                  )}
+                </div>
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setNewOpen(stage.id)}>
+                  <Plus className="h-3.5 w-3.5" />
+                </Button>
               </div>
-              <Button variant="ghost" size="icon" className="h-7 w-7"><Plus className="h-3.5 w-3.5" /></Button>
-            </div>
-            <div className="px-3 py-1.5 text-[11px] text-muted-foreground">
-              LTV coluna: R$ {totals[stage].value.toLocaleString("pt-BR")}
-            </div>
-            <div className="flex-1 space-y-2 overflow-y-auto p-2">
-              {columns[stage]
-                .filter((c) => !q || c.name.toLowerCase().includes(q.toLowerCase()))
-                .map((card) => (
+              <div className="px-3 py-1.5 text-[11px] text-muted-foreground">
+                LTV coluna: R$ {(total / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+              </div>
+              <div className="flex-1 space-y-2 overflow-y-auto p-2">
+                {items.map((card) => (
                   <Card
                     key={card.id}
                     draggable
-                    onDragStart={() => setDragging({ id: card.id, from: stage })}
+                    onDragStart={() => setDragging({ id: card.id, from: card.stage_id })}
                     className={`cursor-grab p-3 shadow-sm transition ${dragging?.id === card.id ? "opacity-40" : "hover:shadow-md"}`}
                   >
                     <div className="mb-2 flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2 min-w-0">
+                      <div className="flex min-w-0 items-center gap-2">
                         <Avatar className="h-7 w-7">
-                          <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-medium">
-                            {card.name.split(" ").slice(0, 2).map((n) => n[0]).join("")}
+                          <AvatarFallback className="bg-primary/10 text-[10px] font-medium text-primary">
+                            {card.full_name.split(" ").slice(0, 2).map((n) => n[0]).join("")}
                           </AvatarFallback>
                         </Avatar>
-                        <p className="truncate text-sm font-medium">{card.name}</p>
+                        <p className="truncate text-sm font-medium">{card.full_name}</p>
                       </div>
                       <button className="text-muted-foreground hover:text-foreground">
                         <MoreVertical className="h-3.5 w-3.5" />
                       </button>
                     </div>
-                    <div className="mb-2 flex flex-wrap gap-1">
-                      {card.tags.map((t) => (
-                        <Badge key={t} variant="secondary" className="text-[10px] font-normal">{t}</Badge>
-                      ))}
-                    </div>
+                    {card.tags.length > 0 && (
+                      <div className="mb-2 flex flex-wrap gap-1">
+                        {card.tags.map((t) => (
+                          <Badge key={t} variant="secondary" className="text-[10px] font-normal">{t}</Badge>
+                        ))}
+                      </div>
+                    )}
                     <div className="flex items-center justify-between text-[11px] text-muted-foreground">
-                      <span className="flex items-center gap-1"><Tag className="h-3 w-3" /> {card.source}</span>
-                      <span>{card.lastMsg}</span>
+                      <span className="flex items-center gap-1"><Tag className="h-3 w-3" /> {card.source ?? "—"}</span>
+                      <span>
+                        {card.last_interaction_at
+                          ? new Date(card.last_interaction_at).toLocaleDateString("pt-BR")
+                          : "sem interação"}
+                      </span>
                     </div>
-                    {card.value > 0 && (
+                    {card.value_cents > 0 && (
                       <div className="mt-2 border-t pt-2 text-xs font-medium text-emerald-600 dark:text-emerald-400">
-                        R$ {card.value.toLocaleString("pt-BR")}
+                        R$ {(card.value_cents / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                       </div>
                     )}
                     <div className="mt-2 flex gap-1">
@@ -177,15 +287,49 @@ function KanbanPage() {
                     </div>
                   </Card>
                 ))}
-              {columns[stage].length === 0 && (
-                <div className="rounded-md border-2 border-dashed p-6 text-center text-xs text-muted-foreground">
-                  Solte cards aqui
-                </div>
-              )}
+                {items.length === 0 && (
+                  <div className="rounded-md border-2 border-dashed p-6 text-center text-xs text-muted-foreground">
+                    Solte cards aqui
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <Dialog open={!!newOpen} onOpenChange={(o) => !o && setNewOpen(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Novo contato</DialogTitle>
+            <DialogDescription>Adiciona um paciente/lead ao consultório e à coluna selecionada.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label>Nome completo</Label>
+              <Input value={creating.name} onChange={(e) => setCreating((s) => ({ ...s, name: e.target.value }))} />
+            </div>
+            <div>
+              <Label>WhatsApp</Label>
+              <Input value={creating.phone} onChange={(e) => setCreating((s) => ({ ...s, phone: e.target.value }))} placeholder="+55 11 9..." />
+            </div>
+            <div>
+              <Label>Origem</Label>
+              <Input value={creating.source} onChange={(e) => setCreating((s) => ({ ...s, source: e.target.value }))} placeholder="Instagram, indicação, Google..." />
             </div>
           </div>
-        ))}
-      </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setNewOpen(null)}>Cancelar</Button>
+            <Button
+              disabled={!creating.name.trim() || createMutation.isPending}
+              onClick={() => createMutation.mutate()}
+            >
+              {createMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+              Criar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
