@@ -77,6 +77,7 @@ function ConfiguracoesPage() {
         <div className="space-y-4">
           {tab === "perfil" && <PerfilPanel />}
           {tab === "consultorio" && <ConsultorioPanel />}
+          {tab === "dominio" && <DominioPanel />}
           {tab === "whatsapp" && <WhatsappPanel />}
           {tab === "notificacoes" && <NotificacoesPanel />}
           {tab === "marca" && <MarcaPanel />}
