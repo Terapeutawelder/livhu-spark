@@ -34,6 +34,7 @@ import { Route as AuthenticatedAdminSuporteRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminSistemaRouteImport } from './routes/_authenticated.admin.sistema'
 import { Route as AuthenticatedAdminPlanosRouteImport } from './routes/_authenticated.admin.planos'
 import { Route as AuthenticatedAdminFaturamentoRouteImport } from './routes/_authenticated.admin.faturamento'
+import { Route as AuthenticatedAdminDominiosRouteImport } from './routes/_authenticated.admin.dominios'
 import { Route as AuthenticatedAdminConfiguracaoRouteImport } from './routes/_authenticated.admin.configuracao'
 import { Route as AuthenticatedAdminCalendarioRouteImport } from './routes/_authenticated.admin.calendario'
 
@@ -171,6 +172,12 @@ const AuthenticatedAdminFaturamentoRoute =
     path: '/faturamento',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminDominiosRoute =
+  AuthenticatedAdminDominiosRouteImport.update({
+    id: '/dominios',
+    path: '/dominios',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminConfiguracaoRoute =
   AuthenticatedAdminConfiguracaoRouteImport.update({
     id: '/configuracao',
@@ -203,6 +210,7 @@ export interface FileRoutesByFullPath {
   '/admin/login': typeof AdminLoginRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
+  '/admin/dominios': typeof AuthenticatedAdminDominiosRoute
   '/admin/faturamento': typeof AuthenticatedAdminFaturamentoRoute
   '/admin/planos': typeof AuthenticatedAdminPlanosRoute
   '/admin/sistema': typeof AuthenticatedAdminSistemaRoute
@@ -230,6 +238,7 @@ export interface FileRoutesByTo {
   '/': typeof AuthenticatedIndexRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
+  '/admin/dominios': typeof AuthenticatedAdminDominiosRoute
   '/admin/faturamento': typeof AuthenticatedAdminFaturamentoRoute
   '/admin/planos': typeof AuthenticatedAdminPlanosRoute
   '/admin/sistema': typeof AuthenticatedAdminSistemaRoute
@@ -260,6 +269,7 @@ export interface FileRoutesById {
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/_authenticated/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
+  '/_authenticated/admin/dominios': typeof AuthenticatedAdminDominiosRoute
   '/_authenticated/admin/faturamento': typeof AuthenticatedAdminFaturamentoRoute
   '/_authenticated/admin/planos': typeof AuthenticatedAdminPlanosRoute
   '/_authenticated/admin/sistema': typeof AuthenticatedAdminSistemaRoute
@@ -290,6 +300,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/calendario'
     | '/admin/configuracao'
+    | '/admin/dominios'
     | '/admin/faturamento'
     | '/admin/planos'
     | '/admin/sistema'
@@ -317,6 +328,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/calendario'
     | '/admin/configuracao'
+    | '/admin/dominios'
     | '/admin/faturamento'
     | '/admin/planos'
     | '/admin/sistema'
@@ -346,6 +358,7 @@ export interface FileRouteTypes {
     | '/_authenticated/'
     | '/_authenticated/admin/calendario'
     | '/_authenticated/admin/configuracao'
+    | '/_authenticated/admin/dominios'
     | '/_authenticated/admin/faturamento'
     | '/_authenticated/admin/planos'
     | '/_authenticated/admin/sistema'
@@ -540,6 +553,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminFaturamentoRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/dominios': {
+      id: '/_authenticated/admin/dominios'
+      path: '/dominios'
+      fullPath: '/admin/dominios'
+      preLoaderRoute: typeof AuthenticatedAdminDominiosRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/configuracao': {
       id: '/_authenticated/admin/configuracao'
       path: '/configuracao'
@@ -560,6 +580,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminCalendarioRoute: typeof AuthenticatedAdminCalendarioRoute
   AuthenticatedAdminConfiguracaoRoute: typeof AuthenticatedAdminConfiguracaoRoute
+  AuthenticatedAdminDominiosRoute: typeof AuthenticatedAdminDominiosRoute
   AuthenticatedAdminFaturamentoRoute: typeof AuthenticatedAdminFaturamentoRoute
   AuthenticatedAdminPlanosRoute: typeof AuthenticatedAdminPlanosRoute
   AuthenticatedAdminSistemaRoute: typeof AuthenticatedAdminSistemaRoute
@@ -573,6 +594,7 @@ interface AuthenticatedAdminRouteChildren {
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminCalendarioRoute: AuthenticatedAdminCalendarioRoute,
   AuthenticatedAdminConfiguracaoRoute: AuthenticatedAdminConfiguracaoRoute,
+  AuthenticatedAdminDominiosRoute: AuthenticatedAdminDominiosRoute,
   AuthenticatedAdminFaturamentoRoute: AuthenticatedAdminFaturamentoRoute,
   AuthenticatedAdminPlanosRoute: AuthenticatedAdminPlanosRoute,
   AuthenticatedAdminSistemaRoute: AuthenticatedAdminSistemaRoute,
