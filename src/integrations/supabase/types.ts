@@ -14,6 +14,82 @@ export type Database = {
   }
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          contact_id: string | null
+          created_at: string
+          created_by: string | null
+          ends_at: string
+          id: string
+          location: string | null
+          meeting_url: string | null
+          modality: Database["public"]["Enums"]["service_modality"]
+          notes: string | null
+          service_id: string | null
+          starts_at: string
+          status: Database["public"]["Enums"]["appointment_status"]
+          tenant_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          contact_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          ends_at: string
+          id?: string
+          location?: string | null
+          meeting_url?: string | null
+          modality?: Database["public"]["Enums"]["service_modality"]
+          notes?: string | null
+          service_id?: string | null
+          starts_at: string
+          status?: Database["public"]["Enums"]["appointment_status"]
+          tenant_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          contact_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          ends_at?: string
+          id?: string
+          location?: string | null
+          meeting_url?: string | null
+          modality?: Database["public"]["Enums"]["service_modality"]
+          notes?: string | null
+          service_id?: string | null
+          starts_at?: string
+          status?: Database["public"]["Enums"]["appointment_status"]
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_notes: {
         Row: {
           author_id: string | null
@@ -261,6 +337,56 @@ export type Database = {
         }
         Relationships: []
       }
+      services: {
+        Row: {
+          color: string
+          created_at: string
+          description: string | null
+          duration_minutes: number
+          id: string
+          is_active: boolean
+          modality: Database["public"]["Enums"]["service_modality"]
+          name: string
+          price_cents: number
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          is_active?: boolean
+          modality?: Database["public"]["Enums"]["service_modality"]
+          name: string
+          price_cents?: number
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          description?: string | null
+          duration_minutes?: number
+          id?: string
+          is_active?: boolean
+          modality?: Database["public"]["Enums"]["service_modality"]
+          name?: string
+          price_cents?: number
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "services_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_members: {
         Row: {
           created_at: string
@@ -391,6 +517,13 @@ export type Database = {
     }
     Enums: {
       app_role: "super_admin" | "admin" | "therapist"
+      appointment_status:
+        | "scheduled"
+        | "confirmed"
+        | "completed"
+        | "canceled"
+        | "no_show"
+      service_modality: "online" | "presencial" | "ambos"
       stage_trigger:
         | "manual"
         | "contact_created"
@@ -529,6 +662,14 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["super_admin", "admin", "therapist"],
+      appointment_status: [
+        "scheduled",
+        "confirmed",
+        "completed",
+        "canceled",
+        "no_show",
+      ],
+      service_modality: ["online", "presencial", "ambos"],
       stage_trigger: [
         "manual",
         "contact_created",
