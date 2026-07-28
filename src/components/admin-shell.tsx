@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState, useRouter } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   Building2,
@@ -14,9 +14,12 @@ import {
   Bell,
   CalendarDays,
   Settings,
+  LogOut,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface NavItem {
   to: string;
