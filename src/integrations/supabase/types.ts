@@ -943,6 +943,524 @@ export type Database = {
         }
         Relationships: []
       }
+      whatsapp_broadcast_recipients: {
+        Row: {
+          broadcast_id: string
+          contact_id: string | null
+          created_at: string
+          delivered_at: string | null
+          error: string | null
+          id: string
+          phone: string
+          read_at: string | null
+          sent_at: string | null
+          status: Database["public"]["Enums"]["wa_message_status"]
+          tenant_id: string
+          wa_message_id: string | null
+        }
+        Insert: {
+          broadcast_id: string
+          contact_id?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          error?: string | null
+          id?: string
+          phone: string
+          read_at?: string | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["wa_message_status"]
+          tenant_id: string
+          wa_message_id?: string | null
+        }
+        Update: {
+          broadcast_id?: string
+          contact_id?: string | null
+          created_at?: string
+          delivered_at?: string | null
+          error?: string | null
+          id?: string
+          phone?: string
+          read_at?: string | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["wa_message_status"]
+          tenant_id?: string
+          wa_message_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_broadcast_recipients_broadcast_id_fkey"
+            columns: ["broadcast_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_broadcasts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_broadcast_recipients_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_broadcast_recipients_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_broadcasts: {
+        Row: {
+          channel_id: string | null
+          completed_at: string | null
+          created_at: string
+          created_by: string | null
+          delivered_count: number
+          failed_count: number
+          id: string
+          name: string
+          read_count: number
+          scheduled_at: string | null
+          sent_count: number
+          started_at: string | null
+          status: Database["public"]["Enums"]["wa_broadcast_status"]
+          template_id: string | null
+          template_variables: Json
+          tenant_id: string
+          total_recipients: number
+          updated_at: string
+        }
+        Insert: {
+          channel_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          delivered_count?: number
+          failed_count?: number
+          id?: string
+          name: string
+          read_count?: number
+          scheduled_at?: string | null
+          sent_count?: number
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["wa_broadcast_status"]
+          template_id?: string | null
+          template_variables?: Json
+          tenant_id: string
+          total_recipients?: number
+          updated_at?: string
+        }
+        Update: {
+          channel_id?: string | null
+          completed_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          delivered_count?: number
+          failed_count?: number
+          id?: string
+          name?: string
+          read_count?: number
+          scheduled_at?: string | null
+          sent_count?: number
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["wa_broadcast_status"]
+          template_id?: string | null
+          template_variables?: Json
+          tenant_id?: string
+          total_recipients?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_broadcasts_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_broadcasts_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_broadcasts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_channels: {
+        Row: {
+          access_token: string | null
+          app_secret: string | null
+          business_id: string | null
+          created_at: string
+          display_name: string
+          id: string
+          is_coexistence: boolean
+          last_error: string | null
+          last_synced_at: string | null
+          phone_number: string | null
+          phone_number_id: string | null
+          status: Database["public"]["Enums"]["wa_channel_status"]
+          tenant_id: string
+          updated_at: string
+          waba_id: string | null
+          webhook_verify_token: string | null
+        }
+        Insert: {
+          access_token?: string | null
+          app_secret?: string | null
+          business_id?: string | null
+          created_at?: string
+          display_name: string
+          id?: string
+          is_coexistence?: boolean
+          last_error?: string | null
+          last_synced_at?: string | null
+          phone_number?: string | null
+          phone_number_id?: string | null
+          status?: Database["public"]["Enums"]["wa_channel_status"]
+          tenant_id: string
+          updated_at?: string
+          waba_id?: string | null
+          webhook_verify_token?: string | null
+        }
+        Update: {
+          access_token?: string | null
+          app_secret?: string | null
+          business_id?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          is_coexistence?: boolean
+          last_error?: string | null
+          last_synced_at?: string | null
+          phone_number?: string | null
+          phone_number_id?: string | null
+          status?: Database["public"]["Enums"]["wa_channel_status"]
+          tenant_id?: string
+          updated_at?: string
+          waba_id?: string | null
+          webhook_verify_token?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_channels_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_conversations: {
+        Row: {
+          assigned_to: string | null
+          channel_id: string | null
+          contact_id: string | null
+          created_at: string
+          display_name: string
+          id: string
+          last_message_at: string | null
+          last_message_direction:
+            | Database["public"]["Enums"]["wa_message_direction"]
+            | null
+          last_message_preview: string | null
+          phone: string
+          priority: number
+          profile_pic_url: string | null
+          status: Database["public"]["Enums"]["wa_conversation_status"]
+          tags: string[]
+          tenant_id: string
+          unread_count: number
+          updated_at: string
+          wa_contact_id: string
+          window_expires_at: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          channel_id?: string | null
+          contact_id?: string | null
+          created_at?: string
+          display_name: string
+          id?: string
+          last_message_at?: string | null
+          last_message_direction?:
+            | Database["public"]["Enums"]["wa_message_direction"]
+            | null
+          last_message_preview?: string | null
+          phone: string
+          priority?: number
+          profile_pic_url?: string | null
+          status?: Database["public"]["Enums"]["wa_conversation_status"]
+          tags?: string[]
+          tenant_id: string
+          unread_count?: number
+          updated_at?: string
+          wa_contact_id: string
+          window_expires_at?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          channel_id?: string | null
+          contact_id?: string | null
+          created_at?: string
+          display_name?: string
+          id?: string
+          last_message_at?: string | null
+          last_message_direction?:
+            | Database["public"]["Enums"]["wa_message_direction"]
+            | null
+          last_message_preview?: string | null
+          phone?: string
+          priority?: number
+          profile_pic_url?: string | null
+          status?: Database["public"]["Enums"]["wa_conversation_status"]
+          tags?: string[]
+          tenant_id?: string
+          unread_count?: number
+          updated_at?: string
+          wa_contact_id?: string
+          window_expires_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_conversations_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_conversations_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_conversations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_messages: {
+        Row: {
+          body: string | null
+          channel_id: string | null
+          conversation_id: string
+          created_at: string
+          delivered_at: string | null
+          direction: Database["public"]["Enums"]["wa_message_direction"]
+          error: string | null
+          id: string
+          interactive: Json | null
+          media_filename: string | null
+          media_mime: string | null
+          media_url: string | null
+          raw: Json | null
+          read_at: string | null
+          reply_to_wa_id: string | null
+          sender_user_id: string | null
+          sent_at: string
+          status: Database["public"]["Enums"]["wa_message_status"]
+          template_language: string | null
+          template_name: string | null
+          template_variables: Json | null
+          tenant_id: string
+          type: Database["public"]["Enums"]["wa_message_type"]
+          wa_message_id: string | null
+        }
+        Insert: {
+          body?: string | null
+          channel_id?: string | null
+          conversation_id: string
+          created_at?: string
+          delivered_at?: string | null
+          direction: Database["public"]["Enums"]["wa_message_direction"]
+          error?: string | null
+          id?: string
+          interactive?: Json | null
+          media_filename?: string | null
+          media_mime?: string | null
+          media_url?: string | null
+          raw?: Json | null
+          read_at?: string | null
+          reply_to_wa_id?: string | null
+          sender_user_id?: string | null
+          sent_at?: string
+          status?: Database["public"]["Enums"]["wa_message_status"]
+          template_language?: string | null
+          template_name?: string | null
+          template_variables?: Json | null
+          tenant_id: string
+          type?: Database["public"]["Enums"]["wa_message_type"]
+          wa_message_id?: string | null
+        }
+        Update: {
+          body?: string | null
+          channel_id?: string | null
+          conversation_id?: string
+          created_at?: string
+          delivered_at?: string | null
+          direction?: Database["public"]["Enums"]["wa_message_direction"]
+          error?: string | null
+          id?: string
+          interactive?: Json | null
+          media_filename?: string | null
+          media_mime?: string | null
+          media_url?: string | null
+          raw?: Json | null
+          read_at?: string | null
+          reply_to_wa_id?: string | null
+          sender_user_id?: string | null
+          sent_at?: string
+          status?: Database["public"]["Enums"]["wa_message_status"]
+          template_language?: string | null
+          template_name?: string | null
+          template_variables?: Json | null
+          tenant_id?: string
+          type?: Database["public"]["Enums"]["wa_message_type"]
+          wa_message_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_messages_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_messages_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_quick_replies: {
+        Row: {
+          body: string
+          created_at: string
+          created_by: string | null
+          id: string
+          shortcut: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          shortcut: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          shortcut?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_quick_replies_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whatsapp_templates: {
+        Row: {
+          body_text: string
+          category: string
+          channel_id: string | null
+          components: Json
+          created_at: string
+          external_id: string | null
+          id: string
+          language: string
+          name: string
+          status: Database["public"]["Enums"]["wa_template_status"]
+          synced_at: string | null
+          tenant_id: string
+          updated_at: string
+          variables_count: number
+        }
+        Insert: {
+          body_text?: string
+          category?: string
+          channel_id?: string | null
+          components?: Json
+          created_at?: string
+          external_id?: string | null
+          id?: string
+          language?: string
+          name: string
+          status?: Database["public"]["Enums"]["wa_template_status"]
+          synced_at?: string | null
+          tenant_id: string
+          updated_at?: string
+          variables_count?: number
+        }
+        Update: {
+          body_text?: string
+          category?: string
+          channel_id?: string | null
+          components?: Json
+          created_at?: string
+          external_id?: string | null
+          id?: string
+          language?: string
+          name?: string
+          status?: Database["public"]["Enums"]["wa_template_status"]
+          synced_at?: string | null
+          tenant_id?: string
+          updated_at?: string
+          variables_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_templates_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "whatsapp_channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "whatsapp_templates_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -1026,6 +1544,44 @@ export type Database = {
         | "waiting_customer"
         | "resolved"
         | "closed"
+      wa_broadcast_status:
+        | "draft"
+        | "scheduled"
+        | "running"
+        | "completed"
+        | "canceled"
+        | "failed"
+      wa_channel_status:
+        | "pending"
+        | "verifying"
+        | "active"
+        | "disabled"
+        | "error"
+      wa_conversation_status:
+        | "open"
+        | "pending"
+        | "resolved"
+        | "snoozed"
+        | "archived"
+      wa_message_direction: "inbound" | "outbound"
+      wa_message_status: "queued" | "sent" | "delivered" | "read" | "failed"
+      wa_message_type:
+        | "text"
+        | "image"
+        | "audio"
+        | "video"
+        | "document"
+        | "template"
+        | "interactive"
+        | "location"
+        | "contacts"
+        | "system"
+      wa_template_status:
+        | "pending"
+        | "approved"
+        | "rejected"
+        | "paused"
+        | "disabled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1181,6 +1737,49 @@ export const Constants = {
         "waiting_customer",
         "resolved",
         "closed",
+      ],
+      wa_broadcast_status: [
+        "draft",
+        "scheduled",
+        "running",
+        "completed",
+        "canceled",
+        "failed",
+      ],
+      wa_channel_status: [
+        "pending",
+        "verifying",
+        "active",
+        "disabled",
+        "error",
+      ],
+      wa_conversation_status: [
+        "open",
+        "pending",
+        "resolved",
+        "snoozed",
+        "archived",
+      ],
+      wa_message_direction: ["inbound", "outbound"],
+      wa_message_status: ["queued", "sent", "delivered", "read", "failed"],
+      wa_message_type: [
+        "text",
+        "image",
+        "audio",
+        "video",
+        "document",
+        "template",
+        "interactive",
+        "location",
+        "contacts",
+        "system",
+      ],
+      wa_template_status: [
+        "pending",
+        "approved",
+        "rejected",
+        "paused",
+        "disabled",
       ],
     },
   },
