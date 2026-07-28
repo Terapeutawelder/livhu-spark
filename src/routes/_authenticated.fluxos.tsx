@@ -76,8 +76,8 @@ function FluxosPage() {
       if (error) throw error;
       return (data ?? []).map((f) => ({
         ...f,
-        steps: Array.isArray(f.steps) ? (f.steps as Step[]) : [],
-      })) as Flow[];
+        steps: Array.isArray(f.steps) ? (f.steps as unknown as Step[]) : [],
+      })) as unknown as Flow[];
     },
   });
 
