@@ -149,33 +149,18 @@ function Dashboard() {
         {/* KPI row */}
         <section className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
           {kpis.map((k) => {
-            const Icon = k.icon;
             const positive = !k.delta.startsWith("-");
-            // "Tempo médio" caindo é bom → forçar verde mesmo com sinal negativo
             const isGood = k.label.startsWith("Tempo") ? true : positive;
             return (
-              <div
+              <MetricCard
                 key={k.label}
-                className="rounded-2xl border border-border bg-surface p-4 shadow-sm transition hover:shadow-md"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="grid h-9 w-9 place-items-center rounded-xl bg-gold/15 text-gold">
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <span
-                    className={
-                      isGood
-                        ? "inline-flex items-center gap-0.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400"
-                        : "inline-flex items-center gap-0.5 text-[11px] font-semibold text-red-600 dark:text-red-400"
-                    }
-                  >
-                    <ArrowUpRight className="h-3 w-3" />
-                    {k.delta}
-                  </span>
-                </div>
-                <p className="mt-4 font-display text-2xl font-bold tracking-tight">{k.value}</p>
-                <p className="text-xs text-muted-foreground">{k.label}</p>
-              </div>
+                icon={k.icon}
+                label={k.label}
+                value={k.value}
+                delta={k.delta}
+                deltaPositive={isGood}
+                trend={k.trend}
+              />
             );
           })}
         </section>
