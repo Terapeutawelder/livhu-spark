@@ -1,14 +1,12 @@
 // Detects the tenant slug from the current hostname.
-// Rules:
-//   - Root/app hosts (livhub.cloud, psi.livhub.cloud, www, app, admin) → null
-//   - Lovable preview / localhost → null
-//   - `{slug}.livhub.cloud` → slug (if not reserved)
 //
 // Phase A of white-label: subdomain-based tenant detection.
+// Main app lives at `psi.livhub.cloud`. Tenants will live at
+// `{slug}.psi.livhub.cloud` (requires wildcard `*.psi.livhub.cloud`
+// pointing to Lovable in DNS).
 
-const ROOT_DOMAIN = "livhub.cloud";
+const APP_HOST = "psi.livhub.cloud";
 const RESERVED_SUBDOMAINS = new Set([
-  "psi",
   "www",
   "app",
   "admin",
@@ -30,7 +28,7 @@ export type HostTenantInfo = {
 export function detectTenantFromHostname(hostname: string): HostTenantInfo {
   const host = hostname.toLowerCase();
 
-  // Local dev / preview environments never carry a tenant subdomain.
+  // Local dev / Lovable preview environments never carry a tenant subdomain.
   const isPreview =
     host === "localhost" ||
     host.startsWith("127.") ||
@@ -42,14 +40,14 @@ export function detectTenantFromHostname(hostname: string): HostTenantInfo {
     return { slug: null, hostname: host, isRoot: false, isPreview: true };
   }
 
-  // Exact root domain (livhub.cloud) → no tenant.
-  if (host === ROOT_DOMAIN) {
+  // Main app host → no tenant.
+  if (host === APP_HOST) {
     return { slug: null, hostname: host, isRoot: true, isPreview: false };
   }
 
-  // Subdomain of the root domain: strip the root and take the leftmost label.
-  if (host.endsWith(`.${ROOT_DOMAIN}`)) {
-    const prefix = host.slice(0, -1 - ROOT_DOMAIN.length); // e.g. "drmaria" or "app.staging"
+  // Tenant subdomain of the app host: `{slug}.psi.livhub.cloud`
+  if (host.endsWith(`.${APP_HOST}`)) {
+    const prefix = host.slice(0, -1 - APP_HOST.length);
     const first = prefix.split(".")[0];
     if (!first || RESERVED_SUBDOMAINS.has(first)) {
       return { slug: null, hostname: host, isRoot: true, isPreview: false };
@@ -57,7 +55,7 @@ export function detectTenantFromHostname(hostname: string): HostTenantInfo {
     return { slug: first, hostname: host, isRoot: false, isPreview: false };
   }
 
-  // Any other host (custom domain in a future phase) → no slug yet.
+  // Any other host (future custom domains) → no slug yet.
   return { slug: null, hostname: host, isRoot: false, isPreview: false };
 }
 
