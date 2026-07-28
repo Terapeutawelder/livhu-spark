@@ -161,7 +161,7 @@ export function AppSidebar() {
       >
         <Link to="/" className="inline-flex items-center">
           <img
-            src={livhubLogo}
+            src={livhubLogo.url}
             alt="LivHub"
             width={512}
             height={128}

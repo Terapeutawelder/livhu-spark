@@ -126,7 +126,7 @@ function AuthPage() {
           <div className="w-full max-w-sm space-y-4">
             <Link to="/auth" className="inline-flex items-center">
               <img
-                src={livhubLogo}
+                src={livhubLogo.url}
                 alt="LivHub"
                 width={1280}
                 height={640}
