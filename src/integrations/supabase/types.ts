@@ -325,6 +325,56 @@ export type Database = {
           },
         ]
       }
+      domain_activation_requests: {
+        Row: {
+          created_at: string
+          handled_at: string | null
+          handled_by: string | null
+          id: string
+          kind: string
+          notes: string | null
+          requested_by: string
+          status: string
+          tenant_id: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          kind: string
+          notes?: string | null
+          requested_by: string
+          status?: string
+          tenant_id: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          created_at?: string
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          kind?: string
+          notes?: string | null
+          requested_by?: string
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "domain_activation_requests_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       flows: {
         Row: {
           created_at: string
@@ -535,6 +585,10 @@ export type Database = {
         Row: {
           contacts_limit: number
           created_at: string
+          custom_domain: string | null
+          custom_domain_status: string
+          custom_domain_verification: Json
+          custom_hostname_id: string | null
           id: string
           is_active: boolean
           logo_url: string | null
@@ -546,6 +600,7 @@ export type Database = {
           primary_color: string | null
           settings: Json
           slug: string
+          subdomain_status: string
           timezone: string
           trial_ends_at: string | null
           updated_at: string
@@ -554,6 +609,10 @@ export type Database = {
         Insert: {
           contacts_limit?: number
           created_at?: string
+          custom_domain?: string | null
+          custom_domain_status?: string
+          custom_domain_verification?: Json
+          custom_hostname_id?: string | null
           id?: string
           is_active?: boolean
           logo_url?: string | null
@@ -565,6 +624,7 @@ export type Database = {
           primary_color?: string | null
           settings?: Json
           slug: string
+          subdomain_status?: string
           timezone?: string
           trial_ends_at?: string | null
           updated_at?: string
@@ -573,6 +633,10 @@ export type Database = {
         Update: {
           contacts_limit?: number
           created_at?: string
+          custom_domain?: string | null
+          custom_domain_status?: string
+          custom_domain_verification?: Json
+          custom_hostname_id?: string | null
           id?: string
           is_active?: boolean
           logo_url?: string | null
@@ -584,6 +648,7 @@ export type Database = {
           primary_color?: string | null
           settings?: Json
           slug?: string
+          subdomain_status?: string
           timezone?: string
           trial_ends_at?: string | null
           updated_at?: string
