@@ -280,7 +280,10 @@ function AgendamentoPage() {
               <TabsTrigger value="lista">Lista</TabsTrigger>
             </TabsList>
           </Tabs>
-          <Button onClick={() => openNew()}>
+          <Button variant="outline" onClick={() => openNew(undefined, "block")}>
+            <Ban className="w-4 h-4 mr-1" /> Bloquear horário
+          </Button>
+          <Button onClick={() => openNew(undefined, "appointment")}>
             <Plus className="w-4 h-4 mr-1" /> Novo compromisso
           </Button>
         </div>
