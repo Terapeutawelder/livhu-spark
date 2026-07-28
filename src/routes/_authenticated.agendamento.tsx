@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Plus, Video, MapPin, Clock, CheckCircle2, XCircle, CalendarDays } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Video, MapPin, Clock, CheckCircle2, XCircle, CalendarDays, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
