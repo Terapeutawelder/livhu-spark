@@ -201,24 +201,23 @@ export const sendConversationMessage = createServerFn({ method: "POST" })
       .eq("id", conv.channel_id)
       .maybeSingle();
     if (chErr || !channel) throw new Error("Canal não encontrado.");
+    if (!channel.phone_number_id || !channel.access_token) throw new Error("Canal incompleto.");
 
+    const creds = {
+      phoneNumberId: channel.phone_number_id,
+      accessToken: channel.access_token,
+      wabaId: channel.waba_id,
+    };
     const { sendText, sendMedia } = await import("./whatsapp.server");
     let waResp: any;
     try {
       if (data.media) {
-        waResp = await sendMedia(
-          { phoneNumberId: channel.phone_number_id, accessToken: channel.access_token, wabaId: channel.waba_id },
-          conv.phone,
-          data.media.kind,
-          data.media.url,
-          { caption: data.body, filename: data.media.filename },
-        );
+        waResp = await sendMedia(creds, conv.phone, data.media.kind, data.media.url, {
+          caption: data.body,
+          filename: data.media.filename,
+        });
       } else {
-        waResp = await sendText(
-          { phoneNumberId: channel.phone_number_id, accessToken: channel.access_token, wabaId: channel.waba_id },
-          conv.phone,
-          data.body!,
-        );
+        waResp = await sendText(creds, conv.phone, data.body!);
       }
     } catch (err: any) {
       // persist as failed
@@ -284,12 +283,12 @@ export const updateConversationStatus = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const tenantId = await getTenantId(context);
-    const patch: Record<string, unknown> = {};
+    const patch: Record<string, any> = {};
     if (data.status) patch.status = data.status;
     if (data.assigned_to !== undefined) patch.assigned_to = data.assigned_to;
     if (data.tags) patch.tags = data.tags;
     if (Object.keys(patch).length === 0) return { ok: true };
-    const { error } = await context.supabase
+    const { error } = await (context.supabase as any)
       .from("whatsapp_conversations")
       .update(patch)
       .eq("id", data.conversationId)
@@ -362,7 +361,7 @@ export const syncTemplates = createServerFn({ method: "POST" })
       .eq("tenant_id", tenantId)
       .maybeSingle();
     if (error || !ch) throw new Error("Canal não encontrado.");
-    if (!ch.waba_id) throw new Error("Configure o WABA ID para sincronizar templates.");
+    if (!ch.waba_id || !ch.access_token) throw new Error("Configure o WABA ID e o token para sincronizar templates.");
     const { listTemplates } = await import("./whatsapp.server");
     const res = await listTemplates(ch.waba_id, ch.access_token);
     const items: any[] = res?.data ?? [];
