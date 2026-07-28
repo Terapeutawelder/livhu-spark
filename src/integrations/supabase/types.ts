@@ -14,6 +14,226 @@ export type Database = {
   }
   public: {
     Tables: {
+      contact_notes: {
+        Row: {
+          author_id: string | null
+          body: string
+          contact_id: string
+          created_at: string
+          id: string
+          tenant_id: string
+        }
+        Insert: {
+          author_id?: string | null
+          body: string
+          contact_id: string
+          created_at?: string
+          id?: string
+          tenant_id: string
+        }
+        Update: {
+          author_id?: string | null
+          body?: string
+          contact_id?: string
+          created_at?: string
+          id?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_notes_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_notes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contact_stage_history: {
+        Row: {
+          changed_by: string | null
+          contact_id: string
+          created_at: string
+          from_stage_id: string | null
+          id: string
+          reason: string | null
+          tenant_id: string
+          to_stage_id: string | null
+          trigger: Database["public"]["Enums"]["stage_trigger"]
+        }
+        Insert: {
+          changed_by?: string | null
+          contact_id: string
+          created_at?: string
+          from_stage_id?: string | null
+          id?: string
+          reason?: string | null
+          tenant_id: string
+          to_stage_id?: string | null
+          trigger?: Database["public"]["Enums"]["stage_trigger"]
+        }
+        Update: {
+          changed_by?: string | null
+          contact_id?: string
+          created_at?: string
+          from_stage_id?: string | null
+          id?: string
+          reason?: string | null
+          tenant_id?: string
+          to_stage_id?: string | null
+          trigger?: Database["public"]["Enums"]["stage_trigger"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_stage_history_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_stage_history_from_stage_id_fkey"
+            columns: ["from_stage_id"]
+            isOneToOne: false
+            referencedRelation: "kanban_stages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_stage_history_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_stage_history_to_stage_id_fkey"
+            columns: ["to_stage_id"]
+            isOneToOne: false
+            referencedRelation: "kanban_stages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contacts: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          email: string | null
+          full_name: string
+          id: string
+          last_interaction_at: string | null
+          metadata: Json
+          phone: string | null
+          source: string | null
+          stage_id: string | null
+          tags: string[]
+          tenant_id: string
+          updated_at: string
+          value_cents: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          full_name: string
+          id?: string
+          last_interaction_at?: string | null
+          metadata?: Json
+          phone?: string | null
+          source?: string | null
+          stage_id?: string | null
+          tags?: string[]
+          tenant_id: string
+          updated_at?: string
+          value_cents?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          full_name?: string
+          id?: string
+          last_interaction_at?: string | null
+          metadata?: Json
+          phone?: string | null
+          source?: string | null
+          stage_id?: string | null
+          tags?: string[]
+          tenant_id?: string
+          updated_at?: string
+          value_cents?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contacts_stage_id_fkey"
+            columns: ["stage_id"]
+            isOneToOne: false
+            referencedRelation: "kanban_stages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contacts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      kanban_stages: {
+        Row: {
+          auto_advance_on: Database["public"]["Enums"]["stage_trigger"][]
+          color: string
+          created_at: string
+          id: string
+          is_lost: boolean
+          is_won: boolean
+          name: string
+          position: number
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          auto_advance_on?: Database["public"]["Enums"]["stage_trigger"][]
+          color?: string
+          created_at?: string
+          id?: string
+          is_lost?: boolean
+          is_won?: boolean
+          name: string
+          position: number
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          auto_advance_on?: Database["public"]["Enums"]["stage_trigger"][]
+          color?: string
+          created_at?: string
+          id?: string
+          is_lost?: boolean
+          is_won?: boolean
+          name?: string
+          position?: number
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kanban_stages_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -37,6 +257,83 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tenant_members: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["tenant_role"]
+          tenant_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["tenant_role"]
+          tenant_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["tenant_role"]
+          tenant_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_members_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tenants: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          logo_url: string | null
+          name: string
+          owner_id: string
+          plan: string
+          primary_color: string | null
+          settings: Json
+          slug: string
+          timezone: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name: string
+          owner_id: string
+          plan?: string
+          primary_color?: string | null
+          settings?: Json
+          slug: string
+          timezone?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name?: string
+          owner_id?: string
+          plan?: string
+          primary_color?: string | null
+          settings?: Json
+          slug?: string
+          timezone?: string
           updated_at?: string
         }
         Relationships: []
@@ -67,6 +364,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      advance_contact_stage: {
+        Args: {
+          _contact_id: string
+          _reason?: string
+          _trigger: Database["public"]["Enums"]["stage_trigger"]
+        }
+        Returns: string
+      }
+      current_tenant_id: { Args: never; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -74,9 +380,27 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_tenant_member: {
+        Args: { _tenant_id: string; _user_id: string }
+        Returns: boolean
+      }
+      tenant_role_of: {
+        Args: { _tenant_id: string; _user_id: string }
+        Returns: Database["public"]["Enums"]["tenant_role"]
+      }
     }
     Enums: {
       app_role: "super_admin" | "admin" | "therapist"
+      stage_trigger:
+        | "manual"
+        | "contact_created"
+        | "first_message_received"
+        | "appointment_scheduled"
+        | "appointment_completed"
+        | "payment_received"
+        | "no_reply_7d"
+        | "course_completed"
+      tenant_role: "owner" | "admin" | "therapist" | "assistant"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -205,6 +529,17 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["super_admin", "admin", "therapist"],
+      stage_trigger: [
+        "manual",
+        "contact_created",
+        "first_message_received",
+        "appointment_scheduled",
+        "appointment_completed",
+        "payment_received",
+        "no_reply_7d",
+        "course_completed",
+      ],
+      tenant_role: ["owner", "admin", "therapist", "assistant"],
     },
   },
 } as const
