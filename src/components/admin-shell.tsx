@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useRouterState, useRouter } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   Building2,
@@ -14,9 +14,12 @@ import {
   Bell,
   CalendarDays,
   Settings,
+  LogOut,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
+import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface NavItem {
   to: string;
@@ -49,6 +52,15 @@ export function AdminShell({
   children: ReactNode;
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  async function handleSignOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    router.navigate({ to: "/admin/login", replace: true });
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -90,7 +102,7 @@ export function AdminShell({
           })}
         </nav>
 
-        <div className="m-3 rounded-xl bg-white/5 p-3">
+        <div className="m-3 space-y-2 rounded-xl bg-white/5 p-3">
           <Link
             to="/"
             className="flex items-center gap-2 text-xs font-medium text-sidebar-muted hover:text-white"
@@ -98,6 +110,13 @@ export function AdminShell({
             <ArrowLeft className="h-3.5 w-3.5" />
             Voltar ao app do tenant
           </Link>
+          <button
+            onClick={handleSignOut}
+            className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-xs font-medium text-sidebar-muted transition-colors hover:bg-white/10 hover:text-white"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+            Sair da conta
+          </button>
         </div>
       </aside>
 
@@ -122,8 +141,18 @@ export function AdminShell({
               <Bell className="h-4 w-4" />
               <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-gold" />
             </button>
-            <div className="ml-1 grid h-9 w-9 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
-              SA
+            <div className="ml-1 flex items-center gap-2 rounded-full border border-border bg-surface pl-1 pr-2">
+              <div className="grid h-8 w-8 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
+                SA
+              </div>
+              <button
+                onClick={handleSignOut}
+                aria-label="Sair"
+                title="Sair"
+                className="grid h-7 w-7 place-items-center rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
             </div>
           </div>
         </header>
