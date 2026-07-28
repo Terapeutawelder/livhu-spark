@@ -409,7 +409,8 @@ function ManagePanel({
               <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${typeFilter === t.id ? "border-primary" : "border-muted-foreground/40"}`}>
                 {typeFilter === t.id && <span className="w-2 h-2 rounded-full bg-primary" />}
               </span>
-              <span>{t.label}</span>
+              <span className="flex-1">{t.label}</span>
+              <span className="text-xs font-semibold text-muted-foreground">{t.count}</span>
             </button>
           ))}
         </div>
