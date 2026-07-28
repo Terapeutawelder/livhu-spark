@@ -33,6 +33,7 @@ import { Route as AuthenticatedAdminSuporteRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminSistemaRouteImport } from './routes/_authenticated.admin.sistema'
 import { Route as AuthenticatedAdminPlanosRouteImport } from './routes/_authenticated.admin.planos'
 import { Route as AuthenticatedAdminFaturamentoRouteImport } from './routes/_authenticated.admin.faturamento'
+import { Route as AuthenticatedAdminCalendarioRouteImport } from './routes/_authenticated.admin.calendario'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -163,6 +164,12 @@ const AuthenticatedAdminFaturamentoRoute =
     path: '/faturamento',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminCalendarioRoute =
+  AuthenticatedAdminCalendarioRouteImport.update({
+    id: '/calendario',
+    path: '/calendario',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -180,6 +187,7 @@ export interface FileRoutesByFullPath {
   '/mensagens': typeof AuthenticatedMensagensRoute
   '/pagamentos': typeof AuthenticatedPagamentosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
+  '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/faturamento': typeof AuthenticatedAdminFaturamentoRoute
   '/admin/planos': typeof AuthenticatedAdminPlanosRoute
   '/admin/sistema': typeof AuthenticatedAdminSistemaRoute
@@ -204,6 +212,7 @@ export interface FileRoutesByTo {
   '/pagamentos': typeof AuthenticatedPagamentosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
   '/': typeof AuthenticatedIndexRoute
+  '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/faturamento': typeof AuthenticatedAdminFaturamentoRoute
   '/admin/planos': typeof AuthenticatedAdminPlanosRoute
   '/admin/sistema': typeof AuthenticatedAdminSistemaRoute
@@ -231,6 +240,7 @@ export interface FileRoutesById {
   '/_authenticated/pagamentos': typeof AuthenticatedPagamentosRoute
   '/_authenticated/remarketing': typeof AuthenticatedRemarketingRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/_authenticated/admin/faturamento': typeof AuthenticatedAdminFaturamentoRoute
   '/_authenticated/admin/planos': typeof AuthenticatedAdminPlanosRoute
   '/_authenticated/admin/sistema': typeof AuthenticatedAdminSistemaRoute
@@ -258,6 +268,7 @@ export interface FileRouteTypes {
     | '/mensagens'
     | '/pagamentos'
     | '/remarketing'
+    | '/admin/calendario'
     | '/admin/faturamento'
     | '/admin/planos'
     | '/admin/sistema'
@@ -282,6 +293,7 @@ export interface FileRouteTypes {
     | '/pagamentos'
     | '/remarketing'
     | '/'
+    | '/admin/calendario'
     | '/admin/faturamento'
     | '/admin/planos'
     | '/admin/sistema'
@@ -308,6 +320,7 @@ export interface FileRouteTypes {
     | '/_authenticated/pagamentos'
     | '/_authenticated/remarketing'
     | '/_authenticated/'
+    | '/_authenticated/admin/calendario'
     | '/_authenticated/admin/faturamento'
     | '/_authenticated/admin/planos'
     | '/_authenticated/admin/sistema'
@@ -494,10 +507,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminFaturamentoRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/calendario': {
+      id: '/_authenticated/admin/calendario'
+      path: '/calendario'
+      fullPath: '/admin/calendario'
+      preLoaderRoute: typeof AuthenticatedAdminCalendarioRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
   }
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminCalendarioRoute: typeof AuthenticatedAdminCalendarioRoute
   AuthenticatedAdminFaturamentoRoute: typeof AuthenticatedAdminFaturamentoRoute
   AuthenticatedAdminPlanosRoute: typeof AuthenticatedAdminPlanosRoute
   AuthenticatedAdminSistemaRoute: typeof AuthenticatedAdminSistemaRoute
@@ -509,6 +530,7 @@ interface AuthenticatedAdminRouteChildren {
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminCalendarioRoute: AuthenticatedAdminCalendarioRoute,
   AuthenticatedAdminFaturamentoRoute: AuthenticatedAdminFaturamentoRoute,
   AuthenticatedAdminPlanosRoute: AuthenticatedAdminPlanosRoute,
   AuthenticatedAdminSistemaRoute: AuthenticatedAdminSistemaRoute,
