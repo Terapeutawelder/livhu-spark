@@ -1010,8 +1010,8 @@ function GoogleIntegrationCard({ tenantId, settings }: { tenantId: string | unde
 
       {gc.connected ? (
         <>
-          <div className="rounded-md border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs space-y-1">
-            <div className="flex items-center gap-2 font-medium text-emerald-700 dark:text-emerald-300">
+          <div className="rounded-md border border-primary/40 bg-primary/10 p-3 text-xs space-y-1">
+            <div className="flex items-center gap-2 font-medium text-primary">
               <CheckCircle2 className="w-3.5 h-3.5" /> Conectado
             </div>
             {gc.email && <div className="text-muted-foreground">{gc.email}</div>}
