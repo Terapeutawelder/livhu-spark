@@ -332,13 +332,22 @@ function DominioPanel() {
   const qc = useQueryClient();
   const fetchDomain = useServerFn(getMyTenantDomain);
   const saveSlug = useServerFn(updateMyTenantSlug);
+  const reqSubdomain = useServerFn(requestSubdomainActivation);
+  const reqCustom = useServerFn(requestCustomDomainActivation);
+  const listReqs = useServerFn(listMyDomainRequests);
 
   const { data, isLoading } = useQuery({
     queryKey: ["my-tenant-domain"],
     queryFn: () => fetchDomain(),
   });
 
+  const { data: requests } = useQuery({
+    queryKey: ["my-domain-requests"],
+    queryFn: () => listReqs(),
+  });
+
   const [slug, setSlug] = useState("");
+  const [customDomain, setCustomDomain] = useState("");
   useEffect(() => {
     if (data?.slug) setSlug(data.slug);
   }, [data?.slug]);
@@ -355,7 +364,30 @@ function DominioPanel() {
     onError: (e: unknown) => toast.error(e instanceof Error ? e.message : "Erro ao salvar"),
   });
 
+  const activateMut = useMutation({
+    mutationFn: () => reqSubdomain(),
+    onSuccess: () => {
+      toast.success("Solicitação enviada! O admin vai ativar seu subdomínio em breve.");
+      qc.invalidateQueries({ queryKey: ["my-domain-requests"] });
+    },
+    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : "Erro"),
+  });
+
+  const customMut = useMutation({
+    mutationFn: (domain: string) => reqCustom({ data: { domain } }),
+    onSuccess: () => {
+      toast.success("Domínio próprio solicitado! Aguarde a análise do admin.");
+      setCustomDomain("");
+      qc.invalidateQueries({ queryKey: ["my-domain-requests"] });
+    },
+    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : "Erro"),
+  });
+
   const previewUrl = `https://${slug || "seu-slug"}.${ROOT_DOMAIN}`;
+  const subdomainLive = data?.subdomain_status === "live";
+  const openRequest = requests?.find(
+    (r) => r.kind === "subdomain" && (r.status === "pending" || r.status === "in_progress"),
+  );
 
   const copy = (v: string) => {
     navigator.clipboard.writeText(v);
@@ -392,18 +424,52 @@ function DominioPanel() {
           <div className="min-w-0">
             <p className="text-xs text-muted-foreground">Seu endereço público</p>
             <p className="truncate font-mono text-sm">{previewUrl}</p>
+            <div className="mt-1 flex items-center gap-2">
+              {subdomainLive ? (
+                <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
+                  Ativo
+                </Badge>
+              ) : openRequest ? (
+                <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-400">
+                  Aguardando ativação
+                </Badge>
+              ) : (
+                <Badge variant="outline">Ainda não ativado</Badge>
+              )}
+            </div>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => copy(previewUrl)}>
               <Copy className="mr-1.5 h-3.5 w-3.5" /> Copiar
             </Button>
-            <Button variant="outline" size="sm" asChild disabled={!valid}>
+            <Button variant="outline" size="sm" asChild disabled={!valid || !subdomainLive}>
               <a href={previewUrl} target="_blank" rel="noreferrer">
                 <ExternalLink className="mr-1.5 h-3.5 w-3.5" /> Abrir
               </a>
             </Button>
           </div>
         </div>
+
+        {!subdomainLive && (
+          <div className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 text-sm">
+            <p className="font-medium text-amber-800 dark:text-amber-300">
+              Seu subdomínio precisa ser ativado pelo administrador.
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Cada novo endereço público precisa receber um certificado SSL antes de funcionar.
+              Isso é feito manualmente pela equipe do LivHub e leva até 24h.
+            </p>
+            <Button
+              size="sm"
+              className="mt-3"
+              disabled={activateMut.isPending || !!openRequest || !subdomainLive === false && !valid}
+              onClick={() => activateMut.mutate()}
+            >
+              {activateMut.isPending && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
+              {openRequest ? "Solicitação enviada" : "Solicitar ativação"}
+            </Button>
+          </div>
+        )}
 
         <div className="mt-6 flex items-center justify-end gap-2 border-t pt-4">
           <Button variant="outline" size="sm" disabled={!dirty} onClick={() => setSlug(data?.slug ?? "")}>
@@ -422,15 +488,115 @@ function DominioPanel() {
 
       <Card className="p-6">
         <PanelHeader
-          title="Domínio próprio (em breve)"
-          desc="Conecte um domínio como dr-liv.com.br com SSL automático."
+          title="Domínio próprio"
+          desc="Use seu próprio domínio (ex.: consultorio.seudominio.com) com SSL automático via Cloudflare."
         />
-        <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
-          Estamos preparando a integração com Cloudflare for SaaS para você usar seu próprio
-          domínio (ex.: <span className="font-mono">consultorio.seudominio.com</span>) apontando um
-          simples CNAME. Fique de olho nas próximas atualizações.
-        </div>
+
+        {data?.custom_domain ? (
+          <div className="rounded-lg border p-3">
+            <div className="flex items-center justify-between gap-2">
+              <div className="min-w-0">
+                <p className="truncate font-mono text-sm">{data.custom_domain}</p>
+                <Badge className="mt-1 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
+                  {data.custom_domain_status ?? "pendente"}
+                </Badge>
+              </div>
+            </div>
+            {data.custom_domain_status !== "active" && (
+              <VerificationHelp verification={data.custom_domain_verification as Record<string, unknown> | null} />
+            )}
+          </div>
+        ) : (
+          <>
+            <div className="grid gap-2">
+              <Label className="text-xs">Seu domínio</Label>
+              <Input
+                value={customDomain}
+                onChange={(e) => setCustomDomain(e.target.value.toLowerCase().trim())}
+                placeholder="consultorio.seudominio.com"
+              />
+              <p className="text-xs text-muted-foreground">
+                Após solicitar, você receberá 2 registros DNS (TXT + CNAME) para adicionar no seu provedor
+                de domínio. Assim que propagados, o admin ativa e o SSL é emitido automaticamente.
+              </p>
+            </div>
+            <div className="mt-4 flex justify-end">
+              <Button
+                size="sm"
+                disabled={customMut.isPending || customDomain.length < 4}
+                onClick={() => customMut.mutate(customDomain)}
+              >
+                {customMut.isPending && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
+                Solicitar domínio próprio
+              </Button>
+            </div>
+          </>
+        )}
       </Card>
+
+      {!!requests?.length && (
+        <Card className="p-6">
+          <PanelHeader title="Suas solicitações" desc="Histórico de pedidos de ativação de domínio." />
+          <div className="space-y-2">
+            {requests.map((r) => (
+              <div key={r.id} className="flex items-center justify-between rounded-lg border p-3 text-sm">
+                <div className="min-w-0">
+                  <p className="truncate font-mono">{r.value}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {r.kind === "subdomain" ? "Subdomínio" : "Domínio próprio"} ·{" "}
+                    {new Date(r.created_at).toLocaleString("pt-BR")}
+                  </p>
+                </div>
+                <Badge
+                  className={
+                    r.status === "active"
+                      ? "bg-emerald-500/10 text-emerald-700"
+                      : r.status === "pending" || r.status === "in_progress"
+                      ? "bg-amber-500/10 text-amber-700"
+                      : "bg-rose-500/10 text-rose-700"
+                  }
+                >
+                  {r.status}
+                </Badge>
+              </div>
+            ))}
+          </div>
+        </Card>
+      )}
     </div>
   );
+}
+
+function VerificationHelp({ verification }: { verification: Record<string, unknown> | null }) {
+  if (!verification) return null;
+  const ownership = verification.ownership as { name?: string; type?: string; value?: string } | null;
+  const ssl = verification.ssl as Array<{ txt_name?: string; txt_value?: string }> | null;
+  return (
+    <div className="mt-3 space-y-2 rounded-md bg-muted/40 p-3 text-xs">
+      <p className="font-medium">Adicione estes registros DNS no seu provedor:</p>
+      {ownership?.name && (
+        <div className="rounded bg-background p-2 font-mono">
+          <div>Tipo: {ownership.type}</div>
+          <div>Nome: {ownership.name}</div>
+          <div>Valor: {ownership.value}</div>
+        </div>
+      )}
+      {ssl?.map((r, i) =>
+        r.txt_name ? (
+          <div key={i} className="rounded bg-background p-2 font-mono">
+            <div>Tipo: TXT</div>
+            <div>Nome: {r.txt_name}</div>
+            <div>Valor: {r.txt_value}</div>
+          </div>
+        ) : null,
+      )}
+      <div className="rounded bg-background p-2 font-mono">
+        <div>Tipo: CNAME</div>
+        <div>Nome: (seu domínio)</div>
+        <div>Valor: psi.livhub.cloud</div>
+      </div>
+    </div>
+  );
+}
+
 }
