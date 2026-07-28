@@ -52,6 +52,15 @@ export function AdminShell({
   children: ReactNode;
 }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  async function handleSignOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    router.navigate({ to: "/admin/login", replace: true });
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
