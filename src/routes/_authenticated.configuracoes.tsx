@@ -34,6 +34,7 @@ export const Route = createFileRoute("/_authenticated/configuracoes")({
 const tabs = [
   { id: "perfil", label: "Perfil", icon: User },
   { id: "consultorio", label: "Consultório", icon: Building2 },
+  { id: "dominio", label: "Meu domínio", icon: Globe },
   { id: "whatsapp", label: "WhatsApp", icon: MessageCircle },
   { id: "notificacoes", label: "Notificações", icon: Bell },
   { id: "marca", label: "Marca", icon: Palette },
