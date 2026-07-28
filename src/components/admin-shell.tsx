@@ -102,7 +102,7 @@ export function AdminShell({
           })}
         </nav>
 
-        <div className="m-3 rounded-xl bg-white/5 p-3">
+        <div className="m-3 space-y-2 rounded-xl bg-white/5 p-3">
           <Link
             to="/"
             className="flex items-center gap-2 text-xs font-medium text-sidebar-muted hover:text-white"
@@ -110,6 +110,13 @@ export function AdminShell({
             <ArrowLeft className="h-3.5 w-3.5" />
             Voltar ao app do tenant
           </Link>
+          <button
+            onClick={handleSignOut}
+            className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-xs font-medium text-sidebar-muted transition-colors hover:bg-white/10 hover:text-white"
+          >
+            <LogOut className="h-3.5 w-3.5" />
+            Sair da conta
+          </button>
         </div>
       </aside>
 
