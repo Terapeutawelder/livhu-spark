@@ -166,7 +166,7 @@ export function AppSidebar() {
             width={512}
             height={128}
             className={
-              "h-auto w-auto object-contain " + (collapsed ? "h-12" : "h-11")
+              "h-auto w-auto object-contain " + (collapsed ? "h-16" : "h-14")
             }
           />
         </Link>
