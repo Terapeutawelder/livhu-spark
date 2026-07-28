@@ -599,4 +599,3 @@ function VerificationHelp({ verification }: { verification: Record<string, unkno
   );
 }
 
-}
