@@ -103,7 +103,7 @@ function AuthPage() {
   };
 
   return (
-    <div className="flex min-h-svh items-center justify-center bg-background p-4 text-foreground sm:p-6 lg:p-8">
+    <div className="dark flex min-h-svh items-center justify-center bg-background p-4 text-foreground sm:p-6 lg:p-8">
       <div className="grid w-full max-w-5xl overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl lg:grid-cols-[1.5fr_1fr]">
         {/* Image panel — banner on mobile, taller sidebar on desktop */}
         <div className="relative flex min-h-[220px] overflow-hidden bg-sidebar sm:min-h-[280px] lg:min-h-[560px]">
