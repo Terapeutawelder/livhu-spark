@@ -47,6 +47,7 @@ function TherapistShell() {
       <AppSidebar />
       <div className={"transition-[padding] duration-200 " + (collapsed ? "lg:pl-16" : "lg:pl-60")}>
         <AppHeader />
+        <TrialBanner />
         <main className="min-h-[calc(100vh-4rem)]">
           <Outlet />
         </main>
