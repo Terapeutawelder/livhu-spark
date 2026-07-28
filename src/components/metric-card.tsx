@@ -1,5 +1,5 @@
 import { ArrowUpRight, ArrowDownRight, type LucideIcon } from "lucide-react";
-import { ResponsiveContainer, AreaChart, Area, defs } from "recharts";
+import { ResponsiveContainer, AreaChart, Area } from "recharts";
 
 export type MetricCardProps = {
   icon: LucideIcon;
