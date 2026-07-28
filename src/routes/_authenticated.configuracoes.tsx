@@ -51,7 +51,10 @@ const tabs = [
 ];
 
 function ConfiguracoesPage() {
-  const [tab, setTab] = useState("perfil");
+  const initialTab = typeof window !== "undefined"
+    ? new URLSearchParams(window.location.search).get("tab") || "perfil"
+    : "perfil";
+  const [tab, setTab] = useState(initialTab);
 
   return (
     <div className="flex flex-col gap-4 p-4 lg:p-6">
@@ -160,27 +163,7 @@ function ConsultorioPanel() {
 }
 
 function WhatsappPanel() {
-  return (
-    <Card className="p-6">
-      <PanelHeader title="WhatsApp Business" desc="Conecte seu número oficial via API da Meta." />
-      <div className="mb-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3">
-        <p className="flex items-center gap-2 text-sm font-medium text-emerald-800 dark:text-emerald-300">
-          <Check className="h-4 w-4" /> Conectado — +55 11 98765-0000
-        </p>
-        <p className="mt-1 text-xs text-emerald-700 dark:text-emerald-400">Qualidade do número: Alta</p>
-      </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Phone Number ID" defaultValue="123456789012345" />
-        <Field label="WABA ID" defaultValue="987654321098765" />
-        <Field label="Nome exibido" defaultValue="Dra. Liv — Psicoterapeuta" />
-        <Field label="Categoria" defaultValue="Saúde" />
-      </div>
-      <Separator className="my-4" />
-      <ToggleRow title="Assistente IA responde fora do expediente" desc="Das 20h às 8h e finais de semana." defaultChecked />
-      <ToggleRow title="Confirmação automática de sessões" desc="24h antes via template aprovado." defaultChecked />
-      <SaveBar />
-    </Card>
-  );
+  return <WhatsappCloudPanel />;
 }
 
 function NotificacoesPanel() {
