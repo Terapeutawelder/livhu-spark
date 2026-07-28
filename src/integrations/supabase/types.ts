@@ -14,6 +14,65 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_agents: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          handoff_rules: Json
+          id: string
+          is_active: boolean
+          language: string
+          model: string
+          name: string
+          role: string
+          system_prompt: string
+          temperature: number
+          tenant_id: string
+          tools: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          handoff_rules?: Json
+          id?: string
+          is_active?: boolean
+          language?: string
+          model?: string
+          name: string
+          role?: string
+          system_prompt?: string
+          temperature?: number
+          tenant_id: string
+          tools?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          handoff_rules?: Json
+          id?: string
+          is_active?: boolean
+          language?: string
+          model?: string
+          name?: string
+          role?: string
+          system_prompt?: string
+          temperature?: number
+          tenant_id?: string
+          tools?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_agents_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       appointments: {
         Row: {
           contact_id: string | null
@@ -259,6 +318,56 @@ export type Database = {
           },
           {
             foreignKeyName: "contacts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flows: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          runs_count: number
+          steps: Json
+          tenant_id: string
+          trigger: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          runs_count?: number
+          steps?: Json
+          tenant_id: string
+          trigger?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          runs_count?: number
+          steps?: Json
+          tenant_id?: string
+          trigger?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flows_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
