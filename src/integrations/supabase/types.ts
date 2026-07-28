@@ -626,6 +626,17 @@ export type Database = {
         Returns: string
       }
       current_tenant_id: { Args: never; Returns: string }
+      get_tenant_branding_by_slug: {
+        Args: { _slug: string }
+        Returns: {
+          id: string
+          logo_url: string
+          name: string
+          primary_color: string
+          slug: string
+          timezone: string
+        }[]
+      }
       get_tenant_usage: {
         Args: never
         Returns: {

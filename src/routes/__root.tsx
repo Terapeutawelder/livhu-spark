@@ -13,6 +13,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ThemeProvider } from "../components/theme-provider";
 import { supabase } from "@/integrations/supabase/client";
 import { Toaster } from "sonner";
+import { HostTenantProvider, useHostTenant } from "@/components/host-tenant-provider";
 
 function NotFoundComponent() {
   return (
@@ -140,15 +141,48 @@ function AuthSubscriber() {
   return null;
 }
 
+function TenantNotFound() {
+  const { host } = useHostTenant();
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="max-w-md text-center">
+        <h1 className="font-display text-3xl font-bold text-foreground">Consultório não encontrado</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Nenhum consultório está associado ao domínio <span className="font-mono">{host.hostname}</span>.
+        </p>
+        <a
+          href="https://livhub.cloud"
+          className="mt-6 inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+        >
+          Ir para o site principal
+        </a>
+      </div>
+    </div>
+  );
+}
+
+function TenantGate({ children }: { children: ReactNode }) {
+  const { notFound, isLoading, host } = useHostTenant();
+  if (host.slug && isLoading) {
+    return <div className="min-h-screen bg-background" />;
+  }
+  if (notFound) return <TenantNotFound />;
+  return <>{children}</>;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <AuthSubscriber />
-        <Outlet />
-        <Toaster richColors position="top-right" />
+        <HostTenantProvider>
+          <AuthSubscriber />
+          <TenantGate>
+            <Outlet />
+          </TenantGate>
+          <Toaster richColors position="top-right" />
+        </HostTenantProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
