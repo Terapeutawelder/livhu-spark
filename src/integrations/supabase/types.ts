@@ -375,6 +375,36 @@ export type Database = {
           },
         ]
       }
+      feature_flags: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          is_on: boolean
+          key: string
+          rollout_pct: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_on?: boolean
+          key: string
+          rollout_pct?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          is_on?: boolean
+          key?: string
+          rollout_pct?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       flows: {
         Row: {
           created_at: string
@@ -418,6 +448,75 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "flows_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          currency: string
+          due_at: string | null
+          external_id: string | null
+          hosted_url: string | null
+          id: string
+          issued_at: string
+          paid_at: string | null
+          plan_id: string | null
+          plan_name: string
+          provider: string
+          status: Database["public"]["Enums"]["invoice_status"]
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          currency?: string
+          due_at?: string | null
+          external_id?: string | null
+          hosted_url?: string | null
+          id?: string
+          issued_at?: string
+          paid_at?: string | null
+          plan_id?: string | null
+          plan_name: string
+          provider?: string
+          status?: Database["public"]["Enums"]["invoice_status"]
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          due_at?: string | null
+          external_id?: string | null
+          hosted_url?: string | null
+          id?: string
+          issued_at?: string
+          paid_at?: string | null
+          plan_id?: string | null
+          plan_name?: string
+          provider?: string
+          status?: Database["public"]["Enums"]["invoice_status"]
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -471,6 +570,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      platform_settings: {
+        Row: {
+          allow_signups: boolean
+          brand_name: string
+          default_timezone: string
+          favicon_url: string | null
+          id: string
+          logo_url: string | null
+          maintenance_mode: boolean
+          noreply_email: string
+          notify_failed_payment: boolean
+          notify_new_tenant: boolean
+          primary_color: string
+          require_email_verification: boolean
+          support_email: string
+          trial_days: number
+          updated_at: string
+        }
+        Insert: {
+          allow_signups?: boolean
+          brand_name?: string
+          default_timezone?: string
+          favicon_url?: string | null
+          id?: string
+          logo_url?: string | null
+          maintenance_mode?: boolean
+          noreply_email?: string
+          notify_failed_payment?: boolean
+          notify_new_tenant?: boolean
+          primary_color?: string
+          require_email_verification?: boolean
+          support_email?: string
+          trial_days?: number
+          updated_at?: string
+        }
+        Update: {
+          allow_signups?: boolean
+          brand_name?: string
+          default_timezone?: string
+          favicon_url?: string | null
+          id?: string
+          logo_url?: string | null
+          maintenance_mode?: boolean
+          noreply_email?: string
+          notify_failed_payment?: boolean
+          notify_new_tenant?: boolean
+          primary_color?: string
+          require_email_verification?: boolean
+          support_email?: string
+          trial_days?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -542,6 +695,119 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "services_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscription_plans: {
+        Row: {
+          ai_agents_limit: number
+          billing_period: string
+          contacts_limit: number
+          created_at: string
+          currency: string
+          description: string | null
+          features: Json
+          id: string
+          is_active: boolean
+          is_highlighted: boolean
+          messages_limit: number
+          name: string
+          price_cents: number
+          slug: string
+          sort_order: number
+          updated_at: string
+          users_limit: number
+        }
+        Insert: {
+          ai_agents_limit?: number
+          billing_period?: string
+          contacts_limit?: number
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json
+          id?: string
+          is_active?: boolean
+          is_highlighted?: boolean
+          messages_limit?: number
+          name: string
+          price_cents?: number
+          slug: string
+          sort_order?: number
+          updated_at?: string
+          users_limit?: number
+        }
+        Update: {
+          ai_agents_limit?: number
+          billing_period?: string
+          contacts_limit?: number
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json
+          id?: string
+          is_active?: boolean
+          is_highlighted?: boolean
+          messages_limit?: number
+          name?: string
+          price_cents?: number
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+          users_limit?: number
+        }
+        Relationships: []
+      }
+      support_tickets: {
+        Row: {
+          assigned_to: string | null
+          body: string
+          code: string
+          created_at: string
+          created_by: string | null
+          id: string
+          last_reply_at: string | null
+          priority: Database["public"]["Enums"]["ticket_priority"]
+          status: Database["public"]["Enums"]["ticket_status"]
+          subject: string
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          body?: string
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          last_reply_at?: string | null
+          priority?: Database["public"]["Enums"]["ticket_priority"]
+          status?: Database["public"]["Enums"]["ticket_status"]
+          subject: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          body?: string
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          last_reply_at?: string | null
+          priority?: Database["public"]["Enums"]["ticket_priority"]
+          status?: Database["public"]["Enums"]["ticket_status"]
+          subject?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "support_tickets_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -741,6 +1007,7 @@ export type Database = {
         | "completed"
         | "canceled"
         | "no_show"
+      invoice_status: "paid" | "open" | "overdue" | "void" | "refunded"
       service_modality: "online" | "presencial" | "ambos"
       stage_trigger:
         | "manual"
@@ -752,6 +1019,13 @@ export type Database = {
         | "no_reply_7d"
         | "course_completed"
       tenant_role: "owner" | "admin" | "therapist" | "assistant"
+      ticket_priority: "low" | "medium" | "high" | "urgent"
+      ticket_status:
+        | "open"
+        | "analyzing"
+        | "waiting_customer"
+        | "resolved"
+        | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -887,6 +1161,7 @@ export const Constants = {
         "canceled",
         "no_show",
       ],
+      invoice_status: ["paid", "open", "overdue", "void", "refunded"],
       service_modality: ["online", "presencial", "ambos"],
       stage_trigger: [
         "manual",
@@ -899,6 +1174,14 @@ export const Constants = {
         "course_completed",
       ],
       tenant_role: ["owner", "admin", "therapist", "assistant"],
+      ticket_priority: ["low", "medium", "high", "urgent"],
+      ticket_status: [
+        "open",
+        "analyzing",
+        "waiting_customer",
+        "resolved",
+        "closed",
+      ],
     },
   },
 } as const
