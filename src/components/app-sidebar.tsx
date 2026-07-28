@@ -196,19 +196,6 @@ export function AppSidebar() {
           );
         })}
 
-        {session?.isSuperAdmin && (
-          <Link
-            to="/admin"
-            title={collapsed ? "Super Admin" : undefined}
-            className={
-              "mt-2 flex items-center rounded-lg border border-gold/30 bg-gold/10 text-sm text-gold transition-colors hover:bg-gold/20 " +
-              (collapsed ? "justify-center px-0 py-2.5" : "gap-3 px-3 py-2.5 font-semibold")
-            }
-          >
-            <ShieldCheck className="h-4 w-4 shrink-0" />
-            {!collapsed && <span>Super Admin</span>}
-          </Link>
-        )}
       </nav>
 
       {/* User card */}
