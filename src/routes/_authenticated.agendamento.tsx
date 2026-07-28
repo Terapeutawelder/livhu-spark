@@ -524,7 +524,7 @@ function WeekGrid({
                         onClick={(e) => { e.stopPropagation(); onSelectAppointment(a); }}
                         className={`text-[11px] leading-tight rounded-md px-1.5 py-1 mb-1 border cursor-pointer ${
                           isBlock
-                            ? "bg-[repeating-linear-gradient(45deg,rgba(148,163,184,0.25)_0_6px,transparent_6px_12px)] border-dashed border-zinc-500/50 text-zinc-600 dark:text-zinc-300"
+                            ? "bg-[repeating-linear-gradient(45deg,hsl(var(--muted-foreground)/0.15)_0_6px,transparent_6px_12px)] border-dashed border-muted-foreground/50 text-muted-foreground"
                             : STATUS_BADGE[a.status]
                         }`}
                         title={a.title}
