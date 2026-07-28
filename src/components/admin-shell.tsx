@@ -12,6 +12,8 @@ import {
   ArrowLeft,
   Search,
   Bell,
+  CalendarDays,
+  Settings,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
@@ -24,12 +26,14 @@ interface NavItem {
 
 const items: NavItem[] = [
   { to: "/admin", label: "Visão geral", icon: LayoutDashboard },
-  { to: "/admin/tenants", label: "Tenants", icon: Building2 },
-  { to: "/admin/planos", label: "Planos", icon: Package },
+  { to: "/admin/tenants", label: "Clientes", icon: Building2 },
+  { to: "/admin/planos", label: "Planos de assinatura", icon: Package },
   { to: "/admin/faturamento", label: "Faturamento", icon: Receipt },
+  { to: "/admin/calendario", label: "Calendário", icon: CalendarDays },
   { to: "/admin/white-label", label: "White-label", icon: Palette },
   { to: "/admin/usuarios", label: "Usuários & Roles", icon: ShieldCheck },
   { to: "/admin/sistema", label: "Sistema", icon: Activity },
+  { to: "/admin/configuracao", label: "Configuração", icon: Settings },
   { to: "/admin/suporte", label: "Suporte", icon: LifeBuoy },
 ];
 
