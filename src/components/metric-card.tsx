@@ -26,10 +26,10 @@ export function MetricCard({
   const gradId = `metric-grad-${label.replace(/\s+/g, "-")}`;
 
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-gold/25 bg-[oklch(0.14_0.01_80)] p-5 text-white shadow-[0_10px_30px_-15px_color-mix(in_oklab,var(--gold)_45%,transparent)] transition hover:border-gold/50 hover:shadow-[0_18px_40px_-15px_color-mix(in_oklab,var(--gold)_65%,transparent)]">
+    <div className="group relative overflow-hidden rounded-2xl border border-gold/25 bg-surface p-5 text-foreground shadow-[0_10px_30px_-15px_color-mix(in_oklab,var(--gold)_35%,transparent)] transition hover:border-gold/50 hover:shadow-[0_18px_40px_-15px_color-mix(in_oklab,var(--gold)_55%,transparent)] dark:bg-[oklch(0.14_0.01_80)] dark:text-white">
       {/* header */}
       <div className="flex items-start justify-between">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-white/60">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground dark:text-white/60">
           {label}
         </p>
         <div className="grid h-9 w-9 place-items-center rounded-lg border border-gold/30 bg-gold/10 text-gold">
@@ -38,7 +38,7 @@ export function MetricCard({
       </div>
 
       {/* value */}
-      <p className="mt-4 font-display text-3xl font-bold tracking-tight text-white">
+      <p className="mt-4 font-display text-3xl font-bold tracking-tight text-foreground dark:text-white">
         {value}
       </p>
 
@@ -49,8 +49,8 @@ export function MetricCard({
             <span
               className={
                 deltaPositive
-                  ? "inline-flex items-center gap-0.5 font-semibold text-emerald-400"
-                  : "inline-flex items-center gap-0.5 font-semibold text-red-400"
+                  ? "inline-flex items-center gap-0.5 font-semibold text-emerald-600 dark:text-emerald-400"
+                  : "inline-flex items-center gap-0.5 font-semibold text-red-600 dark:text-red-400"
               }
             >
               {deltaPositive ? (
@@ -61,7 +61,7 @@ export function MetricCard({
               {delta}
             </span>
           )}
-          {hint && <span className="text-white/50">{hint}</span>}
+          {hint && <span className="text-muted-foreground dark:text-white/50">{hint}</span>}
         </div>
       )}
 
