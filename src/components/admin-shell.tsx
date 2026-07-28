@@ -9,7 +9,6 @@ import {
   ShieldCheck,
   Activity,
   LifeBuoy,
-  ArrowLeft,
   Search,
   Bell,
   CalendarDays,
