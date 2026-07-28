@@ -5,6 +5,7 @@ import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
 import therapistImg from "@/assets/auth-therapist.jpg";
 import livhubLogo from "@/assets/livhub-logo.png.asset.json";
+import { translateAuthError } from "@/lib/auth-errors";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
