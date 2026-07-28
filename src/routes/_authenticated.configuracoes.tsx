@@ -462,7 +462,7 @@ function DominioPanel() {
             <Button
               size="sm"
               className="mt-3"
-              disabled={activateMut.isPending || !!openRequest || !subdomainLive === false && !valid}
+              disabled={activateMut.isPending || !!openRequest}
               onClick={() => activateMut.mutate()}
             >
               {activateMut.isPending && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
