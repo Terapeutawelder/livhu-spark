@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { AppSidebar, SidebarProvider, useSidebar } from "@/components/app-sidebar";
+import { AppSidebar, SidebarProvider, useSidebar, MobileMenuButton } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TrialBanner } from "@/components/trial-banner";
 import { Bell, Search } from "lucide-react";
@@ -59,8 +59,9 @@ function TherapistShell() {
 
 function AppHeader() {
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-border bg-background/85 px-4 backdrop-blur-md sm:px-6 lg:px-8">
-      <div className="flex flex-1 items-center gap-2">
+    <header className="sticky top-0 z-20 flex h-16 items-center gap-2 border-b border-border bg-background/85 px-3 backdrop-blur-md sm:gap-3 sm:px-6 lg:px-8">
+      <MobileMenuButton />
+      <div className="flex flex-1 items-center gap-2 min-w-0">
         <div className="relative hidden max-w-md flex-1 sm:block">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
