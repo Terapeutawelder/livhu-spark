@@ -47,28 +47,23 @@ type ProfileRow = {
   role?: string;
 };
 
+import { MetricCard } from "@/components/metric-card";
+
 function KpiCard({
-  icon: Icon,
+  icon,
   label,
   value,
   hint,
+  trend,
 }: {
   icon: typeof Building2;
   label: string;
   value: string | number;
   hint?: string;
+  trend?: number[];
 }) {
   return (
-    <div className="rounded-2xl border border-gold/60 bg-gold p-5 text-gold-foreground shadow-[0_10px_30px_-15px_color-mix(in_oklab,var(--gold)_55%,transparent)]">
-      <div className="grid h-10 w-10 place-items-center rounded-lg bg-gold-foreground/10 text-gold-foreground">
-        <Icon className="h-5 w-5" />
-      </div>
-      <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-gold-foreground/75">
-        {label}
-      </p>
-      <p className="mt-1 font-display text-2xl font-bold text-gold-foreground">{value}</p>
-      {hint && <p className="mt-1 text-xs text-gold-foreground/70">{hint}</p>}
-    </div>
+    <MetricCard icon={icon} label={label} value={value} hint={hint} trend={trend} />
   );
 }
 
