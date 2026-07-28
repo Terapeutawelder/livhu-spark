@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { Link, useRouterState, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ShieldCheck } from "lucide-react";
 import livhubLogo from "@/assets/livhub-logo.png.asset.json";
 import {
   LayoutDashboard,
@@ -111,10 +110,7 @@ export function AppSidebar() {
   const { data: session } = useQuery({
     queryKey: ["auth-session"],
     queryFn: async () => {
-      const [{ data: userRes }, { data: rolesRes }] = await Promise.all([
-        supabase.auth.getUser(),
-        supabase.from("user_roles").select("role"),
-      ]);
+      const { data: userRes } = await supabase.auth.getUser();
       const user = userRes.user;
       if (!user) return null;
       const { data: profile } = await supabase
@@ -126,7 +122,6 @@ export function AppSidebar() {
         email: user.email ?? profile?.email ?? "",
         name: profile?.full_name || user.email?.split("@")[0] || "Usuário",
         avatar: profile?.avatar_url ?? null,
-        isSuperAdmin: (rolesRes ?? []).some((r) => r.role === "super_admin"),
       };
     },
   });
@@ -197,19 +192,6 @@ export function AppSidebar() {
           );
         })}
 
-        {session?.isSuperAdmin && (
-          <Link
-            to="/admin"
-            title={collapsed ? "Super Admin" : undefined}
-            className={
-              "mt-2 flex items-center rounded-lg border border-gold/30 bg-gold/10 text-sm text-gold transition-colors hover:bg-gold/20 " +
-              (collapsed ? "justify-center px-0 py-2.5" : "gap-3 px-3 py-2.5 font-semibold")
-            }
-          >
-            <ShieldCheck className="h-4 w-4 shrink-0" />
-            {!collapsed && <span>Super Admin</span>}
-          </Link>
-        )}
       </nav>
 
       {/* User card */}
