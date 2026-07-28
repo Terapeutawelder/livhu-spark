@@ -15,7 +15,14 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { getMyTenantDomain, updateMyTenantSlug } from "@/lib/tenant-domain.functions";
+import {
+  getMyTenantDomain,
+  updateMyTenantSlug,
+  requestSubdomainActivation,
+  requestCustomDomainActivation,
+  listMyDomainRequests,
+} from "@/lib/tenant-domain.functions";
+
 
 export const Route = createFileRoute("/_authenticated/configuracoes")({
   head: () => ({
