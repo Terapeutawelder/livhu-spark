@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  User, Bell, MessageCircle, Palette, Shield, KeyRound, Link2, Building2, Check, Copy,
+  User, Bell, MessageCircle, Palette, Shield, KeyRound, Link2, Building2, Check, Copy, Globe, Loader2, ExternalLink,
 } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { getMyTenantDomain, updateMyTenantSlug } from "@/lib/tenant-domain.functions";
 
 export const Route = createFileRoute("/_authenticated/configuracoes")({
   head: () => ({
