@@ -423,7 +423,7 @@ function ManagePanel({
             <button
               type="button"
               onClick={() => { setStatusFilter(null); setSearch(""); setTypeFilter("todos"); }}
-              className="text-xs text-rose-500 hover:text-rose-600 flex items-center gap-1"
+              className="text-xs text-destructive hover:opacity-80 flex items-center gap-1"
             >
               <X className="w-3 h-3" /> Limpar tudo
             </button>
