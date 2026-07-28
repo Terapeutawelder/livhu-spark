@@ -21,6 +21,7 @@ export type Database = {
           created_by: string | null
           ends_at: string
           id: string
+          kind: string
           location: string | null
           meeting_url: string | null
           modality: Database["public"]["Enums"]["service_modality"]
@@ -38,6 +39,7 @@ export type Database = {
           created_by?: string | null
           ends_at: string
           id?: string
+          kind?: string
           location?: string | null
           meeting_url?: string | null
           modality?: Database["public"]["Enums"]["service_modality"]
@@ -55,6 +57,7 @@ export type Database = {
           created_by?: string | null
           ends_at?: string
           id?: string
+          kind?: string
           location?: string | null
           meeting_url?: string | null
           modality?: Database["public"]["Enums"]["service_modality"]
