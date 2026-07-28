@@ -424,10 +424,13 @@ export type Database = {
       }
       tenants: {
         Row: {
+          contacts_limit: number
           created_at: string
           id: string
           is_active: boolean
           logo_url: string | null
+          messages_limit: number
+          messages_used_this_month: number
           name: string
           owner_id: string
           plan: string
@@ -435,13 +438,18 @@ export type Database = {
           settings: Json
           slug: string
           timezone: string
+          trial_ends_at: string | null
           updated_at: string
+          usage_reset_at: string
         }
         Insert: {
+          contacts_limit?: number
           created_at?: string
           id?: string
           is_active?: boolean
           logo_url?: string | null
+          messages_limit?: number
+          messages_used_this_month?: number
           name: string
           owner_id: string
           plan?: string
@@ -449,13 +457,18 @@ export type Database = {
           settings?: Json
           slug: string
           timezone?: string
+          trial_ends_at?: string | null
           updated_at?: string
+          usage_reset_at?: string
         }
         Update: {
+          contacts_limit?: number
           created_at?: string
           id?: string
           is_active?: boolean
           logo_url?: string | null
+          messages_limit?: number
+          messages_used_this_month?: number
           name?: string
           owner_id?: string
           plan?: string
@@ -463,7 +476,9 @@ export type Database = {
           settings?: Json
           slug?: string
           timezone?: string
+          trial_ends_at?: string | null
           updated_at?: string
+          usage_reset_at?: string
         }
         Relationships: []
       }
@@ -502,6 +517,20 @@ export type Database = {
         Returns: string
       }
       current_tenant_id: { Args: never; Returns: string }
+      get_tenant_usage: {
+        Args: never
+        Returns: {
+          contacts_limit: number
+          contacts_used: number
+          is_owner: boolean
+          is_readonly: boolean
+          messages_limit: number
+          messages_used: number
+          plan: string
+          tenant_id: string
+          trial_ends_at: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -513,6 +542,7 @@ export type Database = {
         Args: { _tenant_id: string; _user_id: string }
         Returns: boolean
       }
+      is_tenant_readonly: { Args: { _tenant_id: string }; Returns: boolean }
       tenant_role_of: {
         Args: { _tenant_id: string; _user_id: string }
         Returns: Database["public"]["Enums"]["tenant_role"]

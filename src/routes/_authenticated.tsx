@@ -2,6 +2,7 @@ import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/rea
 import { supabase } from "@/integrations/supabase/client";
 import { AppSidebar, SidebarProvider, useSidebar } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { TrialBanner } from "@/components/trial-banner";
 import { Bell, Search } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
@@ -46,6 +47,7 @@ function TherapistShell() {
       <AppSidebar />
       <div className={"transition-[padding] duration-200 " + (collapsed ? "lg:pl-16" : "lg:pl-60")}>
         <AppHeader />
+        <TrialBanner />
         <main className="min-h-[calc(100vh-4rem)]">
           <Outlet />
         </main>
