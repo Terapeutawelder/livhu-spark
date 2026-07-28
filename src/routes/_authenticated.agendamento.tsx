@@ -56,6 +56,12 @@ type Appointment = {
   location: string | null;
   status: Status;
   notes: string | null;
+  kind: "appointment" | "block";
+};
+
+type TenantSettings = {
+  google_calendar?: { connected?: boolean; email?: string; auto_meet?: boolean; calendar_id?: string };
+  availability?: { start_hour?: number; end_hour?: number; days?: number[] }; // days: 0=Sun..6=Sat
 };
 
 type Contact = { id: string; full_name: string };
