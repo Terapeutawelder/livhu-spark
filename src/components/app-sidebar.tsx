@@ -19,7 +19,8 @@ import {
   LogOut,
   PanelLeftClose,
   PanelLeftOpen,
-
+  Menu,
+  X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -48,6 +49,8 @@ const items: NavItem[] = [
 interface SidebarCtx {
   collapsed: boolean;
   toggle: () => void;
+  mobileOpen: boolean;
+  setMobileOpen: (open: boolean) => void;
 }
 const SidebarContext = createContext<SidebarCtx | null>(null);
 
@@ -55,6 +58,7 @@ const STORAGE_KEY = "livhub-sidebar-collapsed";
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -74,7 +78,9 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <SidebarContext.Provider value={{ collapsed, toggle }}>{children}</SidebarContext.Provider>
+    <SidebarContext.Provider value={{ collapsed, toggle, mobileOpen, setMobileOpen }}>
+      {children}
+    </SidebarContext.Provider>
   );
 }
 
@@ -92,7 +98,7 @@ export function SidebarTrigger({ className = "" }: { className?: string }) {
       onClick={toggle}
       aria-label={collapsed ? "Expandir menu" : "Encolher menu"}
       className={
-        "grid h-7 w-7 place-items-center rounded-full border border-border bg-surface text-foreground shadow-sm hover:bg-muted " +
+        "hidden lg:grid h-7 w-7 place-items-center rounded-full border border-border bg-surface text-foreground shadow-sm hover:bg-muted " +
         className
       }
     >
@@ -101,11 +107,32 @@ export function SidebarTrigger({ className = "" }: { className?: string }) {
   );
 }
 
+export function MobileMenuButton({ className = "" }: { className?: string }) {
+  const { setMobileOpen } = useSidebar();
+  return (
+    <button
+      onClick={() => setMobileOpen(true)}
+      aria-label="Abrir menu"
+      className={
+        "grid h-9 w-9 place-items-center rounded-full border border-border bg-surface text-foreground hover:bg-muted lg:hidden " +
+        className
+      }
+    >
+      <Menu className="h-4 w-4" />
+    </button>
+  );
+}
+
 export function AppSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { collapsed } = useSidebar();
+  const { collapsed, mobileOpen, setMobileOpen } = useSidebar();
   const router = useRouter();
   const queryClient = useQueryClient();
+
+  // Close mobile drawer on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname, setMobileOpen]);
 
   const { data: session } = useQuery({
     queryKey: ["auth-session"],
@@ -140,81 +167,92 @@ export function AppSidebar() {
     router.navigate({ to: "/auth", replace: true });
   }
 
+  const desktopWidth = collapsed ? "lg:w-16" : "lg:w-60";
+
   return (
-    <aside
-      className={
-        "fixed inset-y-0 left-0 z-30 hidden flex-col bg-sidebar text-sidebar-foreground transition-[width] duration-200 lg:flex " +
-        (collapsed ? "w-16" : "w-60")
-      }
-    >
-      <SidebarTrigger className="absolute -right-3 top-6 z-40" />
-      {/* Brand */}
-      <div
+    <>
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <button
+          aria-label="Fechar menu"
+          onClick={() => setMobileOpen(false)}
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+        />
+      )}
+
+      <aside
         className={
-          "flex h-16 items-center " + (collapsed ? "justify-center px-2" : "px-5")
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-sidebar text-sidebar-foreground transition-[width,transform] duration-200 " +
+          desktopWidth +
+          " " +
+          (mobileOpen ? "translate-x-0" : "-translate-x-full") +
+          " lg:translate-x-0"
         }
       >
-        <Link to="/" className="inline-flex items-center">
-          <img
-            src={livhubLogo.url}
-            alt="LivHub"
-            width={512}
-            height={128}
-            className={
-              "h-auto w-auto object-contain " + (collapsed ? "h-16" : "h-14")
-            }
-          />
-        </Link>
-      </div>
+        <SidebarTrigger className="absolute -right-3 top-6 z-40" />
 
-      {/* Nav */}
-      <nav className={"flex-1 space-y-1 py-4 " + (collapsed ? "px-2" : "px-3")}>
-        {items.map((item) => {
-          const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
-          const Icon = item.icon;
-          const base =
-            "flex items-center rounded-lg text-sm transition-colors " +
-            (collapsed ? "justify-center px-0 py-2.5" : "gap-3 px-3 py-2.5");
-          return (
-            <Link
-              key={item.to}
-              to={item.to}
-              title={collapsed ? item.label : undefined}
+        {/* Mobile close */}
+        <button
+          onClick={() => setMobileOpen(false)}
+          aria-label="Fechar menu"
+          className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-md text-sidebar-muted hover:bg-white/10 hover:text-white lg:hidden"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        {/* Brand */}
+        <div
+          className={
+            "flex h-16 items-center " + (collapsed ? "lg:justify-center lg:px-2 px-5" : "px-5")
+          }
+        >
+          <Link to="/" className="inline-flex items-center">
+            <img
+              src={livhubLogo.url}
+              alt="LivHub"
+              width={512}
+              height={128}
               className={
-                active
-                  ? base + " bg-sidebar-active font-semibold text-sidebar-active-foreground shadow-sm"
-                  : base + " font-medium text-sidebar-muted hover:bg-white/5 hover:text-sidebar-foreground"
+                "h-auto w-auto object-contain " + (collapsed ? "lg:h-16 h-14" : "h-14")
               }
-            >
-              <Icon className="h-4 w-4 shrink-0" />
-              {!collapsed && <span>{item.label}</span>}
-            </Link>
-          );
-        })}
+            />
+          </Link>
+        </div>
 
-      </nav>
+        {/* Nav */}
+        <nav className={"flex-1 space-y-1 py-4 " + (collapsed ? "lg:px-2 px-3" : "px-3")}>
+          {items.map((item) => {
+            const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
+            const Icon = item.icon;
+            const base =
+              "flex items-center rounded-lg text-sm transition-colors gap-3 px-3 py-2.5 " +
+              (collapsed ? "lg:justify-center lg:gap-0 lg:px-0" : "");
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                title={collapsed ? item.label : undefined}
+                className={
+                  active
+                    ? base + " bg-sidebar-active font-semibold text-sidebar-active-foreground shadow-sm"
+                    : base + " font-medium text-sidebar-muted hover:bg-white/5 hover:text-sidebar-foreground"
+                }
+              >
+                <Icon className="h-4 w-4 shrink-0" />
+                <span className={collapsed ? "lg:hidden" : ""}>{item.label}</span>
+              </Link>
+            );
+          })}
 
-      {/* User card */}
-      <div className={collapsed ? "m-2" : "m-3 rounded-xl bg-white/5 p-3"}>
-        {collapsed ? (
-          <div className="flex flex-col items-center gap-2">
-            <div className="grid h-9 w-9 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
+        </nav>
+
+        {/* User card */}
+        <div className={collapsed ? "m-3 rounded-xl bg-white/5 p-3 lg:m-2 lg:bg-transparent lg:p-0" : "m-3 rounded-xl bg-white/5 p-3"}>
+          <div className={"flex items-center gap-3 " + (collapsed ? "lg:flex-col lg:gap-2" : "")}>
+            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
               {initials}
             </div>
-            <button
-              onClick={handleSignOut}
-              aria-label="Sair"
-              className="grid h-8 w-8 place-items-center rounded-md text-sidebar-muted hover:bg-white/10 hover:text-white"
-            >
-              <LogOut className="h-4 w-4" />
-            </button>
-          </div>
-        ) : (
-          <div className="flex items-center gap-3">
-            <div className="grid h-9 w-9 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
-              {initials}
-            </div>
-            <div className="min-w-0 flex-1">
+            <div className={"min-w-0 flex-1 " + (collapsed ? "lg:hidden" : "")}>
               <p className="truncate text-sm font-semibold text-white">
                 {session?.name ?? "Carregando…"}
               </p>
@@ -225,13 +263,13 @@ export function AppSidebar() {
             <button
               onClick={handleSignOut}
               aria-label="Sair"
-              className="grid h-8 w-8 place-items-center rounded-md text-sidebar-muted hover:bg-white/10 hover:text-white"
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-sidebar-muted hover:bg-white/10 hover:text-white"
             >
               <LogOut className="h-4 w-4" />
             </button>
           </div>
-        )}
-      </div>
-    </aside>
+        </div>
+      </aside>
+    </>
   );
 }
