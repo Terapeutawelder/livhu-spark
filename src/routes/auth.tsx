@@ -68,8 +68,7 @@ function AuthPage() {
         setMode("login");
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Ocorreu um erro. Tente novamente.";
-      toast.error(msg);
+      toast.error(translateAuthError(err));
     } finally {
       setLoading(false);
     }
@@ -82,14 +81,12 @@ function AuthPage() {
         redirect_uri: window.location.origin,
       });
       if (result.error) {
-        const msg = result.error instanceof Error ? result.error.message : "Falha no login com Google.";
-        toast.error(msg);
+        toast.error(translateAuthError(result.error));
         setLoading(false);
       }
       // If redirected or tokens set, onAuthStateChange will navigate.
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Falha no login com Google.";
-      toast.error(msg);
+      toast.error(translateAuthError(err));
       setLoading(false);
     }
   }
