@@ -3,7 +3,7 @@ import { Link, useRouterState, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ShieldCheck } from "lucide-react";
-import livhubLogo from "@/assets/livhub-logo-v7.png";
+import livhubLogo from "@/assets/livhub-logo.png.asset.json";
 import {
   LayoutDashboard,
   MessageSquare,
@@ -161,7 +161,7 @@ export function AppSidebar() {
       >
         <Link to="/" className="inline-flex items-center">
           <img
-            src={livhubLogo}
+            src={livhubLogo.url}
             alt="LivHub"
             width={512}
             height={128}
