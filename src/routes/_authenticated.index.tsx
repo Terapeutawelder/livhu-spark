@@ -27,6 +27,7 @@ import {
 
 import { redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { MetricCard } from "@/components/metric-card";
 
 export const Route = createFileRoute("/_authenticated/")({
   beforeLoad: async () => {
@@ -53,10 +54,10 @@ export const Route = createFileRoute("/_authenticated/")({
 });
 
 const kpis = [
-  { label: "Mensagens", value: "1.284", delta: "+12%", icon: MessageCircle },
-  { label: "% Respondidas", value: "94%", delta: "+3%", icon: CheckCheck },
-  { label: "Tempo médio resp.", value: "2m 40s", delta: "-18%", icon: Timer },
-  { label: "Faturamento", value: "R$ 15k", delta: "+18%", icon: DollarSign },
+  { label: "Mensagens", value: "1.284", delta: "+12%", icon: MessageCircle, trend: [4, 5, 6, 5, 7, 8, 7, 9, 10, 11, 12, 14] },
+  { label: "% Respondidas", value: "94%", delta: "+3%", icon: CheckCheck, trend: [80, 82, 84, 83, 86, 88, 90, 91, 92, 93, 93, 94] },
+  { label: "Tempo médio resp.", value: "2m 40s", delta: "-18%", icon: Timer, trend: [6, 6, 5, 5, 4, 4, 3, 3, 3, 3, 3, 2] },
+  { label: "Faturamento", value: "R$ 15k", delta: "+18%", icon: DollarSign, trend: [8, 9, 10, 11, 12, 13, 13, 14, 14, 15, 15, 16] },
 ];
 
 const deliveryData = [
@@ -149,33 +150,18 @@ function Dashboard() {
         {/* KPI row */}
         <section className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
           {kpis.map((k) => {
-            const Icon = k.icon;
             const positive = !k.delta.startsWith("-");
-            // "Tempo médio" caindo é bom → forçar verde mesmo com sinal negativo
             const isGood = k.label.startsWith("Tempo") ? true : positive;
             return (
-              <div
+              <MetricCard
                 key={k.label}
-                className="rounded-2xl border border-border bg-surface p-4 shadow-sm transition hover:shadow-md"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="grid h-9 w-9 place-items-center rounded-xl bg-gold/15 text-gold">
-                    <Icon className="h-4 w-4" />
-                  </div>
-                  <span
-                    className={
-                      isGood
-                        ? "inline-flex items-center gap-0.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400"
-                        : "inline-flex items-center gap-0.5 text-[11px] font-semibold text-red-600 dark:text-red-400"
-                    }
-                  >
-                    <ArrowUpRight className="h-3 w-3" />
-                    {k.delta}
-                  </span>
-                </div>
-                <p className="mt-4 font-display text-2xl font-bold tracking-tight">{k.value}</p>
-                <p className="text-xs text-muted-foreground">{k.label}</p>
-              </div>
+                icon={k.icon}
+                label={k.label}
+                value={k.value}
+                delta={k.delta}
+                deltaPositive={isGood}
+                trend={k.trend}
+              />
             );
           })}
         </section>
