@@ -41,7 +41,7 @@ const plans = [
 function PlansPage() {
   return (
     <AdminShell
-      title="Planos"
+      title="Planos de assinatura"
       description="Preços, limites e recursos disponíveis por plano."
       actions={
         <button className="inline-flex items-center gap-2 rounded-lg bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground hover:opacity-90">
