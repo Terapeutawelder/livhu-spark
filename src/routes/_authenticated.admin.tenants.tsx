@@ -33,7 +33,7 @@ const statusColor: Record<string, string> = {
 function TenantsPage() {
   return (
     <AdminShell
-      title="Tenants"
+      title="Clientes"
       description="Todos os consultórios e clínicas que operam na plataforma."
       actions={
         <button className="inline-flex items-center gap-2 rounded-lg bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground hover:opacity-90">
