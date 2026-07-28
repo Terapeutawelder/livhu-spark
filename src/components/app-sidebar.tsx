@@ -110,10 +110,7 @@ export function AppSidebar() {
   const { data: session } = useQuery({
     queryKey: ["auth-session"],
     queryFn: async () => {
-      const [{ data: userRes }, { data: rolesRes }] = await Promise.all([
-        supabase.auth.getUser(),
-        supabase.from("user_roles").select("role"),
-      ]);
+      const { data: userRes } = await supabase.auth.getUser();
       const user = userRes.user;
       if (!user) return null;
       const { data: profile } = await supabase
@@ -125,7 +122,6 @@ export function AppSidebar() {
         email: user.email ?? profile?.email ?? "",
         name: profile?.full_name || user.email?.split("@")[0] || "Usuário",
         avatar: profile?.avatar_url ?? null,
-        isSuperAdmin: (rolesRes ?? []).some((r) => r.role === "super_admin"),
       };
     },
   });
