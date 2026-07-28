@@ -112,6 +112,9 @@ function AgendamentoPage() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selected, setSelected] = useState<Appointment | null>(null);
   const [prefillStart, setPrefillStart] = useState<Date | null>(null);
+  const [typeFilter, setTypeFilter] = useState<"todos" | "agendamentos" | "bloqueios">("todos");
+  const [statusFilter, setStatusFilter] = useState<Status | null>(null);
+  const [search, setSearch] = useState("");
 
   const weekEnd = useMemo(() => addDays(weekStart, 7), [weekStart]);
 
