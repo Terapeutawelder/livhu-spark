@@ -516,23 +516,32 @@ function WeekGrid({
                   onClick={() => items.length === 0 && onSelectSlot(slot)}
                   className={`relative min-h-[54px] border-b ${i < 6 ? "border-r" : ""} border-border p-1 text-left hover:bg-muted/40 transition`}
                 >
-                  {items.map((a) => (
-                    <div
-                      key={a.id}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onSelectAppointment(a);
-                      }}
-                      className={`text-[11px] leading-tight rounded-md px-1.5 py-1 mb-1 border cursor-pointer ${STATUS_BADGE[a.status]}`}
-                      title={a.title}
-                    >
-                      <div className="font-medium truncate">{a.title}</div>
-                      <div className="opacity-70 flex items-center gap-1">
-                        {a.modality === "online" ? <Video className="w-3 h-3" /> : <MapPin className="w-3 h-3" />}
-                        {new Date(a.starts_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+                  {items.map((a) => {
+                    const isBlock = a.kind === "block";
+                    return (
+                      <div
+                        key={a.id}
+                        onClick={(e) => { e.stopPropagation(); onSelectAppointment(a); }}
+                        className={`text-[11px] leading-tight rounded-md px-1.5 py-1 mb-1 border cursor-pointer ${
+                          isBlock
+                            ? "bg-[repeating-linear-gradient(45deg,rgba(148,163,184,0.25)_0_6px,transparent_6px_12px)] border-dashed border-zinc-500/50 text-zinc-600 dark:text-zinc-300"
+                            : STATUS_BADGE[a.status]
+                        }`}
+                        title={a.title}
+                      >
+                        <div className="font-medium truncate flex items-center gap-1">
+                          {isBlock && <Ban className="w-3 h-3 shrink-0" />}
+                          {a.title}
+                        </div>
+                        {!isBlock && (
+                          <div className="opacity-70 flex items-center gap-1">
+                            {a.modality === "online" ? <Video className="w-3 h-3" /> : <MapPin className="w-3 h-3" />}
+                            {new Date(a.starts_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </button>
               );
             })}
