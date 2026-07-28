@@ -319,15 +319,20 @@ function AgendamentoPage() {
           )}
         </Card>
 
-        <ManagePanel
-          typeFilter={typeFilter}
-          setTypeFilter={setTypeFilter}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          search={search}
-          setSearch={setSearch}
-          statusCounts={statusCounts}
-        />
+        <div className="space-y-6">
+          <ManagePanel
+            typeFilter={typeFilter}
+            setTypeFilter={setTypeFilter}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            search={search}
+            setSearch={setSearch}
+            statusCounts={statusCounts}
+            blockCount={blockCount}
+          />
+          <AvailabilityCard tenantId={tenantId} settings={settings} />
+          <GoogleIntegrationCard tenantId={tenantId} settings={settings} />
+        </div>
       </div>
 
       <AppointmentDialog
@@ -335,8 +340,10 @@ function AgendamentoPage() {
         onOpenChange={setOpenDialog}
         selected={selected}
         prefillStart={prefillStart}
+        prefillKind={prefillKind}
         services={services}
         contacts={contacts}
+        settings={settings}
         onSave={(payload) => saveMutation.mutate(payload)}
         onDelete={(id) => deleteMutation.mutate(id)}
         saving={saveMutation.isPending}
