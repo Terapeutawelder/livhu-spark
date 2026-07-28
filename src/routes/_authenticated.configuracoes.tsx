@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { WhatsappCloudPanel } from "@/components/whatsapp-cloud-panel";
 import { useEffect, useState } from "react";
 import {
   User, Bell, MessageCircle, Palette, Shield, KeyRound, Link2, Building2, Check, Copy, Globe, Loader2, ExternalLink,
