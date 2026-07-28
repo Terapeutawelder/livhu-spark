@@ -355,11 +355,11 @@ function AgendamentoPage() {
 /* ---------------- Manage panel ---------------- */
 
 const STATUS_DOT: Record<Status, string> = {
-  scheduled: "bg-amber-500",
-  confirmed: "bg-blue-500",
-  completed: "bg-emerald-500",
-  canceled: "bg-rose-500",
-  no_show: "bg-zinc-500",
+  scheduled: "bg-primary/50",
+  confirmed: "bg-primary/75",
+  completed: "bg-primary",
+  canceled: "bg-destructive",
+  no_show: "bg-muted-foreground",
 };
 
 function ManagePanel({
