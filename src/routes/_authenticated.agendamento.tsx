@@ -367,6 +367,7 @@ function ManagePanel({
   statusFilter, setStatusFilter,
   search, setSearch,
   statusCounts,
+  blockCount,
 }: {
   typeFilter: "todos" | "agendamentos" | "bloqueios";
   setTypeFilter: (v: "todos" | "agendamentos" | "bloqueios") => void;
@@ -375,11 +376,13 @@ function ManagePanel({
   search: string;
   setSearch: (v: string) => void;
   statusCounts: Record<Status, number>;
+  blockCount: number;
 }) {
-  const types: Array<{ id: typeof typeFilter; label: string }> = [
-    { id: "todos", label: "Todos" },
-    { id: "agendamentos", label: "Agendamentos" },
-    { id: "bloqueios", label: "Intervalos bloqueados" },
+  const totalCount = Object.values(statusCounts).reduce((a, b) => a + b, 0) + blockCount;
+  const types: Array<{ id: typeof typeFilter; label: string; count: number }> = [
+    { id: "todos", label: "Todos", count: totalCount },
+    { id: "agendamentos", label: "Agendamentos", count: totalCount - blockCount },
+    { id: "bloqueios", label: "Intervalos bloqueados", count: blockCount },
   ];
   const statusItems: Array<{ id: Status; label: string }> = [
     { id: "scheduled", label: "Pendente" },
