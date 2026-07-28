@@ -8,15 +8,16 @@ import { Bell, Search } from "lucide-react";
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
   beforeLoad: async ({ location }) => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) {
+    const { data } = await supabase.auth.getSession();
+    const user = data.session?.user;
+    if (!user) {
       const isAdminArea = location.pathname.startsWith("/admin");
       throw redirect({
         to: isAdminArea ? "/admin/login" : "/auth",
         search: { redirect: location.href },
       });
     }
-    return { user: data.user };
+    return { user };
   },
   component: AuthenticatedShell,
 });
