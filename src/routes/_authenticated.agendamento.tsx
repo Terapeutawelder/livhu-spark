@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Plus, Video, MapPin, Clock, CheckCircle2, XCircle, CalendarDays } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Video, MapPin, Clock, CheckCircle2, XCircle, CalendarDays, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -112,6 +112,9 @@ function AgendamentoPage() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selected, setSelected] = useState<Appointment | null>(null);
   const [prefillStart, setPrefillStart] = useState<Date | null>(null);
+  const [typeFilter, setTypeFilter] = useState<"todos" | "agendamentos" | "bloqueios">("todos");
+  const [statusFilter, setStatusFilter] = useState<Status | null>(null);
+  const [search, setSearch] = useState("");
 
   const weekEnd = useMemo(() => addDays(weekStart, 7), [weekStart]);
 
@@ -223,6 +226,32 @@ function AgendamentoPage() {
     setOpenDialog(true);
   };
 
+  // Contact name map for filtering
+  const contactNameById = useMemo(() => {
+    const m = new Map<string, string>();
+    contacts.forEach((c) => m.set(c.id, c.full_name));
+    return m;
+  }, [contacts]);
+
+  const filteredAppointments = useMemo(() => {
+    return appointments.filter((a) => {
+      if (typeFilter === "bloqueios") return false; // no blocked intervals yet
+      if (statusFilter && a.status !== statusFilter) return false;
+      if (search.trim()) {
+        const q = search.trim().toLowerCase();
+        const name = a.contact_id ? (contactNameById.get(a.contact_id) ?? "") : "";
+        if (!a.title.toLowerCase().includes(q) && !name.toLowerCase().includes(q)) return false;
+      }
+      return true;
+    });
+  }, [appointments, typeFilter, statusFilter, search, contactNameById]);
+
+  const statusCounts = useMemo(() => {
+    const c: Record<Status, number> = { scheduled: 0, confirmed: 0, completed: 0, canceled: 0, no_show: 0 };
+    appointments.forEach((a) => { c[a.status]++; });
+    return c;
+  }, [appointments]);
+
   return (
     <div className="p-4 md:p-6 space-y-6">
       <header className="flex flex-wrap items-center justify-between gap-3">
@@ -243,34 +272,46 @@ function AgendamentoPage() {
         </div>
       </header>
 
-      <Card className="p-4">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Button size="icon" variant="ghost" onClick={() => setWeekStart(addDays(weekStart, -7))}>
-              <ChevronLeft className="w-4 h-4" />
-            </Button>
-            <div className="text-sm font-medium min-w-[220px] text-center">{fmtDateRange(weekStart)}</div>
-            <Button size="icon" variant="ghost" onClick={() => setWeekStart(addDays(weekStart, 7))}>
-              <ChevronRight className="w-4 h-4" />
-            </Button>
-            <Button size="sm" variant="outline" onClick={() => setWeekStart(startOfWeek(new Date()))}>Hoje</Button>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
+        <Card className="p-4">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <Button size="icon" variant="ghost" onClick={() => setWeekStart(addDays(weekStart, -7))}>
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              <div className="text-sm font-medium min-w-[220px] text-center">{fmtDateRange(weekStart)}</div>
+              <Button size="icon" variant="ghost" onClick={() => setWeekStart(addDays(weekStart, 7))}>
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+              <Button size="sm" variant="outline" onClick={() => setWeekStart(startOfWeek(new Date()))}>Hoje</Button>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {filteredAppointments.length} de {appointments.length} nesta semana
+            </div>
           </div>
-          <div className="text-xs text-muted-foreground">
-            {appointments.length} compromisso{appointments.length === 1 ? "" : "s"} nesta semana
-          </div>
-        </div>
 
-        {view === "semana" ? (
-          <WeekGrid
-            weekStart={weekStart}
-            appointments={appointments}
-            onSelectSlot={(d) => openNew(d)}
-            onSelectAppointment={openEdit}
-          />
-        ) : (
-          <AppointmentList appointments={appointments} services={services} onEdit={openEdit} onStatus={(id, status) => statusMutation.mutate({ id, status })} />
-        )}
-      </Card>
+          {view === "semana" ? (
+            <WeekGrid
+              weekStart={weekStart}
+              appointments={filteredAppointments}
+              onSelectSlot={(d) => openNew(d)}
+              onSelectAppointment={openEdit}
+            />
+          ) : (
+            <AppointmentList appointments={filteredAppointments} services={services} onEdit={openEdit} onStatus={(id, status) => statusMutation.mutate({ id, status })} />
+          )}
+        </Card>
+
+        <ManagePanel
+          typeFilter={typeFilter}
+          setTypeFilter={setTypeFilter}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          search={search}
+          setSearch={setSearch}
+          statusCounts={statusCounts}
+        />
+      </div>
 
       <AppointmentDialog
         open={openDialog}
@@ -286,6 +327,117 @@ function AgendamentoPage() {
     </div>
   );
 }
+
+/* ---------------- Manage panel ---------------- */
+
+const STATUS_DOT: Record<Status, string> = {
+  scheduled: "bg-amber-500",
+  confirmed: "bg-blue-500",
+  completed: "bg-emerald-500",
+  canceled: "bg-rose-500",
+  no_show: "bg-zinc-500",
+};
+
+function ManagePanel({
+  typeFilter, setTypeFilter,
+  statusFilter, setStatusFilter,
+  search, setSearch,
+  statusCounts,
+}: {
+  typeFilter: "todos" | "agendamentos" | "bloqueios";
+  setTypeFilter: (v: "todos" | "agendamentos" | "bloqueios") => void;
+  statusFilter: Status | null;
+  setStatusFilter: (s: Status | null) => void;
+  search: string;
+  setSearch: (v: string) => void;
+  statusCounts: Record<Status, number>;
+}) {
+  const types: Array<{ id: typeof typeFilter; label: string }> = [
+    { id: "todos", label: "Todos" },
+    { id: "agendamentos", label: "Agendamentos" },
+    { id: "bloqueios", label: "Intervalos bloqueados" },
+  ];
+  const statusItems: Array<{ id: Status; label: string }> = [
+    { id: "scheduled", label: "Pendente" },
+    { id: "confirmed", label: "Confirmado" },
+    { id: "completed", label: "Concluído" },
+    { id: "canceled", label: "Cancelado" },
+  ];
+  const hasFilters = statusFilter !== null || search.trim().length > 0 || typeFilter !== "todos";
+
+  return (
+    <Card className="p-5 h-fit lg:sticky lg:top-4 space-y-5">
+      <h3 className="font-semibold">Gerenciar visualização</h3>
+
+      <div className="space-y-2">
+        <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Visualizar por tipo</div>
+        <div className="space-y-1.5">
+          {types.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setTypeFilter(t.id)}
+              className="flex items-center gap-2 w-full text-left text-sm py-1"
+            >
+              <span className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${typeFilter === t.id ? "border-primary" : "border-muted-foreground/40"}`}>
+                {typeFilter === t.id && <span className="w-2 h-2 rounded-full bg-primary" />}
+              </span>
+              <span>{t.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="space-y-2 pt-4 border-t border-border">
+        <div className="flex items-center justify-between">
+          <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Filtros</div>
+          {hasFilters && (
+            <button
+              type="button"
+              onClick={() => { setStatusFilter(null); setSearch(""); setTypeFilter("todos"); }}
+              className="text-xs text-rose-500 hover:text-rose-600 flex items-center gap-1"
+            >
+              <X className="w-3 h-3" /> Limpar tudo
+            </button>
+          )}
+        </div>
+        <div className="relative">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Pesquisar pacientes..."
+            className="pl-8"
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2 pt-4 border-t border-border">
+        <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Status</div>
+        <div className="space-y-1">
+          {statusItems.map((s) => {
+            const active = statusFilter === s.id;
+            return (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => setStatusFilter(active ? null : s.id)}
+                className={`w-full flex items-center justify-between text-sm py-1.5 px-1 rounded hover:bg-muted/50 transition ${active ? "bg-muted/60" : ""}`}
+              >
+                <span className="flex items-center gap-2">
+                  <span className={`w-2.5 h-2.5 rounded-full ${STATUS_DOT[s.id]}`} />
+                  <span>{s.label}</span>
+                </span>
+                <span className="text-xs font-semibold text-muted-foreground">{statusCounts[s.id]}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </Card>
+  );
+}
+
 
 /* ---------------- Week grid ---------------- */
 
