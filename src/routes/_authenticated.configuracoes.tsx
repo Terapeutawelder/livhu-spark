@@ -317,3 +317,113 @@ function SaveBar() {
     </div>
   );
 }
+
+const ROOT_DOMAIN = "psi.livhub.cloud";
+const SLUG_RE = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+
+function DominioPanel() {
+  const qc = useQueryClient();
+  const fetchDomain = useServerFn(getMyTenantDomain);
+  const saveSlug = useServerFn(updateMyTenantSlug);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["my-tenant-domain"],
+    queryFn: () => fetchDomain(),
+  });
+
+  const [slug, setSlug] = useState("");
+  useEffect(() => {
+    if (data?.slug) setSlug(data.slug);
+  }, [data?.slug]);
+
+  const valid = SLUG_RE.test(slug) && slug.length >= 3 && slug.length <= 40;
+  const dirty = data && slug !== data.slug;
+
+  const mutation = useMutation({
+    mutationFn: (newSlug: string) => saveSlug({ data: { slug: newSlug } }),
+    onSuccess: () => {
+      toast.success("Subdomínio atualizado!");
+      qc.invalidateQueries({ queryKey: ["my-tenant-domain"] });
+    },
+    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : "Erro ao salvar"),
+  });
+
+  const previewUrl = `https://${slug || "seu-slug"}.${ROOT_DOMAIN}`;
+
+  const copy = (v: string) => {
+    navigator.clipboard.writeText(v);
+    toast.success("Copiado!");
+  };
+
+  return (
+    <div className="space-y-4">
+      <Card className="p-6">
+        <PanelHeader
+          title="Meu subdomínio"
+          desc="Escolha o endereço público do seu consultório no LivHub."
+        />
+
+        <div className="grid gap-2">
+          <Label className="text-xs">Subdomínio</Label>
+          <div className="flex items-stretch overflow-hidden rounded-md border">
+            <Input
+              value={slug}
+              onChange={(e) => setSlug(e.target.value.toLowerCase())}
+              placeholder="dr-liv"
+              className="rounded-none border-0 focus-visible:ring-0"
+            />
+            <div className="flex items-center bg-muted px-3 text-sm text-muted-foreground">
+              .{ROOT_DOMAIN}
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Use apenas letras minúsculas, números e hífens. Entre 3 e 40 caracteres.
+          </p>
+        </div>
+
+        <div className="mt-4 flex flex-col gap-2 rounded-lg border bg-muted/40 p-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
+            <p className="text-xs text-muted-foreground">Seu endereço público</p>
+            <p className="truncate font-mono text-sm">{previewUrl}</p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => copy(previewUrl)}>
+              <Copy className="mr-1.5 h-3.5 w-3.5" /> Copiar
+            </Button>
+            <Button variant="outline" size="sm" asChild disabled={!valid}>
+              <a href={previewUrl} target="_blank" rel="noreferrer">
+                <ExternalLink className="mr-1.5 h-3.5 w-3.5" /> Abrir
+              </a>
+            </Button>
+          </div>
+        </div>
+
+        <div className="mt-6 flex items-center justify-end gap-2 border-t pt-4">
+          <Button variant="outline" size="sm" disabled={!dirty} onClick={() => setSlug(data?.slug ?? "")}>
+            Cancelar
+          </Button>
+          <Button
+            size="sm"
+            disabled={!valid || !dirty || mutation.isPending || isLoading}
+            onClick={() => mutation.mutate(slug)}
+          >
+            {mutation.isPending && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
+            Salvar subdomínio
+          </Button>
+        </div>
+      </Card>
+
+      <Card className="p-6">
+        <PanelHeader
+          title="Domínio próprio (em breve)"
+          desc="Conecte um domínio como dr-liv.com.br com SSL automático."
+        />
+        <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+          Estamos preparando a integração com Cloudflare for SaaS para você usar seu próprio
+          domínio (ex.: <span className="font-mono">consultorio.seudominio.com</span>) apontando um
+          simples CNAME. Fique de olho nas próximas atualizações.
+        </div>
+      </Card>
+    </div>
+  );
+}
