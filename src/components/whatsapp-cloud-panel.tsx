@@ -143,6 +143,14 @@ export function WhatsappCloudPanel() {
           </div>
         )}
 
+        <EmbeddedSignupBlock
+          cfgFn={cfgFn}
+          exchangeFn={exchangeFn}
+          onConnected={() => qc.invalidateQueries({ queryKey: ["wa-channels"] })}
+        />
+
+
+
 
         <div className="grid gap-3 sm:grid-cols-2">
           <FormField label="Nome exibido">
