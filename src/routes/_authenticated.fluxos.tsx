@@ -121,6 +121,32 @@ function FluxosPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const installTemplate = useMutation({
+    mutationFn: async (tpl: FlowTemplate) => {
+      if (!tenant) throw new Error("Tenant não encontrado");
+      const { data, error } = await supabase
+        .from("flows")
+        .insert({
+          tenant_id: tenant.id,
+          name: tpl.name,
+          description: tpl.description,
+          trigger: tpl.trigger,
+          steps: tpl.steps.map((s) => ({ id: crypto.randomUUID(), ...s })),
+          is_active: false,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return data as unknown as Flow;
+    },
+    onSuccess: (f) => {
+      qc.invalidateQueries({ queryKey: ["flows"] });
+      setSelectedId(f.id);
+      toast.success("Template instalado — ative quando estiver pronto.");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col gap-4 p-4 lg:p-6">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -130,10 +156,13 @@ function FluxosPage() {
             Gatilhos, mensagens automáticas e agentes IA para automatizar a jornada.
           </p>
         </div>
-        <Button size="sm" className="gap-2" onClick={() => createFlow.mutate()} disabled={createFlow.isPending}>
-          {createFlow.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-          Novo fluxo
-        </Button>
+        <div className="flex items-center gap-2">
+          <TemplatesDialog onInstall={(t) => installTemplate.mutate(t)} isPending={installTemplate.isPending} />
+          <Button size="sm" className="gap-2" onClick={() => createFlow.mutate()} disabled={createFlow.isPending}>
+            {createFlow.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+            Novo fluxo
+          </Button>
+        </div>
       </div>
 
       <div className="grid flex-1 gap-4 overflow-hidden lg:grid-cols-[360px_1fr]">
