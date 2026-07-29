@@ -9,12 +9,13 @@
 
 const PREFIX = "enc:v1:";
 
-function getKeyMaterial(): Uint8Array {
+function getKeyMaterial(): ArrayBuffer {
   const raw = process.env.WHATSAPP_TOKEN_ENC_KEY;
   if (!raw) throw new Error("WHATSAPP_TOKEN_ENC_KEY não configurada.");
-  // Hash to derive a stable 32-byte key regardless of input length/format.
-  const enc = new TextEncoder().encode(raw);
-  return enc;
+  const bytes = new TextEncoder().encode(raw);
+  const buf = new ArrayBuffer(bytes.byteLength);
+  new Uint8Array(buf).set(bytes);
+  return buf;
 }
 
 async function getKey() {
@@ -54,10 +55,12 @@ export async function decryptToken(stored: string | null | undefined): Promise<s
   const [ivB64, cipherB64] = rest.split(":");
   if (!ivB64 || !cipherB64) throw new Error("Token cifrado inválido.");
   const key = await getKey();
-  const plain = await crypto.subtle.decrypt(
-    { name: "AES-GCM", iv: b64decode(ivB64) },
-    key,
-    b64decode(cipherB64),
-  );
+  const cipherBytes = b64decode(cipherB64);
+  const cipherBuf = new ArrayBuffer(cipherBytes.byteLength);
+  new Uint8Array(cipherBuf).set(cipherBytes);
+  const ivBytes = b64decode(ivB64);
+  const ivBuf = new ArrayBuffer(ivBytes.byteLength);
+  new Uint8Array(ivBuf).set(ivBytes);
+  const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv: ivBuf }, key, cipherBuf);
   return new TextDecoder().decode(plain);
 }

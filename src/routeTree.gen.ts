@@ -9,7 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermosRouteImport } from './routes/termos'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as PrivacidadeRouteImport } from './routes/privacidade'
+import { Route as ExclusaoDeDadosRouteImport } from './routes/exclusao-de-dados'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated.index'
@@ -38,10 +41,27 @@ import { Route as AuthenticatedAdminDominiosRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminConfiguracaoRouteImport } from './routes/_authenticated.admin.configuracao'
 import { Route as AuthenticatedAdminCalendarioRouteImport } from './routes/_authenticated.admin.calendario'
 import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api.public.whatsapp.webhook'
+import { Route as ApiPublicMetaDeauthorizeRouteImport } from './routes/api.public.meta.deauthorize'
+import { Route as ApiPublicMetaDataDeletionRouteImport } from './routes/api.public.meta.data-deletion'
 
+const TermosRoute = TermosRouteImport.update({
+  id: '/termos',
+  path: '/termos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadeRoute = PrivacidadeRouteImport.update({
+  id: '/privacidade',
+  path: '/privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExclusaoDeDadosRoute = ExclusaoDeDadosRouteImport.update({
+  id: '/exclusao-de-dados',
+  path: '/exclusao-de-dados',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -197,11 +217,26 @@ const ApiPublicWhatsappWebhookRoute =
     path: '/api/public/whatsapp/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicMetaDeauthorizeRoute =
+  ApiPublicMetaDeauthorizeRouteImport.update({
+    id: '/api/public/meta/deauthorize',
+    path: '/api/public/meta/deauthorize',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicMetaDataDeletionRoute =
+  ApiPublicMetaDataDeletionRouteImport.update({
+    id: '/api/public/meta/data-deletion',
+    path: '/api/public/meta/data-deletion',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/auth': typeof AuthRoute
+  '/exclusao-de-dados': typeof ExclusaoDeDadosRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/termos': typeof TermosRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamento': typeof AuthenticatedAgendamentoRoute
   '/agentes': typeof AuthenticatedAgentesRoute
@@ -226,11 +261,16 @@ export interface FileRoutesByFullPath {
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/admin/white-label': typeof AuthenticatedAdminWhiteLabelRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
+  '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
+  '/exclusao-de-dados': typeof ExclusaoDeDadosRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/termos': typeof TermosRoute
   '/agendamento': typeof AuthenticatedAgendamentoRoute
   '/agentes': typeof AuthenticatedAgentesRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
@@ -255,13 +295,18 @@ export interface FileRoutesByTo {
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/admin/white-label': typeof AuthenticatedAdminWhiteLabelRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
+  '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
+  '/exclusao-de-dados': typeof ExclusaoDeDadosRoute
+  '/privacidade': typeof PrivacidadeRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/termos': typeof TermosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/agendamento': typeof AuthenticatedAgendamentoRoute
   '/_authenticated/agentes': typeof AuthenticatedAgentesRoute
@@ -287,6 +332,8 @@ export interface FileRoutesById {
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/_authenticated/admin/white-label': typeof AuthenticatedAdminWhiteLabelRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
+  '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
 }
 export interface FileRouteTypes {
@@ -294,7 +341,10 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/exclusao-de-dados'
+    | '/privacidade'
     | '/reset-password'
+    | '/termos'
     | '/admin'
     | '/agendamento'
     | '/agentes'
@@ -319,11 +369,16 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/admin/white-label'
     | '/admin/'
+    | '/api/public/meta/data-deletion'
+    | '/api/public/meta/deauthorize'
     | '/api/public/whatsapp/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
+    | '/exclusao-de-dados'
+    | '/privacidade'
     | '/reset-password'
+    | '/termos'
     | '/agendamento'
     | '/agentes'
     | '/configuracoes'
@@ -348,12 +403,17 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/admin/white-label'
     | '/admin'
+    | '/api/public/meta/data-deletion'
+    | '/api/public/meta/deauthorize'
     | '/api/public/whatsapp/webhook'
   id:
     | '__root__'
     | '/_authenticated'
     | '/auth'
+    | '/exclusao-de-dados'
+    | '/privacidade'
     | '/reset-password'
+    | '/termos'
     | '/_authenticated/admin'
     | '/_authenticated/agendamento'
     | '/_authenticated/agentes'
@@ -379,24 +439,52 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/usuarios'
     | '/_authenticated/admin/white-label'
     | '/_authenticated/admin/'
+    | '/api/public/meta/data-deletion'
+    | '/api/public/meta/deauthorize'
     | '/api/public/whatsapp/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ExclusaoDeDadosRoute: typeof ExclusaoDeDadosRoute
+  PrivacidadeRoute: typeof PrivacidadeRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  TermosRoute: typeof TermosRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  ApiPublicMetaDataDeletionRoute: typeof ApiPublicMetaDataDeletionRoute
+  ApiPublicMetaDeauthorizeRoute: typeof ApiPublicMetaDeauthorizeRoute
   ApiPublicWhatsappWebhookRoute: typeof ApiPublicWhatsappWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/termos': {
+      id: '/termos'
+      path: '/termos'
+      fullPath: '/termos'
+      preLoaderRoute: typeof TermosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidade': {
+      id: '/privacidade'
+      path: '/privacidade'
+      fullPath: '/privacidade'
+      preLoaderRoute: typeof PrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exclusao-de-dados': {
+      id: '/exclusao-de-dados'
+      path: '/exclusao-de-dados'
+      fullPath: '/exclusao-de-dados'
+      preLoaderRoute: typeof ExclusaoDeDadosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -595,6 +683,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWhatsappWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/meta/deauthorize': {
+      id: '/api/public/meta/deauthorize'
+      path: '/api/public/meta/deauthorize'
+      fullPath: '/api/public/meta/deauthorize'
+      preLoaderRoute: typeof ApiPublicMetaDeauthorizeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/meta/data-deletion': {
+      id: '/api/public/meta/data-deletion'
+      path: '/api/public/meta/data-deletion'
+      fullPath: '/api/public/meta/data-deletion'
+      preLoaderRoute: typeof ApiPublicMetaDataDeletionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -668,20 +770,15 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
+  ExclusaoDeDadosRoute: ExclusaoDeDadosRoute,
+  PrivacidadeRoute: PrivacidadeRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  TermosRoute: TermosRoute,
   AdminLoginRoute: AdminLoginRoute,
+  ApiPublicMetaDataDeletionRoute: ApiPublicMetaDataDeletionRoute,
+  ApiPublicMetaDeauthorizeRoute: ApiPublicMetaDeauthorizeRoute,
   ApiPublicWhatsappWebhookRoute: ApiPublicWhatsappWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
