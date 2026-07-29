@@ -46,6 +46,7 @@ export const upsertChannel = createServerFn({ method: "POST" })
   .inputValidator((i: unknown) => ChannelInput.parse(i))
   .handler(async ({ data, context }) => {
     const tenantId = await getTenantId(context);
+    const { encryptToken } = await import("./token-crypto.server");
     const payload = {
       tenant_id: tenantId,
       display_name: data.display_name,
@@ -53,7 +54,7 @@ export const upsertChannel = createServerFn({ method: "POST" })
       phone_number_id: data.phone_number_id,
       waba_id: data.waba_id || null,
       business_id: data.business_id || null,
-      access_token: data.access_token,
+      access_token: await encryptToken(data.access_token),
       app_secret: data.app_secret || null,
       is_coexistence: data.is_coexistence,
       status: "active" as const,
@@ -102,8 +103,10 @@ export const testChannelConnection = createServerFn({ method: "POST" })
       .eq("tenant_id", tenantId)
       .maybeSingle();
     if (error || !ch) throw new Error("Canal não encontrado.");
+    const { decryptToken } = await import("./token-crypto.server");
+    const token = await decryptToken(ch.access_token);
     const res = await fetch(`https://graph.facebook.com/v20.0/${ch.phone_number_id}?fields=verified_name,display_phone_number`, {
-      headers: { Authorization: `Bearer ${ch.access_token}` },
+      headers: { Authorization: `Bearer ${token}` },
     });
     const body = await res.json().catch(() => ({}));
     if (!res.ok) {
@@ -134,9 +137,11 @@ export const checkChannelWabaConflict = createServerFn({ method: "POST" })
       .maybeSingle();
     if (error || !ch) throw new Error("Canal não encontrado.");
     if (!ch.waba_id) return { conflict: false, configuredWaba: null, actualWaba: null };
+    const { decryptToken } = await import("./token-crypto.server");
+    const token = await decryptToken(ch.access_token);
     const res = await fetch(
       `https://graph.facebook.com/v20.0/${ch.phone_number_id}?fields=account_id,verified_name,display_phone_number`,
-      { headers: { Authorization: `Bearer ${ch.access_token}` } },
+      { headers: { Authorization: `Bearer ${token}` } },
     );
     const body = await res.json().catch(() => ({}));
     if (!res.ok) return { conflict: false, configuredWaba: ch.waba_id, actualWaba: null, error: body?.error?.message };
@@ -233,9 +238,10 @@ export const sendConversationMessage = createServerFn({ method: "POST" })
     if (chErr || !channel) throw new Error("Canal não encontrado.");
     if (!channel.phone_number_id || !channel.access_token) throw new Error("Canal incompleto.");
 
+    const { decryptToken } = await import("./token-crypto.server");
     const creds = {
       phoneNumberId: channel.phone_number_id,
-      accessToken: channel.access_token,
+      accessToken: await decryptToken(channel.access_token),
       wabaId: channel.waba_id,
     };
     const { sendText, sendMedia } = await import("./whatsapp.server");
@@ -393,7 +399,8 @@ export const syncTemplates = createServerFn({ method: "POST" })
     if (error || !ch) throw new Error("Canal não encontrado.");
     if (!ch.waba_id || !ch.access_token) throw new Error("Configure o WABA ID e o token para sincronizar templates.");
     const { listTemplates } = await import("./whatsapp.server");
-    const res = await listTemplates(ch.waba_id, ch.access_token);
+    const { decryptToken } = await import("./token-crypto.server");
+    const res = await listTemplates(ch.waba_id, await decryptToken(ch.access_token));
     const items: any[] = res?.data ?? [];
     const rows = items.map((t) => {
       const body = (t.components ?? []).find((c: any) => c.type === "BODY");
@@ -517,12 +524,14 @@ async function runBroadcastSend(broadcastId: string, tenantId: string) {
     return;
   }
   const { sendTemplate } = await import("./whatsapp.server");
+  const { decryptToken } = await import("./token-crypto.server");
+  const decryptedToken = await decryptToken(channel.access_token);
   const vars: string[] = (bc.template_variables as any)?.defaults ?? [];
   let sent = 0, failed = 0;
   for (const r of recips ?? []) {
     try {
       const res = await sendTemplate(
-        { phoneNumberId: channel.phone_number_id, accessToken: channel.access_token, wabaId: channel.waba_id },
+        { phoneNumberId: channel.phone_number_id, accessToken: decryptedToken, wabaId: channel.waba_id },
         r.phone,
         template.name,
         template.language,
