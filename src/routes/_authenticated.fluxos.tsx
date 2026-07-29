@@ -440,3 +440,79 @@ function FlowConnector() {
     </div>
   );
 }
+
+function TemplatesDialog({
+  onInstall,
+  isPending,
+}: {
+  onInstall: (t: FlowTemplate) => void;
+  isPending: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm" className="gap-2">
+          <Sparkles className="h-4 w-4 text-gold" />
+          Templates prontos
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-3xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-gold" />
+            Automações prontas
+          </DialogTitle>
+          <DialogDescription>
+            Instale com 1 clique. O fluxo entra como <b>rascunho</b> — revise e ative quando quiser.
+          </DialogDescription>
+        </DialogHeader>
+        <ScrollArea className="max-h-[60vh] pr-3">
+          <div className="grid gap-3 sm:grid-cols-2">
+            {FLOW_TEMPLATES.map((t) => (
+              <div
+                key={t.id}
+                className="flex flex-col rounded-lg border bg-card p-4 shadow-sm transition hover:border-gold/40 hover:shadow-gold/10"
+              >
+                <div className="mb-2 flex items-start justify-between gap-2">
+                  <span className="text-2xl leading-none">{t.icon}</span>
+                  <Badge variant="outline" className="text-[10px]">
+                    {CATEGORY_LABEL[t.category]}
+                  </Badge>
+                </div>
+                <p className="mb-1 text-sm font-semibold leading-tight">{t.name}</p>
+                <p className="mb-3 flex-1 text-xs text-muted-foreground">{t.description}</p>
+                <div className="mb-3 flex flex-wrap gap-1">
+                  {t.steps.slice(0, 4).map((s, i) => (
+                    <span
+                      key={i}
+                      className="rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground"
+                    >
+                      {s.label}
+                    </span>
+                  ))}
+                  {t.steps.length > 4 && (
+                    <span className="text-[10px] text-muted-foreground">
+                      +{t.steps.length - 4}
+                    </span>
+                  )}
+                </div>
+                <Button
+                  size="sm"
+                  className="w-full gap-1"
+                  disabled={isPending}
+                  onClick={() => {
+                    onInstall(t);
+                    setOpen(false);
+                  }}
+                >
+                  <Plus className="h-3 w-3" /> Instalar template
+                </Button>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
+  );
+}
