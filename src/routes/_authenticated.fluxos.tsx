@@ -2,16 +2,20 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Plus, Play, Pause, Trash2, Zap, MessageSquare, GitBranch, Clock, Bot, CheckCircle2, Loader2, ArrowDown,
+  Plus, Play, Pause, Trash2, Zap, MessageSquare, GitBranch, Clock, Bot, CheckCircle2, Loader2, ArrowDown, Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentTenant } from "@/hooks/use-tenant";
+import { FLOW_TEMPLATES, CATEGORY_LABEL, type FlowTemplate } from "@/lib/flow-templates";
 
 export const Route = createFileRoute("/_authenticated/fluxos")({
   head: () => ({
@@ -117,6 +121,32 @@ function FluxosPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const installTemplate = useMutation({
+    mutationFn: async (tpl: FlowTemplate) => {
+      if (!tenant) throw new Error("Tenant não encontrado");
+      const { data, error } = await supabase
+        .from("flows")
+        .insert({
+          tenant_id: tenant.id,
+          name: tpl.name,
+          description: tpl.description,
+          trigger: tpl.trigger,
+          steps: tpl.steps.map((s) => ({ id: crypto.randomUUID(), ...s })),
+          is_active: false,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return data as unknown as Flow;
+    },
+    onSuccess: (f) => {
+      qc.invalidateQueries({ queryKey: ["flows"] });
+      setSelectedId(f.id);
+      toast.success("Template instalado — ative quando estiver pronto.");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col gap-4 p-4 lg:p-6">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -126,10 +156,13 @@ function FluxosPage() {
             Gatilhos, mensagens automáticas e agentes IA para automatizar a jornada.
           </p>
         </div>
-        <Button size="sm" className="gap-2" onClick={() => createFlow.mutate()} disabled={createFlow.isPending}>
-          {createFlow.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-          Novo fluxo
-        </Button>
+        <div className="flex items-center gap-2">
+          <TemplatesDialog onInstall={(t) => installTemplate.mutate(t)} isPending={installTemplate.isPending} />
+          <Button size="sm" className="gap-2" onClick={() => createFlow.mutate()} disabled={createFlow.isPending}>
+            {createFlow.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+            Novo fluxo
+          </Button>
+        </div>
       </div>
 
       <div className="grid flex-1 gap-4 overflow-hidden lg:grid-cols-[360px_1fr]">
@@ -405,5 +438,81 @@ function FlowConnector() {
       <div className="h-4 w-0.5 bg-border" />
       <ArrowDown className="h-3 w-3 text-border" />
     </div>
+  );
+}
+
+function TemplatesDialog({
+  onInstall,
+  isPending,
+}: {
+  onInstall: (t: FlowTemplate) => void;
+  isPending: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm" className="gap-2">
+          <Sparkles className="h-4 w-4 text-gold" />
+          Templates prontos
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-3xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-gold" />
+            Automações prontas
+          </DialogTitle>
+          <DialogDescription>
+            Instale com 1 clique. O fluxo entra como <b>rascunho</b> — revise e ative quando quiser.
+          </DialogDescription>
+        </DialogHeader>
+        <ScrollArea className="max-h-[60vh] pr-3">
+          <div className="grid gap-3 sm:grid-cols-2">
+            {FLOW_TEMPLATES.map((t) => (
+              <div
+                key={t.id}
+                className="flex flex-col rounded-lg border bg-card p-4 shadow-sm transition hover:border-gold/40 hover:shadow-gold/10"
+              >
+                <div className="mb-2 flex items-start justify-between gap-2">
+                  <span className="text-2xl leading-none">{t.icon}</span>
+                  <Badge variant="outline" className="text-[10px]">
+                    {CATEGORY_LABEL[t.category]}
+                  </Badge>
+                </div>
+                <p className="mb-1 text-sm font-semibold leading-tight">{t.name}</p>
+                <p className="mb-3 flex-1 text-xs text-muted-foreground">{t.description}</p>
+                <div className="mb-3 flex flex-wrap gap-1">
+                  {t.steps.slice(0, 4).map((s, i) => (
+                    <span
+                      key={i}
+                      className="rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground"
+                    >
+                      {s.label}
+                    </span>
+                  ))}
+                  {t.steps.length > 4 && (
+                    <span className="text-[10px] text-muted-foreground">
+                      +{t.steps.length - 4}
+                    </span>
+                  )}
+                </div>
+                <Button
+                  size="sm"
+                  className="w-full gap-1"
+                  disabled={isPending}
+                  onClick={() => {
+                    onInstall(t);
+                    setOpen(false);
+                  }}
+                >
+                  <Plus className="h-3 w-3" /> Instalar template
+                </Button>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+      </DialogContent>
+    </Dialog>
   );
 }
