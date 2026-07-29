@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Loader2, Check, Copy, Trash2, Plug, Send, RefreshCw, ExternalLink } from "lucide-react";
+import { Loader2, Check, Copy, Trash2, Plug, Send, RefreshCw, ExternalLink, AlertTriangle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,8 +11,9 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import {
-  listChannels, upsertChannel, deleteChannel, testChannelConnection,
+  listChannels, upsertChannel, deleteChannel, testChannelConnection, checkChannelWabaConflict,
 } from "@/lib/whatsapp.functions";
+
 
 export function WhatsappCloudPanel() {
   const qc = useQueryClient();
@@ -20,11 +21,15 @@ export function WhatsappCloudPanel() {
   const upsertFn = useServerFn(upsertChannel);
   const deleteFn = useServerFn(deleteChannel);
   const testFn = useServerFn(testChannelConnection);
+  const conflictFn = useServerFn(checkChannelWabaConflict);
+
 
   const { data: channels = [], isLoading } = useQuery({
     queryKey: ["wa-channels"],
     queryFn: () => listFn() as Promise<any[]>,
   });
+
+
 
   const emptyForm = {
     id: undefined as string | undefined,
@@ -39,6 +44,17 @@ export function WhatsappCloudPanel() {
   };
   const [form, setForm] = useState(emptyForm);
   const active = channels[0];
+
+  const { data: conflict } = useQuery({
+    queryKey: ["wa-channel-conflict", active?.id],
+    queryFn: async () => {
+      if (!active?.id || !active.waba_id) return null;
+      return conflictFn({ data: { id: active.id } }) as Promise<any>;
+    },
+    enabled: !!active?.id && !!active.waba_id,
+    staleTime: 2 * 60 * 1000,
+  });
+
 
   useEffect(() => {
     if (active && !form.id) {
@@ -109,6 +125,21 @@ export function WhatsappCloudPanel() {
             </Button>
           </div>
         )}
+
+        {conflict?.conflict && (
+          <div className="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3">
+            <p className="flex items-start gap-2 text-sm font-medium text-amber-800 dark:text-amber-300">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>
+                Este número parece estar vinculado a outra WABA. WABA configurada: <code className="rounded bg-amber-500/20 px-1">{conflict.configuredWaba}</code> · WABA detectada pela Meta: <code className="rounded bg-amber-500/20 px-1">{conflict.actualWaba}</code>.
+              </span>
+            </p>
+            <p className="mt-1 text-xs text-amber-700 dark:text-amber-400">
+              Recomendamos criar uma WABA dedicada ao LivHub e corrigir o WABA ID acima. Caso contrário, mensagens podem falhar ou serem direcionadas ao negócio errado.
+            </p>
+          </div>
+        )}
+
 
         <div className="grid gap-3 sm:grid-cols-2">
           <FormField label="Nome exibido">

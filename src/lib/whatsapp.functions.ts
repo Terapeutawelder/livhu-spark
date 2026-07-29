@@ -121,6 +121,36 @@ export const testChannelConnection = createServerFn({ method: "POST" })
     return body;
   });
 
+export const checkChannelWabaConflict = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((i: unknown) => z.object({ id: z.string().uuid() }).parse(i))
+  .handler(async ({ data, context }) => {
+    const tenantId = await getTenantId(context);
+    const { data: ch, error } = await context.supabase
+      .from("whatsapp_channels")
+      .select("phone_number_id, waba_id, access_token")
+      .eq("id", data.id)
+      .eq("tenant_id", tenantId)
+      .maybeSingle();
+    if (error || !ch) throw new Error("Canal não encontrado.");
+    if (!ch.waba_id) return { conflict: false, configuredWaba: null, actualWaba: null };
+    const res = await fetch(
+      `https://graph.facebook.com/v20.0/${ch.phone_number_id}?fields=account_id,verified_name,display_phone_number`,
+      { headers: { Authorization: `Bearer ${ch.access_token}` } },
+    );
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok) return { conflict: false, configuredWaba: ch.waba_id, actualWaba: null, error: body?.error?.message };
+    const actualWaba = body?.account_id ?? null;
+    const conflict = actualWaba !== null && actualWaba !== ch.waba_id;
+    return {
+      conflict,
+      configuredWaba: ch.waba_id,
+      actualWaba,
+      displayPhoneNumber: body?.display_phone_number ?? null,
+      verifiedName: body?.verified_name ?? null,
+    };
+  });
+
 // ---------------- Conversations & messages ----------------
 
 export const listConversations = createServerFn({ method: "GET" })
