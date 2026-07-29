@@ -232,6 +232,104 @@ function FormField({ label, children }: { label: string; children: React.ReactNo
   );
 }
 
+function EmbeddedSignupBlock({
+  cfgFn, exchangeFn, onConnected,
+}: {
+  cfgFn: () => Promise<{ appId: string | null; configId: string | null; configured: boolean }>;
+  exchangeFn: (a: { data: { code: string; phone_number_id?: string; waba_id?: string } }) => Promise<any>;
+  onConnected: () => void;
+}) {
+  const { data: cfg } = useQuery({ queryKey: ["meta-embedded-cfg"], queryFn: () => cfgFn() });
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!cfg?.appId || typeof window === "undefined") return;
+    if ((window as any).FB) return;
+    const s = document.createElement("script");
+    s.src = "https://connect.facebook.net/en_US/sdk.js";
+    s.async = true;
+    s.defer = true;
+    s.crossOrigin = "anonymous";
+    s.onload = () => {
+      (window as any).FB?.init({ appId: cfg.appId, cookie: true, xfbml: false, version: "v20.0" });
+    };
+    document.body.appendChild(s);
+  }, [cfg?.appId]);
+
+  // Meta posts { type: 'WA_EMBEDDED_SIGNUP', data: { phone_number_id, waba_id } } via postMessage
+  const [signupData, setSignupData] = useState<{ phone_number_id?: string; waba_id?: string }>({});
+  useEffect(() => {
+    function onMessage(e: MessageEvent) {
+      if (e.origin !== "https://www.facebook.com" && e.origin !== "https://web.facebook.com") return;
+      try {
+        const parsed = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
+        if (parsed?.type === "WA_EMBEDDED_SIGNUP" && parsed.event === "FINISH") {
+          setSignupData({ phone_number_id: parsed.data?.phone_number_id, waba_id: parsed.data?.waba_id });
+        }
+      } catch { /* ignore */ }
+    }
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, []);
+
+  async function launch() {
+    const FB: any = (window as any).FB;
+    if (!FB || !cfg?.configId) {
+      toast.error("SDK do Facebook ainda carregando. Tente novamente em alguns segundos.");
+      return;
+    }
+    setBusy(true);
+    FB.login(
+      async (response: any) => {
+        try {
+          const code = response?.authResponse?.code;
+          if (!code) {
+            toast.error("Autorização cancelada.");
+            return;
+          }
+          await exchangeFn({ data: { code, ...signupData } });
+          toast.success("WhatsApp conectado via Meta!");
+          onConnected();
+        } catch (err: any) {
+          toast.error(err?.message ?? "Falha ao conectar.");
+        } finally {
+          setBusy(false);
+        }
+      },
+      {
+        config_id: cfg.configId,
+        response_type: "code",
+        override_default_response_type: true,
+        extras: { setup: {}, featureType: "", sessionInfoVersion: "3" },
+      },
+    );
+  }
+
+  if (!cfg) return null;
+  if (!cfg.configured) {
+    return (
+      <div className="mb-4 rounded-lg border border-dashed p-3 text-xs text-muted-foreground">
+        Embedded Signup ainda não configurado pelo super admin. Preencha as credenciais manualmente abaixo.
+      </div>
+    );
+  }
+
+  return (
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-primary/30 bg-primary/5 p-3">
+      <div>
+        <p className="text-sm font-medium">Conectar com um clique via Meta</p>
+        <p className="text-xs text-muted-foreground">
+          Autentique com sua conta Facebook Business — não é preciso copiar tokens.
+        </p>
+      </div>
+      <Button onClick={launch} disabled={busy} className="bg-[#1877F2] text-white hover:bg-[#1877F2]/90">
+        {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Facebook className="mr-2 h-4 w-4" />}
+        Entrar com Facebook
+      </Button>
+    </div>
+  );
+}
+
 function CopyRow({ label, value }: { label: string; value: string }) {
   return (
     <div>
