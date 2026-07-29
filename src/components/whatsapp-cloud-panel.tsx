@@ -29,15 +29,6 @@ export function WhatsappCloudPanel() {
     queryFn: () => listFn() as Promise<any[]>,
   });
 
-  const { data: conflict } = useQuery({
-    queryKey: ["wa-channel-conflict", active?.id],
-    queryFn: async () => {
-      if (!active?.id || !active.waba_id) return null;
-      return conflictFn({ data: { id: active.id } }) as Promise<any>;
-    },
-    enabled: !!active?.id && !!active.waba_id,
-    staleTime: 2 * 60 * 1000,
-  });
 
 
   const emptyForm = {
