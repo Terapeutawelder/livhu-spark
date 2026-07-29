@@ -2,16 +2,20 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
-  Plus, Play, Pause, Trash2, Zap, MessageSquare, GitBranch, Clock, Bot, CheckCircle2, Loader2, ArrowDown,
+  Plus, Play, Pause, Trash2, Zap, MessageSquare, GitBranch, Clock, Bot, CheckCircle2, Loader2, ArrowDown, Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentTenant } from "@/hooks/use-tenant";
+import { FLOW_TEMPLATES, CATEGORY_LABEL, type FlowTemplate } from "@/lib/flow-templates";
 
 export const Route = createFileRoute("/_authenticated/fluxos")({
   head: () => ({
