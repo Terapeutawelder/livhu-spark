@@ -524,13 +524,10 @@ async function runBroadcastSend(broadcastId: string, tenantId: string) {
     return;
   }
   const { sendTemplate } = await import("./whatsapp.server");
-  const vars: string[] = (bc.template_variables as any)?.defaults ?? [];
-  let sent = 0, failed = 0;
-  for (const r of recips ?? []) {
-    try {
-      const res = await sendTemplate(
   const { decryptToken } = await import("./token-crypto.server");
   const decryptedToken = await decryptToken(channel.access_token);
+  const vars: string[] = (bc.template_variables as any)?.defaults ?? [];
+  let sent = 0, failed = 0;
   for (const r of recips ?? []) {
     try {
       const res = await sendTemplate(
