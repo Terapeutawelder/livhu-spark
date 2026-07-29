@@ -126,6 +126,21 @@ export function WhatsappCloudPanel() {
           </div>
         )}
 
+        {conflict?.conflict && (
+          <div className="mb-4 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3">
+            <p className="flex items-start gap-2 text-sm font-medium text-amber-800 dark:text-amber-300">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>
+                Este número parece estar vinculado a outra WABA. WABA configurada: <code className="rounded bg-amber-500/20 px-1">{conflict.configuredWaba}</code> · WABA detectada pela Meta: <code className="rounded bg-amber-500/20 px-1">{conflict.actualWaba}</code>.
+              </span>
+            </p>
+            <p className="mt-1 text-xs text-amber-700 dark:text-amber-400">
+              Recomendamos criar uma WABA dedicada ao LivHub e corrigir o WABA ID acima. Caso contrário, mensagens podem falhar ou serem direcionadas ao negócio errado.
+            </p>
+          </div>
+        )}
+
+
         <div className="grid gap-3 sm:grid-cols-2">
           <FormField label="Nome exibido">
             <Input value={form.display_name} onChange={(e) => setForm({ ...form, display_name: e.target.value })} placeholder="Dra. Liv — Psicoterapeuta" />
