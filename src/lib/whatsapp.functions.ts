@@ -399,7 +399,8 @@ export const syncTemplates = createServerFn({ method: "POST" })
     if (error || !ch) throw new Error("Canal não encontrado.");
     if (!ch.waba_id || !ch.access_token) throw new Error("Configure o WABA ID e o token para sincronizar templates.");
     const { listTemplates } = await import("./whatsapp.server");
-    const res = await listTemplates(ch.waba_id, ch.access_token);
+    const { decryptToken } = await import("./token-crypto.server");
+    const res = await listTemplates(ch.waba_id, await decryptToken(ch.access_token));
     const items: any[] = res?.data ?? [];
     const rows = items.map((t) => {
       const body = (t.components ?? []).find((c: any) => c.type === "BODY");
@@ -528,7 +529,12 @@ async function runBroadcastSend(broadcastId: string, tenantId: string) {
   for (const r of recips ?? []) {
     try {
       const res = await sendTemplate(
-        { phoneNumberId: channel.phone_number_id, accessToken: channel.access_token, wabaId: channel.waba_id },
+  const { decryptToken } = await import("./token-crypto.server");
+  const decryptedToken = await decryptToken(channel.access_token);
+  for (const r of recips ?? []) {
+    try {
+      const res = await sendTemplate(
+        { phoneNumberId: channel.phone_number_id, accessToken: decryptedToken, wabaId: channel.waba_id },
         r.phone,
         template.name,
         template.language,
