@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Loader2, Check, Copy, Trash2, Plug, Send, RefreshCw, ExternalLink, AlertTriangle } from "lucide-react";
+import { Loader2, Check, Copy, Trash2, Plug, Send, RefreshCw, ExternalLink, AlertTriangle, Facebook } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   listChannels, upsertChannel, deleteChannel, testChannelConnection, checkChannelWabaConflict,
 } from "@/lib/whatsapp.functions";
+import { getEmbeddedSignupConfig, exchangeMetaCode } from "@/lib/meta-embedded-signup.functions";
 
 
 export function WhatsappCloudPanel() {
@@ -22,6 +23,8 @@ export function WhatsappCloudPanel() {
   const deleteFn = useServerFn(deleteChannel);
   const testFn = useServerFn(testChannelConnection);
   const conflictFn = useServerFn(checkChannelWabaConflict);
+  const cfgFn = useServerFn(getEmbeddedSignupConfig);
+  const exchangeFn = useServerFn(exchangeMetaCode);
 
 
   const { data: channels = [], isLoading } = useQuery({
