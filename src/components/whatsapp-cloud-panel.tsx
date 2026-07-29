@@ -21,6 +21,8 @@ export function WhatsappCloudPanel() {
   const upsertFn = useServerFn(upsertChannel);
   const deleteFn = useServerFn(deleteChannel);
   const testFn = useServerFn(testChannelConnection);
+  const conflictFn = useServerFn(checkChannelWabaConflict);
+
 
   const { data: channels = [], isLoading } = useQuery({
     queryKey: ["wa-channels"],
