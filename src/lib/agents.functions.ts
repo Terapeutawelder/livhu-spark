@@ -19,17 +19,18 @@ export const chatWithAgent = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { data: agent, error } = await context.supabase
       .from("ai_agents")
-      .select("id, name, system_prompt, model, temperature, language, tools, handoff_rules")
+      .select("id, tenant_id, name, system_prompt, model, temperature, language, tools, handoff_rules")
       .eq("id", data.agentId)
       .maybeSingle();
 
     if (error || !agent) throw new Error("Agente não encontrado ou sem acesso.");
 
-    const key = process.env.LOVABLE_API_KEY;
-    if (!key) throw new Error("LOVABLE_API_KEY ausente no servidor.");
+    const { loadTenantAiCredential, createProvider, defaultModel, isAllowedModel, friendlyAiError } =
+      await import("./byo-ai.server");
 
-    const { createLovableAiGatewayProvider } = await import("./ai-gateway.server");
-    const gateway = createLovableAiGatewayProvider(key);
+    const credential = await loadTenantAiCredential(agent.tenant_id);
+    const { provider, client } = createProvider(credential);
+    const model = isAllowedModel(provider, agent.model ?? "") ? agent.model! : defaultModel(provider);
 
     const tools = Array.isArray(agent.tools) ? (agent.tools as string[]) : [];
     const handoff = Array.isArray(agent.handoff_rules) ? (agent.handoff_rules as string[]) : [];
@@ -49,15 +50,13 @@ export const chatWithAgent = createServerFn({ method: "POST" })
 
     try {
       const result = await generateText({
-        model: gateway(agent.model || "google/gemini-2.5-flash"),
+        model: client(model),
         messages,
         temperature: Number(agent.temperature ?? 0.4),
       });
       return { reply: result.text };
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Falha ao consultar o modelo.";
-      if (msg.includes("429")) throw new Error("Limite de uso da IA atingido. Tente novamente em instantes.");
-      if (msg.includes("402")) throw new Error("Créditos de IA esgotados no workspace.");
-      throw new Error(msg);
+      throw friendlyAiError(err);
     }
   });
+
