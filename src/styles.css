@@ -42,6 +42,8 @@
   --color-sidebar-active: var(--sidebar-active);
   --color-sidebar-active-foreground: var(--sidebar-active-foreground);
   --color-sidebar-muted: var(--sidebar-muted);
+  --color-sidebar-hover: var(--sidebar-hover);
+
 
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
