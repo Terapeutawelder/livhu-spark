@@ -14,6 +14,7 @@ import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentTenant } from "@/hooks/use-tenant";
+import { AiOrchestratorPanel } from "@/components/ai-orchestrator-panel";
 import { chatWithAgent } from "@/lib/agents.functions";
 
 type Agent = {
