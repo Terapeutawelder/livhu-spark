@@ -67,8 +67,9 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.18 0.01 60);
 
-  --primary: oklch(0.2 0.01 60);              /* preto quente = botão escuro */
-  --primary-foreground: oklch(0.985 0.008 85);
+  --primary: oklch(0.78 0.13 80);             /* dourado da paleta */
+  --primary-foreground: oklch(0.2 0.01 60);
+
 
   --secondary: oklch(0.95 0.012 82);
   --secondary-foreground: oklch(0.2 0.01 60);
