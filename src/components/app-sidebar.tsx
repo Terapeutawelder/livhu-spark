@@ -195,7 +195,7 @@ export function AppSidebar() {
         <button
           onClick={() => setMobileOpen(false)}
           aria-label="Fechar menu"
-          className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-md text-sidebar-muted hover:bg-white/10 hover:text-white lg:hidden"
+          className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-md text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-foreground lg:hidden"
         >
           <X className="h-4 w-4" />
         </button>
@@ -235,7 +235,7 @@ export function AppSidebar() {
                 className={
                   active
                     ? base + " bg-sidebar-active font-semibold text-sidebar-active-foreground shadow-sm"
-                    : base + " font-medium text-sidebar-muted hover:bg-white/5 hover:text-sidebar-foreground"
+                    : base + " font-medium text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-foreground"
                 }
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -247,13 +247,13 @@ export function AppSidebar() {
         </nav>
 
         {/* User card */}
-        <div className={collapsed ? "m-3 rounded-xl bg-white/5 p-3 lg:m-2 lg:bg-transparent lg:p-0" : "m-3 rounded-xl bg-white/5 p-3"}>
+        <div className={collapsed ? "m-3 rounded-xl bg-sidebar-hover p-3 lg:m-2 lg:bg-transparent lg:p-0" : "m-3 rounded-xl bg-sidebar-hover p-3"}>
           <div className={"flex items-center gap-3 " + (collapsed ? "lg:flex-col lg:gap-2" : "")}>
             <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
               {initials}
             </div>
             <div className={"min-w-0 flex-1 " + (collapsed ? "lg:hidden" : "")}>
-              <p className="truncate text-sm font-semibold text-white">
+              <p className="truncate text-sm font-semibold text-sidebar-foreground">
                 {session?.name ?? "Carregando…"}
               </p>
               <p className="truncate text-[11px] text-sidebar-muted">
@@ -263,7 +263,7 @@ export function AppSidebar() {
             <button
               onClick={handleSignOut}
               aria-label="Sair"
-              className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-sidebar-muted hover:bg-white/10 hover:text-white"
+              className="grid h-8 w-8 shrink-0 place-items-center rounded-md text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-foreground"
             >
               <LogOut className="h-4 w-4" />
             </button>

@@ -90,7 +90,7 @@ export function AdminShell({
         <button
           onClick={() => setMobileOpen(false)}
           aria-label="Fechar menu"
-          className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-md text-sidebar-muted hover:bg-white/10 hover:text-white lg:hidden"
+          className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-md text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-foreground lg:hidden"
         >
           <X className="h-4 w-4" />
         </button>
@@ -100,7 +100,7 @@ export function AdminShell({
             <span className="font-display text-sm font-bold">L</span>
           </div>
           <div className="flex flex-col leading-tight">
-            <span className="font-display text-base font-bold tracking-tight text-white">
+            <span className="font-display text-base font-bold tracking-tight text-sidebar-foreground">
               LivHub
             </span>
             <span className="text-[10px] font-semibold uppercase tracking-wider text-gold">
@@ -122,7 +122,7 @@ export function AdminShell({
                 className={
                   active
                     ? base + " bg-sidebar-active font-semibold text-sidebar-active-foreground shadow-sm"
-                    : base + " font-medium text-sidebar-muted hover:bg-white/5 hover:text-sidebar-foreground"
+                    : base + " font-medium text-sidebar-muted hover:bg-sidebar-hover hover:text-sidebar-foreground"
                 }
               >
                 <Icon className="h-4 w-4 shrink-0" />
@@ -132,10 +132,10 @@ export function AdminShell({
           })}
         </nav>
 
-        <div className="m-3 rounded-xl bg-white/5 p-3">
+        <div className="m-3 rounded-xl bg-sidebar-hover p-3">
           <button
             onClick={handleSignOut}
-            className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-xs font-medium text-sidebar-muted transition-colors hover:bg-white/10 hover:text-white"
+            className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-xs font-medium text-sidebar-muted transition-colors hover:bg-sidebar-hover hover:text-sidebar-foreground"
           >
             <LogOut className="h-3.5 w-3.5" />
             Sair da conta

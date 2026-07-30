@@ -42,6 +42,8 @@
   --color-sidebar-active: var(--sidebar-active);
   --color-sidebar-active-foreground: var(--sidebar-active-foreground);
   --color-sidebar-muted: var(--sidebar-muted);
+  --color-sidebar-hover: var(--sidebar-hover);
+
 
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
@@ -67,8 +69,9 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.18 0.01 60);
 
-  --primary: oklch(0.2 0.01 60);              /* preto quente = botão escuro */
-  --primary-foreground: oklch(0.985 0.008 85);
+  --primary: oklch(0.78 0.13 80);             /* dourado da paleta */
+  --primary-foreground: oklch(0.2 0.01 60);
+
 
   --secondary: oklch(0.95 0.012 82);
   --secondary-foreground: oklch(0.2 0.01 60);
@@ -90,11 +93,13 @@
   --input: oklch(0.9 0.01 80);
   --ring: oklch(0.78 0.13 80);
 
-  --sidebar: oklch(0.16 0.008 60);            /* sidebar preta */
-  --sidebar-foreground: oklch(0.85 0.01 80);
-  --sidebar-muted: oklch(0.55 0.01 70);
+  --sidebar: oklch(0.965 0.012 82);           /* creme da paleta no modo claro */
+  --sidebar-foreground: oklch(0.22 0.01 60);
+  --sidebar-muted: oklch(0.5 0.015 65);
   --sidebar-active: oklch(0.78 0.13 80);      /* dourado */
-  --sidebar-active-foreground: oklch(0.16 0.008 60);
+  --sidebar-active-foreground: oklch(0.18 0.01 60);
+  --sidebar-hover: oklch(0.92 0.015 82);
+
 
   --chart-1: oklch(0.78 0.13 80);   /* gold */
   --chart-2: oklch(0.55 0.15 240);  /* blue */
@@ -143,6 +148,8 @@
   --sidebar-muted: oklch(0.55 0.01 70);
   --sidebar-active: oklch(0.82 0.14 82);
   --sidebar-active-foreground: oklch(0.08 0.004 60);
+  --sidebar-hover: oklch(0.16 0.006 60);
+
 
   --chart-1: oklch(0.82 0.14 82);
   --chart-2: oklch(0.65 0.15 240);
