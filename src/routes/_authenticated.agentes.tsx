@@ -131,7 +131,7 @@ function AgentesPage() {
   });
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col gap-4 p-4 lg:p-6">
+    <div className="flex min-h-[calc(100vh-4rem)] flex-col gap-4 overflow-y-auto p-4 lg:p-6">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Agentes IA</h1>
@@ -145,12 +145,15 @@ function AgentesPage() {
         </Button>
       </div>
 
+      <AiOrchestratorPanel />
+
       <div className="grid gap-3 sm:grid-cols-4">
         <StatCard label="Agentes ativos" value={String(agents.filter((a) => a.is_active).length)} hint={`de ${agents.length} criados`} />
         <StatCard label="Modelo padrão" value="Gemini 2.5" hint="Flash" />
         <StatCard label="Idioma" value="PT-BR" />
         <StatCard label="Handoff" value="Manual" hint="via regras" />
       </div>
+
 
       <div className="grid flex-1 gap-4 overflow-hidden lg:grid-cols-[320px_1fr_360px]">
         <Card className="flex min-h-0 flex-col">
