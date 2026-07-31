@@ -75,14 +75,18 @@ type Contact = {
 };
 
 function KanbanPage() {
-  const { data: tenant, isLoading: loadingTenant } = useCurrentTenant();
+  const { data: tenant, isLoading: loadingTenant, error: tenantError } = useCurrentTenant();
   const qc = useQueryClient();
   const [q, setQ] = useState("");
   const [dragging, setDragging] = useState<{ id: string; from: string | null } | null>(null);
   const [newOpen, setNewOpen] = useState<string | null>(null); // stage_id ou null
   const [creating, setCreating] = useState({ name: "", phone: "", source: "" });
 
-  const { data: stages = [], isLoading: loadingStages } = useQuery({
+  const {
+    data: stages = [],
+    isLoading: loadingStages,
+    error: stagesError,
+  } = useQuery({
     enabled: !!tenant?.id,
     queryKey: ["kanban-stages", tenant?.id],
     queryFn: async () => {
@@ -92,11 +96,18 @@ function KanbanPage() {
         .eq("tenant_id", tenant!.id)
         .order("position", { ascending: true });
       if (error) throw error;
-      return (data ?? []) as Stage[];
+      return (data ?? []).map((s) => ({
+        ...s,
+        auto_advance_on: s.auto_advance_on ?? [],
+      })) as Stage[];
     },
   });
 
-  const { data: contacts = [], isLoading: loadingContacts } = useQuery({
+  const {
+    data: contacts = [],
+    isLoading: loadingContacts,
+    error: contactsError,
+  } = useQuery({
     enabled: !!tenant?.id,
     queryKey: ["contacts", tenant?.id],
     queryFn: async () => {
@@ -106,9 +117,15 @@ function KanbanPage() {
         .eq("tenant_id", tenant!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data ?? []) as Contact[];
+      return (data ?? []).map((c) => ({
+        ...c,
+        tags: c.tags ?? [],
+        value_cents: c.value_cents ?? 0,
+        full_name: c.full_name ?? "Sem nome",
+      })) as Contact[];
     },
   });
+
 
   // Realtime: mantém o board sincronizado quando outro evento move um card
   useEffect(() => {
