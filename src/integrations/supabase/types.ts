@@ -405,16 +405,146 @@ export type Database = {
         }
         Relationships: []
       }
+      flow_run_steps: {
+        Row: {
+          content: string
+          created_at: string
+          error: string | null
+          id: string
+          kind: string
+          label: string
+          output: string | null
+          position: number
+          run_id: string
+          status: string
+          tenant_id: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          error?: string | null
+          id?: string
+          kind: string
+          label: string
+          output?: string | null
+          position: number
+          run_id: string
+          status?: string
+          tenant_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          error?: string | null
+          id?: string
+          kind?: string
+          label?: string
+          output?: string | null
+          position?: number
+          run_id?: string
+          status?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flow_run_steps_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "flow_runs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flow_run_steps_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flow_runs: {
+        Row: {
+          contact_id: string | null
+          created_at: string
+          created_by: string | null
+          error: string | null
+          finished_at: string | null
+          flow_id: string
+          id: string
+          is_test: boolean
+          started_at: string
+          status: string
+          tenant_id: string
+          trigger: string
+          updated_at: string
+        }
+        Insert: {
+          contact_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          error?: string | null
+          finished_at?: string | null
+          flow_id: string
+          id?: string
+          is_test?: boolean
+          started_at?: string
+          status?: string
+          tenant_id: string
+          trigger: string
+          updated_at?: string
+        }
+        Update: {
+          contact_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          error?: string | null
+          finished_at?: string | null
+          flow_id?: string
+          id?: string
+          is_test?: boolean
+          started_at?: string
+          status?: string
+          tenant_id?: string
+          trigger?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flow_runs_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flow_runs_flow_id_fkey"
+            columns: ["flow_id"]
+            isOneToOne: false
+            referencedRelation: "flows"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flow_runs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       flows: {
         Row: {
           created_at: string
           created_by: string | null
           description: string | null
+          error_count: number
           id: string
           is_active: boolean
+          last_run_at: string | null
           name: string
           runs_count: number
           steps: Json
+          success_count: number
           tenant_id: string
           trigger: string
           updated_at: string
@@ -423,11 +553,14 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string | null
+          error_count?: number
           id?: string
           is_active?: boolean
+          last_run_at?: string | null
           name: string
           runs_count?: number
           steps?: Json
+          success_count?: number
           tenant_id: string
           trigger?: string
           updated_at?: string
@@ -436,11 +569,14 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string | null
+          error_count?: number
           id?: string
           is_active?: boolean
+          last_run_at?: string | null
           name?: string
           runs_count?: number
           steps?: Json
+          success_count?: number
           tenant_id?: string
           trigger?: string
           updated_at?: string
