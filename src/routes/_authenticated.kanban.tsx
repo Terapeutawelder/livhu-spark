@@ -213,11 +213,35 @@ function KanbanPage() {
     );
   }
 
+  const loadError = tenantError ?? stagesError ?? contactsError;
+  if (loadError) {
+    const msg = loadError instanceof Error ? loadError.message : String(loadError);
+    return (
+      <div className="grid min-h-[60vh] place-items-center p-8">
+        <div className="max-w-md text-center">
+          <h1 className="text-lg font-semibold">Não foi possível carregar a jornada</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{msg}</p>
+          <Button
+            className="mt-4"
+            onClick={() => {
+              qc.invalidateQueries({ queryKey: ["current-tenant"] });
+              qc.invalidateQueries({ queryKey: ["kanban-stages"] });
+              qc.invalidateQueries({ queryKey: ["contacts"] });
+            }}
+          >
+            Tentar novamente
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (!tenant) {
     return (
       <div className="p-8 text-sm text-muted-foreground">Consultório ainda não configurado.</div>
     );
   }
+
 
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col gap-4 p-4 lg:p-6">
