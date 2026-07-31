@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { WhatsappCloudPanel } from "@/components/whatsapp-cloud-panel";
+import { OmnichannelChannelsPanel } from "@/components/omnichannel-channels-panel";
 import { useEffect, useState } from "react";
 import {
-  User, Bell, MessageCircle, Palette, Shield, KeyRound, Link2, Building2, Check, Copy, Globe, Loader2, ExternalLink,
+  User, Bell, MessageCircle, Palette, Shield, KeyRound, Link2, Building2, Check, Copy, Globe, Loader2, ExternalLink, Radio,
 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -91,6 +92,7 @@ function ConfiguracoesPage() {
           {tab === "perfil" && <PerfilPanel />}
           {tab === "consultorio" && <ConsultorioPanel />}
           {tab === "dominio" && <DominioPanel />}
+          {tab === "canais" && <OmnichannelChannelsPanel onOpenWhatsapp={() => setTab("whatsapp")} />}
           {tab === "whatsapp" && <WhatsappPanel />}
           {tab === "notificacoes" && <NotificacoesPanel />}
           {tab === "marca" && <MarcaPanel />}
