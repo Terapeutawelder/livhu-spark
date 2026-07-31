@@ -30,7 +30,24 @@ export const Route = createFileRoute("/_authenticated/kanban")({
     ],
   }),
   component: KanbanPage,
+  errorComponent: KanbanError,
+  notFoundComponent: () => (
+    <div className="p-8 text-sm text-muted-foreground">Jornada não encontrada.</div>
+  ),
 });
+
+function KanbanError({ error, reset }: { error: Error; reset: () => void }) {
+  return (
+    <div className="grid min-h-[60vh] place-items-center p-8">
+      <div className="max-w-md text-center">
+        <h1 className="text-lg font-semibold">Não foi possível carregar a jornada</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
+        <Button className="mt-4" onClick={reset}>Tentar novamente</Button>
+      </div>
+    </div>
+  );
+}
+
 
 type Stage = {
   id: string;
@@ -58,14 +75,18 @@ type Contact = {
 };
 
 function KanbanPage() {
-  const { data: tenant, isLoading: loadingTenant } = useCurrentTenant();
+  const { data: tenant, isLoading: loadingTenant, error: tenantError } = useCurrentTenant();
   const qc = useQueryClient();
   const [q, setQ] = useState("");
   const [dragging, setDragging] = useState<{ id: string; from: string | null } | null>(null);
   const [newOpen, setNewOpen] = useState<string | null>(null); // stage_id ou null
   const [creating, setCreating] = useState({ name: "", phone: "", source: "" });
 
-  const { data: stages = [], isLoading: loadingStages } = useQuery({
+  const {
+    data: stages = [],
+    isLoading: loadingStages,
+    error: stagesError,
+  } = useQuery({
     enabled: !!tenant?.id,
     queryKey: ["kanban-stages", tenant?.id],
     queryFn: async () => {
@@ -75,11 +96,18 @@ function KanbanPage() {
         .eq("tenant_id", tenant!.id)
         .order("position", { ascending: true });
       if (error) throw error;
-      return (data ?? []) as Stage[];
+      return (data ?? []).map((s) => ({
+        ...s,
+        auto_advance_on: s.auto_advance_on ?? [],
+      })) as Stage[];
     },
   });
 
-  const { data: contacts = [], isLoading: loadingContacts } = useQuery({
+  const {
+    data: contacts = [],
+    isLoading: loadingContacts,
+    error: contactsError,
+  } = useQuery({
     enabled: !!tenant?.id,
     queryKey: ["contacts", tenant?.id],
     queryFn: async () => {
@@ -89,9 +117,15 @@ function KanbanPage() {
         .eq("tenant_id", tenant!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data ?? []) as Contact[];
+      return (data ?? []).map((c) => ({
+        ...c,
+        tags: c.tags ?? [],
+        value_cents: c.value_cents ?? 0,
+        full_name: c.full_name ?? "Sem nome",
+      })) as Contact[];
     },
   });
+
 
   // Realtime: mantém o board sincronizado quando outro evento move um card
   useEffect(() => {
@@ -179,11 +213,35 @@ function KanbanPage() {
     );
   }
 
+  const loadError = tenantError ?? stagesError ?? contactsError;
+  if (loadError) {
+    const msg = loadError instanceof Error ? loadError.message : String(loadError);
+    return (
+      <div className="grid min-h-[60vh] place-items-center p-8">
+        <div className="max-w-md text-center">
+          <h1 className="text-lg font-semibold">Não foi possível carregar a jornada</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{msg}</p>
+          <Button
+            className="mt-4"
+            onClick={() => {
+              qc.invalidateQueries({ queryKey: ["current-tenant"] });
+              qc.invalidateQueries({ queryKey: ["kanban-stages"] });
+              qc.invalidateQueries({ queryKey: ["contacts"] });
+            }}
+          >
+            Tentar novamente
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (!tenant) {
     return (
       <div className="p-8 text-sm text-muted-foreground">Consultório ainda não configurado.</div>
     );
   }
+
 
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col gap-4 p-4 lg:p-6">
@@ -225,7 +283,7 @@ function KanbanPage() {
                   <span className="h-2 w-2 rounded-full" style={{ background: stage.color }} />
                   <span className="text-sm font-semibold">{stage.name}</span>
                   <Badge variant="secondary" className="h-5 rounded-full px-1.5 text-[10px]">{items.length}</Badge>
-                  {stage.auto_advance_on.length > 0 && (
+                  {(stage.auto_advance_on?.length ?? 0) > 0 && (
                     <Zap className="h-3.5 w-3.5 text-gold" aria-label="Avança automaticamente" />
                   )}
                 </div>
@@ -257,9 +315,9 @@ function KanbanPage() {
                         <MoreVertical className="h-3.5 w-3.5" />
                       </button>
                     </div>
-                    {card.tags.length > 0 && (
+                    {(card.tags?.length ?? 0) > 0 && (
                       <div className="mb-2 flex flex-wrap gap-1">
-                        {card.tags.map((t) => (
+                        {(card.tags ?? []).map((t) => (
                           <Badge key={t} variant="secondary" className="text-[10px] font-normal">{t}</Badge>
                         ))}
                       </div>
