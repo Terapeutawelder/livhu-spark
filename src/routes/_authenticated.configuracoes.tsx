@@ -43,6 +43,7 @@ const tabs = [
   { id: "perfil", label: "Perfil", icon: User },
   { id: "consultorio", label: "Consultório", icon: Building2 },
   { id: "dominio", label: "Meu domínio", icon: Globe },
+  { id: "canais", label: "Canais Omnichannel", icon: Radio },
   { id: "whatsapp", label: "WhatsApp", icon: MessageCircle },
   { id: "notificacoes", label: "Notificações", icon: Bell },
   { id: "marca", label: "Marca", icon: Palette },
@@ -50,6 +51,7 @@ const tabs = [
   { id: "seguranca", label: "Segurança", icon: Shield },
   { id: "api", label: "API & Webhooks", icon: KeyRound },
 ];
+
 
 function ConfiguracoesPage() {
   const initialTab = typeof window !== "undefined"
