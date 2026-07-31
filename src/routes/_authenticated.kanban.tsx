@@ -30,7 +30,24 @@ export const Route = createFileRoute("/_authenticated/kanban")({
     ],
   }),
   component: KanbanPage,
+  errorComponent: KanbanError,
+  notFoundComponent: () => (
+    <div className="p-8 text-sm text-muted-foreground">Jornada não encontrada.</div>
+  ),
 });
+
+function KanbanError({ error, reset }: { error: Error; reset: () => void }) {
+  return (
+    <div className="grid min-h-[60vh] place-items-center p-8">
+      <div className="max-w-md text-center">
+        <h1 className="text-lg font-semibold">Não foi possível carregar a jornada</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
+        <Button className="mt-4" onClick={reset}>Tentar novamente</Button>
+      </div>
+    </div>
+  );
+}
+
 
 type Stage = {
   id: string;
