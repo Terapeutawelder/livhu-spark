@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { WhatsappCloudPanel } from "@/components/whatsapp-cloud-panel";
+import { OmnichannelChannelsPanel } from "@/components/omnichannel-channels-panel";
 import { useEffect, useState } from "react";
 import {
-  User, Bell, MessageCircle, Palette, Shield, KeyRound, Link2, Building2, Check, Copy, Globe, Loader2, ExternalLink,
+  User, Bell, MessageCircle, Palette, Shield, KeyRound, Link2, Building2, Check, Copy, Globe, Loader2, ExternalLink, Radio,
 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -43,6 +44,7 @@ const tabs = [
   { id: "perfil", label: "Perfil", icon: User },
   { id: "consultorio", label: "Consultório", icon: Building2 },
   { id: "dominio", label: "Meu domínio", icon: Globe },
+  { id: "canais", label: "Canais Omnichannel", icon: Radio },
   { id: "whatsapp", label: "WhatsApp", icon: MessageCircle },
   { id: "notificacoes", label: "Notificações", icon: Bell },
   { id: "marca", label: "Marca", icon: Palette },
@@ -50,6 +52,7 @@ const tabs = [
   { id: "seguranca", label: "Segurança", icon: Shield },
   { id: "api", label: "API & Webhooks", icon: KeyRound },
 ];
+
 
 function ConfiguracoesPage() {
   const initialTab = typeof window !== "undefined"
@@ -89,6 +92,7 @@ function ConfiguracoesPage() {
           {tab === "perfil" && <PerfilPanel />}
           {tab === "consultorio" && <ConsultorioPanel />}
           {tab === "dominio" && <DominioPanel />}
+          {tab === "canais" && <OmnichannelChannelsPanel onOpenWhatsapp={() => setTab("whatsapp")} />}
           {tab === "whatsapp" && <WhatsappPanel />}
           {tab === "notificacoes" && <NotificacoesPanel />}
           {tab === "marca" && <MarcaPanel />}
