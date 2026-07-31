@@ -856,6 +856,65 @@ export type Database = {
           },
         ]
       }
+      tenant_channels: {
+        Row: {
+          account_id: string | null
+          channel: Database["public"]["Enums"]["channel_kind"]
+          created_at: string
+          created_by: string | null
+          credential_hint: string
+          credentials_enc: string | null
+          display_name: string
+          id: string
+          last_checked_at: string | null
+          last_error: string | null
+          settings: Json
+          status: Database["public"]["Enums"]["channel_conn_status"]
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          account_id?: string | null
+          channel: Database["public"]["Enums"]["channel_kind"]
+          created_at?: string
+          created_by?: string | null
+          credential_hint?: string
+          credentials_enc?: string | null
+          display_name?: string
+          id?: string
+          last_checked_at?: string | null
+          last_error?: string | null
+          settings?: Json
+          status?: Database["public"]["Enums"]["channel_conn_status"]
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string | null
+          channel?: Database["public"]["Enums"]["channel_kind"]
+          created_at?: string
+          created_by?: string | null
+          credential_hint?: string
+          credentials_enc?: string | null
+          display_name?: string
+          id?: string
+          last_checked_at?: string | null
+          last_error?: string | null
+          settings?: Json
+          status?: Database["public"]["Enums"]["channel_conn_status"]
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_channels_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_members: {
         Row: {
           created_at: string
@@ -1566,6 +1625,8 @@ export type Database = {
         | "completed"
         | "canceled"
         | "no_show"
+      channel_conn_status: "disconnected" | "pending" | "active" | "error"
+      channel_kind: "instagram" | "messenger" | "tiktok" | "site" | "email"
       invoice_status: "paid" | "open" | "overdue" | "void" | "refunded"
       service_modality: "online" | "presencial" | "ambos"
       stage_trigger:
@@ -1758,6 +1819,8 @@ export const Constants = {
         "canceled",
         "no_show",
       ],
+      channel_conn_status: ["disconnected", "pending", "active", "error"],
+      channel_kind: ["instagram", "messenger", "tiktok", "site", "email"],
       invoice_status: ["paid", "open", "overdue", "void", "refunded"],
       service_modality: ["online", "presencial", "ambos"],
       stage_trigger: [
