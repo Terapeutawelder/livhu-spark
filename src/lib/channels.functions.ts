@@ -10,7 +10,7 @@ export type ChannelRow = {
   status: "disconnected" | "pending" | "active" | "error";
   last_error: string | null;
   last_checked_at: string | null;
-  settings: Record<string, unknown>;
+  settings: Record<string, string>;
   updated_at: string;
 };
 
