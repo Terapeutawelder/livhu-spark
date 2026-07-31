@@ -283,7 +283,7 @@ function KanbanPage() {
                   <span className="h-2 w-2 rounded-full" style={{ background: stage.color }} />
                   <span className="text-sm font-semibold">{stage.name}</span>
                   <Badge variant="secondary" className="h-5 rounded-full px-1.5 text-[10px]">{items.length}</Badge>
-                  {stage.auto_advance_on.length > 0 && (
+                  {(stage.auto_advance_on?.length ?? 0) > 0 && (
                     <Zap className="h-3.5 w-3.5 text-gold" aria-label="Avança automaticamente" />
                   )}
                 </div>
@@ -315,9 +315,9 @@ function KanbanPage() {
                         <MoreVertical className="h-3.5 w-3.5" />
                       </button>
                     </div>
-                    {card.tags.length > 0 && (
+                    {(card.tags?.length ?? 0) > 0 && (
                       <div className="mb-2 flex flex-wrap gap-1">
-                        {card.tags.map((t) => (
+                        {(card.tags ?? []).map((t) => (
                           <Badge key={t} variant="secondary" className="text-[10px] font-normal">{t}</Badge>
                         ))}
                       </div>
