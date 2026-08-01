@@ -17,8 +17,14 @@ export default defineConfig({
       // Vite 8/Rolldown can drop or initialize shared bindings out of order in
       // code-split TanStack route chunks. The /agentes production chunk then
       // calls an undefined minified import ("l is not a function").
-      rollupOptions: {
+      rolldownOptions: {
         treeshake: false,
+        experimental: {
+          // Rolldown 1.1.0's lazy barrel optimization can emit invalid
+          // initialization order for TanStack's split route plus the large
+          // Lucide/Radix re-export graphs used by /agentes.
+          lazyBarrel: false,
+        },
       },
     },
   },
