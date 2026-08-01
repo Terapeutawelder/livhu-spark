@@ -83,10 +83,10 @@ export function AiOrchestratorPanel() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("ai_agents")
-        .select("id, name, is_active, is_orchestrator, module_access")
+        .select("*")
         .eq("tenant_id", tenantId!);
       if (error) throw error;
-      return data ?? [];
+      return (data ?? []) as any[];
     },
   });
 
