@@ -35,7 +35,7 @@ export const getAiKeyStatus = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await supabaseAdmin
       .from("tenant_ai_credentials")
-      .select("provider, key_hint, updated_at")
+      .select("provider, key_hint, base_url, updated_at")
       .eq("tenant_id", tenantId)
       .maybeSingle();
 
@@ -43,6 +43,7 @@ export const getAiKeyStatus = createServerFn({ method: "POST" })
       configured: !!data,
       provider: data?.provider ?? null,
       hint: data?.key_hint ?? null,
+      baseUrl: (data as { base_url?: string | null } | null)?.base_url ?? null,
       updatedAt: data?.updated_at ?? null,
       canManage: role === "owner" || role === "admin",
     };
@@ -56,6 +57,9 @@ export const saveAiKey = createServerFn({ method: "POST" })
     if (role !== "owner" && role !== "admin") {
       throw new Error("Apenas o responsável pelo consultório pode configurar a chave de IA.");
     }
+    if (data.provider === "custom" && !data.baseUrl) {
+      throw new Error("Informe o endereço (base URL) do endpoint compatível com OpenAI.");
+    }
 
     const { encryptToken } = await import("./token-crypto.server");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -67,6 +71,7 @@ export const saveAiKey = createServerFn({ method: "POST" })
       {
         tenant_id: tenantId,
         provider: data.provider,
+        base_url: data.provider === "custom" ? (data.baseUrl ?? null) : null,
         api_key_enc: enc,
         key_hint: hint,
         created_by: context.userId,
@@ -112,6 +117,13 @@ export const orchestrateAgents = createServerFn({ method: "POST" })
       throw new Error(`Limite de ${MAX_AGENTS_PER_TENANT} agentes por consultório atingido.`);
     }
 
+    const { data: memory } = await context.supabase
+      .from("ai_memory_sources")
+      .select("title, kind, content")
+      .eq("tenant_id", tenantId)
+      .eq("is_active", true)
+      .limit(20);
+
     const {
       loadTenantAiCredential,
       createProvider,
@@ -147,6 +159,11 @@ export const orchestrateAgents = createServerFn({ method: "POST" })
       "- Nunca fazer diagnóstico clínico nem prescrever medicação.",
       "- Sempre escalar para humano em sinais de crise, risco de vida ou pedido explícito do paciente.",
       "- Não coletar dados sensíveis além do necessário para agendamento.",
+      (memory ?? []).length
+        ? `Memória do consultório (resumos indexados, use como contexto):\n${(memory ?? [])
+            .map((m: any) => `- [${m.kind}] ${m.title}: ${String(m.content ?? "").slice(0, 400)}`)
+            .join("\n")}`
+        : "",
       "Agentes já existentes (evite duplicar, proponha complementares e regras de handoff entre eles):",
       current.length
         ? current.map((a: any) => `- ${a.name}: ${a.role}`).join("\n")
