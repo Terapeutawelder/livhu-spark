@@ -2,11 +2,11 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 import { OrchestrateAgentsInput, SaveAiKeyInput } from "./ai-orchestrator.schema";
-import { MAX_AGENTS_PER_TENANT, resolveAiTenant } from "./ai-orchestrator.server";
 
 export const getAiKeyStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    const { resolveAiTenant } = await import("./ai-orchestrator.server");
     const { tenantId, role } = await resolveAiTenant(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await supabaseAdmin
@@ -29,6 +29,7 @@ export const saveAiKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => SaveAiKeyInput.parse(input))
   .handler(async ({ data, context }) => {
+    const { resolveAiTenant } = await import("./ai-orchestrator.server");
     const { tenantId, role } = await resolveAiTenant(context);
     if (role !== "owner" && role !== "admin") {
       throw new Error("Apenas o responsável pelo consultório pode configurar a chave de IA.");
@@ -63,6 +64,7 @@ export const saveAiKey = createServerFn({ method: "POST" })
 export const removeAiKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
+    const { resolveAiTenant } = await import("./ai-orchestrator.server");
     const { tenantId, role } = await resolveAiTenant(context);
     if (role !== "owner" && role !== "admin") {
       throw new Error("Apenas o responsável pelo consultório pode remover a chave de IA.");
@@ -80,6 +82,7 @@ export const orchestrateAgents = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => OrchestrateAgentsInput.parse(input))
   .handler(async ({ data, context }) => {
+    const { MAX_AGENTS_PER_TENANT, resolveAiTenant } = await import("./ai-orchestrator.server");
     const { tenantId } = await resolveAiTenant(context);
 
     const { data: existing, error: listError } = await context.supabase
