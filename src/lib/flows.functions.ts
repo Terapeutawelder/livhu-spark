@@ -62,3 +62,17 @@ export const getFlowRunSteps = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return steps ?? [];
   });
+
+const SimulateInput = z.object({
+  flowId: z.string().uuid(),
+  contactIds: z.array(z.string().uuid()).max(20).default([]),
+});
+
+export const simulateFlowRun = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: unknown) => SimulateInput.parse(input))
+  .handler(async ({ data, context }) => {
+    const tenantId = await resolveTenantId(context);
+    const { simulateFlow } = await import("./flow-engine.server");
+    return simulateFlow({ tenantId, flowId: data.flowId, contactIds: data.contactIds });
+  });

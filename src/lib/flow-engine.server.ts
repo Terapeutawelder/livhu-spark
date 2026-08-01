@@ -298,3 +298,92 @@ export async function runFlowsForTrigger(params: {
   }
   return results;
 }
+
+/** Simulação (dry-run) do fluxo para vários contatos, sem enviar nada nem gravar execuções. */
+export type SimulatedStep = {
+  position: number;
+  kind: FlowStepKind;
+  label: string;
+  rendered: string;
+  note: string | null;
+};
+
+export type SimulatedContact = {
+  contactId: string | null;
+  name: string;
+  phone: string | null;
+  variables: Record<string, string>;
+  steps: SimulatedStep[];
+  warnings: string[];
+};
+
+export async function simulateFlow(params: {
+  tenantId: string;
+  flowId: string;
+  contactIds: string[];
+}): Promise<{ flowName: string; results: SimulatedContact[] }> {
+  const { supabaseAdmin: admin } = await import("@/integrations/supabase/client.server");
+
+  const { data: flow } = await admin
+    .from("flows")
+    .select("id, name, steps")
+    .eq("id", params.flowId)
+    .eq("tenant_id", params.tenantId)
+    .maybeSingle();
+  if (!flow) throw new Error("Fluxo não encontrado.");
+
+  const steps: FlowStep[] = Array.isArray(flow.steps) ? (flow.steps as unknown as FlowStep[]) : [];
+  if (steps.length === 0) throw new Error("Este fluxo não possui passos para simular.");
+
+  let contacts: Array<{ id: string; full_name: string; phone: string | null; email: string | null }> = [];
+  if (params.contactIds.length) {
+    const { data } = await admin
+      .from("contacts")
+      .select("id, full_name, phone, email")
+      .eq("tenant_id", params.tenantId)
+      .in("id", params.contactIds);
+    contacts = (data as any) ?? [];
+  }
+
+  const targets = contacts.length
+    ? contacts
+    : [{ id: "", full_name: "Contato de exemplo", phone: null, email: null }];
+
+  const results: SimulatedContact[] = targets.map((c) => {
+    const vars: Record<string, string> = {
+      nome: firstName(c.full_name),
+      nome_completo: c.full_name ?? "",
+      telefone: c.phone ?? "",
+      email: c.email ?? "",
+      horario: "10:00",
+      modalidade: "online",
+      link_agendamento: "https://exemplo.livhub.cloud/agendar",
+    };
+    const warnings: string[] = [];
+    if (!c.phone) warnings.push("Contato sem telefone — mensagens não seriam enviadas.");
+    if (!c.email) warnings.push("Contato sem e-mail.");
+
+    const simSteps: SimulatedStep[] = steps.map((s, i) => {
+      const rendered = renderTemplate(s.content ?? "", vars);
+      const missing = [...rendered.matchAll(/\{\{\s*([\w.]+)\s*\}\}/g)].map((m) => m[1]);
+      let note: string | null = null;
+      if (s.kind === "wait") note = "Passo de espera — apenas aguarda.";
+      else if (s.kind === "condition") note = "Condição — na simulação segue sempre pelo caminho verdadeiro.";
+      else if (s.kind === "ai") note = "Texto final é gerado pela IA na execução real.";
+      else if (s.kind === "notify") note = "Gera uma nota interna no contato.";
+      if (missing.length) note = `${note ? note + " " : ""}Variável sem valor: {{${missing[0]}}}.`;
+      return { position: i, kind: s.kind, label: s.label ?? s.kind, rendered, note };
+    });
+
+    return {
+      contactId: c.id || null,
+      name: c.full_name,
+      phone: c.phone,
+      variables: vars,
+      steps: simSteps,
+      warnings,
+    };
+  });
+
+  return { flowName: flow.name as string, results };
+}

@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   Plus, Play, Pause, Trash2, Zap, MessageSquare, GitBranch, Clock, Bot, CheckCircle2, Loader2,
   ArrowDown, Sparkles, Copy, ChevronUp, ChevronDown, FlaskConical, History, Rocket, AlertTriangle,
+  Download, Upload, Users, Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -19,7 +20,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentTenant } from "@/hooks/use-tenant";
 import { FLOW_TEMPLATES, CATEGORY_LABEL, type FlowTemplate } from "@/lib/flow-templates";
-import { runFlow, listFlowRuns, getFlowRunSteps } from "@/lib/flows.functions";
+import { runFlow, listFlowRuns, getFlowRunSteps, simulateFlowRun } from "@/lib/flows.functions";
 
 export const Route = createFileRoute("/_authenticated/fluxos")({
   head: () => ({
@@ -177,6 +178,33 @@ function FluxosPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const importFlow = useMutation({
+    mutationFn: async (payload: ImportedFlow) => {
+      if (!tenant) throw new Error("Consultório não encontrado");
+      const { data, error } = await supabase
+        .from("flows")
+        .insert({
+          tenant_id: tenant.id,
+          name: payload.name,
+          description: payload.description ?? "",
+          trigger: payload.trigger,
+          steps: payload.steps.map((s) => ({ ...s, id: crypto.randomUUID() })) as never,
+          is_active: false,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return data as unknown as Flow;
+    },
+    onSuccess: (f) => {
+      qc.invalidateQueries({ queryKey: ["flows"] });
+      setSelectedId(f.id);
+      toast.success("Fluxo importado como rascunho");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+
   const activeCount = flows.filter((f) => f.is_active).length;
   const totalRuns = flows.reduce((acc, f) => acc + (f.runs_count ?? 0), 0);
 
@@ -190,6 +218,10 @@ function FluxosPage() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <ImportFlowButton
+            onImport={(payload) => importFlow.mutate(payload)}
+            isPending={importFlow.isPending}
+          />
           <TemplatesDialog onInstall={(t) => installTemplate.mutate(t)} isPending={installTemplate.isPending} />
           <Button size="sm" className="gap-2" onClick={() => createFlow.mutate()} disabled={createFlow.isPending}>
             {createFlow.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
@@ -409,11 +441,19 @@ function FlowEditor({ flow, tenantId }: { flow: Flow; tenantId: string | null })
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <SimulateDialog
+            tenantId={tenantId}
+            flowId={form.id}
+            beforeOpen={async () => { if (dirty) await persist({}); }}
+          />
           <TestRunDialog
             tenantId={tenantId}
             isPending={execute.isPending}
             onRun={(contactId, isTest) => execute.mutate({ contactId, isTest })}
           />
+          <Button variant="ghost" size="icon" onClick={() => exportFlowFile(form)} title="Exportar JSON">
+            <Download className="h-4 w-4" />
+          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -800,69 +840,364 @@ function TemplatesDialog({
   isPending: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const [cat, setCat] = useState<string>("todas");
+  const [preview, setPreview] = useState<FlowTemplate | null>(null);
+
+  const categories = ["todas", ...Array.from(new Set(FLOW_TEMPLATES.map((t) => t.category)))];
+  const list = FLOW_TEMPLATES.filter((t) => cat === "todas" || t.category === cat);
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setPreview(null); }}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
           <Sparkles className="h-4 w-4 text-gold" />
-          Templates prontos
+          Modelos prontos
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-gold" />
-            Automações prontas
+            Criar fluxo a partir de um modelo
           </DialogTitle>
           <DialogDescription>
-            Instale com 1 clique. O fluxo entra como <b>rascunho</b> — revise e ative quando quiser.
+            O modelo entra como <b>rascunho</b> e abre no editor — ajuste os textos e ative quando quiser.
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="max-h-[60vh] pr-3">
-          <div className="grid gap-3 sm:grid-cols-2">
-            {FLOW_TEMPLATES.map((t) => (
-              <div
-                key={t.id}
-                className="flex flex-col rounded-lg border bg-card p-4 shadow-sm transition hover:border-gold/40 hover:shadow-gold/10"
-              >
-                <div className="mb-2 flex items-start justify-between gap-2">
-                  <span className="text-2xl leading-none">{t.icon}</span>
-                  <Badge variant="outline" className="text-[10px]">
-                    {CATEGORY_LABEL[t.category]}
-                  </Badge>
+
+        <div className="flex flex-wrap gap-1">
+          {categories.map((c) => (
+            <button
+              key={c}
+              onClick={() => setCat(c)}
+              className={`rounded-full px-3 py-1 text-[11px] transition ${
+                cat === c ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {c === "todas" ? "Todas" : CATEGORY_LABEL[c as FlowTemplate["category"]]}
+            </button>
+          ))}
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-[1fr_300px]">
+          <ScrollArea className="max-h-[56vh] pr-3">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {list.map((t) => (
+                <div
+                  key={t.id}
+                  className={`flex cursor-pointer flex-col rounded-lg border bg-card p-4 shadow-sm transition hover:border-gold/40 ${
+                    preview?.id === t.id ? "border-gold/60 ring-1 ring-gold/30" : ""
+                  }`}
+                  onClick={() => setPreview(t)}
+                >
+                  <div className="mb-2 flex items-start justify-between gap-2">
+                    <span className="text-2xl leading-none">{t.icon}</span>
+                    <Badge variant="outline" className="text-[10px]">
+                      {CATEGORY_LABEL[t.category]}
+                    </Badge>
+                  </div>
+                  <p className="mb-1 text-sm font-semibold leading-tight">{t.name}</p>
+                  <p className="mb-3 flex-1 text-xs text-muted-foreground">{t.description}</p>
+                  <p className="text-[10px] text-muted-foreground">{t.steps.length} passos</p>
                 </div>
-                <p className="mb-1 text-sm font-semibold leading-tight">{t.name}</p>
-                <p className="mb-3 flex-1 text-xs text-muted-foreground">{t.description}</p>
-                <div className="mb-3 flex flex-wrap gap-1">
-                  {t.steps.slice(0, 4).map((s, i) => (
-                    <span
-                      key={i}
-                      className="rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground"
-                    >
-                      {s.label}
-                    </span>
-                  ))}
-                  {t.steps.length > 4 && (
-                    <span className="text-[10px] text-muted-foreground">
-                      +{t.steps.length - 4}
-                    </span>
-                  )}
-                </div>
+              ))}
+            </div>
+          </ScrollArea>
+
+          <div className="rounded-lg border bg-muted/20 p-3">
+            {!preview ? (
+              <p className="py-8 text-center text-xs text-muted-foreground">
+                Selecione um modelo para ver os passos antes de criar.
+              </p>
+            ) : (
+              <>
+                <p className="mb-1 text-sm font-semibold">{preview.name}</p>
+                <p className="mb-3 flex items-center gap-1 text-[11px] text-muted-foreground">
+                  <Zap className="h-3 w-3" />
+                  {TRIGGERS.find((x) => x.id === preview.trigger)?.label ?? preview.trigger}
+                </p>
+                <ScrollArea className="max-h-[36vh] pr-2">
+                  <div className="space-y-2">
+                    {preview.steps.map((s, i) => (
+                      <div key={i} className="rounded-md border bg-card p-2">
+                        <p className="text-[11px] font-semibold">
+                          {i + 1}. {s.label}{" "}
+                          <span className="font-normal text-muted-foreground">({s.kind})</span>
+                        </p>
+                        <p className="mt-1 whitespace-pre-wrap text-[11px] text-muted-foreground">{s.content}</p>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
                 <Button
                   size="sm"
-                  className="w-full gap-1"
+                  className="mt-3 w-full gap-1"
                   disabled={isPending}
                   onClick={() => {
-                    onInstall(t);
+                    onInstall(preview);
                     setOpen(false);
                   }}
                 >
-                  <Plus className="h-3 w-3" /> Instalar template
+                  <Pencil className="h-3 w-3" /> Criar rascunho e editar
                 </Button>
-              </div>
-            ))}
+              </>
+            )}
           </div>
-        </ScrollArea>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// ---------- Exportar / Importar ----------
+
+type ImportedFlow = {
+  name: string;
+  description?: string | null;
+  trigger: string;
+  steps: Array<{ kind: StepKind; label: string; content: string }>;
+};
+
+const VALID_KINDS: StepKind[] = ["message", "wait", "ai", "condition", "notify"];
+
+function parseFlowFile(raw: string): ImportedFlow {
+  let json: any;
+  try {
+    json = JSON.parse(raw);
+  } catch {
+    throw new Error("Arquivo inválido: não é um JSON válido.");
+  }
+  const flow = json?.flow ?? json;
+  if (!flow || typeof flow.name !== "string" || !flow.name.trim())
+    throw new Error("Arquivo inválido: o fluxo não tem nome.");
+  if (!Array.isArray(flow.steps) || flow.steps.length === 0)
+    throw new Error("Arquivo inválido: o fluxo não tem passos.");
+  const trigger = TRIGGERS.some((t) => t.id === flow.trigger) ? flow.trigger : "contact_created";
+  const steps = flow.steps.map((s: any, i: number) => {
+    if (!VALID_KINDS.includes(s?.kind)) throw new Error(`Passo ${i + 1}: tipo desconhecido "${s?.kind}".`);
+    if (typeof s?.content !== "string") throw new Error(`Passo ${i + 1}: conteúdo inválido.`);
+    return {
+      kind: s.kind as StepKind,
+      label: typeof s.label === "string" && s.label.trim() ? s.label : STEP_TEMPLATES[s.kind as StepKind].label,
+      content: s.content,
+    };
+  });
+  return {
+    name: flow.name,
+    description: typeof flow.description === "string" ? flow.description : "",
+    trigger,
+    steps,
+  };
+}
+
+function exportFlowFile(flow: Flow) {
+  const payload = {
+    livhub: "flow",
+    version: 1,
+    exported_at: new Date().toISOString(),
+    flow: {
+      name: flow.name,
+      description: flow.description ?? "",
+      trigger: flow.trigger,
+      steps: flow.steps.map((s) => ({ kind: s.kind, label: s.label, content: s.content })),
+    },
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `fluxo-${flow.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "livhub"}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast.success("Fluxo exportado em JSON");
+}
+
+function ImportFlowButton({
+  onImport,
+  isPending,
+}: {
+  onImport: (payload: ImportedFlow) => void;
+  isPending: boolean;
+}) {
+  const [inputKey, setInputKey] = useState(0);
+  return (
+    <label className="inline-flex">
+      <input
+        key={inputKey}
+        type="file"
+        accept="application/json,.json"
+        className="hidden"
+        onChange={async (e) => {
+          const file = e.target.files?.[0];
+          setInputKey((k) => k + 1);
+          if (!file) return;
+          try {
+            onImport(parseFlowFile(await file.text()));
+          } catch (err) {
+            toast.error(err instanceof Error ? err.message : "Não foi possível importar o arquivo.");
+          }
+        }}
+      />
+      <Button asChild variant="outline" size="sm" className="gap-2" disabled={isPending}>
+        <span className="cursor-pointer">
+          <Upload className="h-4 w-4" /> Importar JSON
+        </span>
+      </Button>
+    </label>
+  );
+}
+
+// ---------- Simulação com múltiplos contatos ----------
+
+function SimulateDialog({ tenantId, flowId, beforeOpen }: {
+  tenantId: string | null;
+  flowId: string;
+  beforeOpen: () => Promise<void>;
+}) {
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [query, setQuery] = useState("");
+  const simulate = useServerFn(simulateFlowRun);
+  const [result, setResult] = useState<any | null>(null);
+  const [running, setRunning] = useState(false);
+
+  const contacts = useQuery({
+    queryKey: ["contacts-lite", tenantId],
+    enabled: !!tenantId && open,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("contacts")
+        .select("id, full_name, phone")
+        .eq("tenant_id", tenantId!)
+        .order("created_at", { ascending: false })
+        .limit(200);
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
+  const list = (contacts.data ?? []).filter((c: any) =>
+    c.full_name?.toLowerCase().includes(query.toLowerCase()),
+  );
+
+  const toggle = (id: string) =>
+    setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id].slice(0, 20)));
+
+  const run = async () => {
+    setRunning(true);
+    try {
+      await beforeOpen();
+      setResult(await simulate({ data: { flowId, contactIds: selected } }));
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Falha na simulação.");
+    } finally {
+      setRunning(false);
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setResult(null); }}>
+      <DialogTrigger asChild>
+        <Button variant="outline" size="sm" className="gap-1">
+          <Users className="h-3 w-3" /> Simular
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-w-4xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <FlaskConical className="h-5 w-5 text-gold" /> Simular execução
+          </DialogTitle>
+          <DialogDescription>
+            Escolha até 20 contatos. Nada é enviado — você vê as variáveis e as mensagens geradas para cada um.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="grid gap-4 md:grid-cols-[260px_1fr]">
+          <div className="flex min-h-0 flex-col rounded-lg border">
+            <div className="border-b p-2">
+              <Input
+                placeholder="Buscar contato..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className="h-8 text-xs"
+              />
+            </div>
+            <ScrollArea className="h-[46vh]">
+              <ul className="divide-y">
+                {list.map((c: any) => (
+                  <li key={c.id}>
+                    <label className="flex cursor-pointer items-start gap-2 p-2 text-xs hover:bg-muted/40">
+                      <input
+                        type="checkbox"
+                        className="mt-0.5 accent-[var(--gold)]"
+                        checked={selected.includes(c.id)}
+                        onChange={() => toggle(c.id)}
+                      />
+                      <span className="min-w-0">
+                        <span className="block truncate font-medium">{c.full_name}</span>
+                        <span className="block truncate text-muted-foreground">
+                          {c.phone ?? "sem telefone"}
+                        </span>
+                      </span>
+                    </label>
+                  </li>
+                ))}
+                {list.length === 0 && (
+                  <li className="p-3 text-center text-xs text-muted-foreground">Nenhum contato.</li>
+                )}
+              </ul>
+            </ScrollArea>
+            <div className="border-t p-2">
+              <Button size="sm" className="w-full gap-1" onClick={run} disabled={running}>
+                {running ? <Loader2 className="h-3 w-3 animate-spin" /> : <FlaskConical className="h-3 w-3" />}
+                Simular ({selected.length || "exemplo"})
+              </Button>
+            </div>
+          </div>
+
+          <ScrollArea className="h-[52vh] pr-3">
+            {!result ? (
+              <div className="flex h-full items-center justify-center p-6 text-center text-xs text-muted-foreground">
+                Selecione contatos e clique em Simular para ver a prévia por contato.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {result.results.map((r: any, idx: number) => (
+                  <div key={r.contactId ?? idx} className="rounded-lg border bg-card p-3">
+                    <div className="mb-2 flex flex-wrap items-center gap-2">
+                      <p className="text-sm font-semibold">{r.name}</p>
+                      <Badge variant="outline" className="text-[10px]">{r.phone ?? "sem telefone"}</Badge>
+                    </div>
+                    <div className="mb-2 flex flex-wrap gap-1">
+                      {Object.entries(r.variables).map(([k, v]) => (
+                        <span key={k} className="rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                          {`{{${k}}}`} = {String(v) || "—"}
+                        </span>
+                      ))}
+                    </div>
+                    {r.warnings?.map((w: string) => (
+                      <p key={w} className="mb-1 flex items-center gap-1 text-[11px] text-amber-600 dark:text-amber-400">
+                        <AlertTriangle className="h-3 w-3" /> {w}
+                      </p>
+                    ))}
+                    <div className="space-y-2">
+                      {r.steps.map((s: any) => (
+                        <div key={s.position} className="rounded-md border bg-muted/20 p-2">
+                          <p className="text-[11px] font-semibold">
+                            {s.position + 1}. {s.label}{" "}
+                            <span className="font-normal text-muted-foreground">({s.kind})</span>
+                          </p>
+                          <p className="mt-1 whitespace-pre-wrap text-xs">{s.rendered}</p>
+                          {s.note && <p className="mt-1 text-[10px] text-muted-foreground">{s.note}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );
