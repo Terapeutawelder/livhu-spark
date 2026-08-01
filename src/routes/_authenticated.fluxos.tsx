@@ -441,11 +441,19 @@ function FlowEditor({ flow, tenantId }: { flow: Flow; tenantId: string | null })
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <SimulateDialog
+            tenantId={tenantId}
+            flowId={form.id}
+            beforeOpen={async () => { if (dirty) await persist({}); }}
+          />
           <TestRunDialog
             tenantId={tenantId}
             isPending={execute.isPending}
             onRun={(contactId, isTest) => execute.mutate({ contactId, isTest })}
           />
+          <Button variant="ghost" size="icon" onClick={() => exportFlowFile(form)} title="Exportar JSON">
+            <Download className="h-4 w-4" />
+          </Button>
           <Button
             variant="outline"
             size="sm"
