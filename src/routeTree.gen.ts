@@ -18,6 +18,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated.index'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AuthenticatedRemarketingRouteImport } from './routes/_authenticated.remarketing'
+import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated.planos'
 import { Route as AuthenticatedPagamentosRouteImport } from './routes/_authenticated.pagamentos'
 import { Route as AuthenticatedMensagensRouteImport } from './routes/_authenticated.mensagens'
 import { Route as AuthenticatedKanbanRouteImport } from './routes/_authenticated.kanban'
@@ -89,6 +90,11 @@ const AuthenticatedRemarketingRoute =
     path: '/remarketing',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedPlanosRoute = AuthenticatedPlanosRouteImport.update({
+  id: '/planos',
+  path: '/planos',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedPagamentosRoute = AuthenticatedPagamentosRouteImport.update({
   id: '/pagamentos',
   path: '/pagamentos',
@@ -248,6 +254,7 @@ export interface FileRoutesByFullPath {
   '/kanban': typeof AuthenticatedKanbanRoute
   '/mensagens': typeof AuthenticatedMensagensRoute
   '/pagamentos': typeof AuthenticatedPagamentosRoute
+  '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
@@ -281,6 +288,7 @@ export interface FileRoutesByTo {
   '/kanban': typeof AuthenticatedKanbanRoute
   '/mensagens': typeof AuthenticatedMensagensRoute
   '/pagamentos': typeof AuthenticatedPagamentosRoute
+  '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
   '/admin/login': typeof AdminLoginRoute
   '/': typeof AuthenticatedIndexRoute
@@ -318,6 +326,7 @@ export interface FileRoutesById {
   '/_authenticated/kanban': typeof AuthenticatedKanbanRoute
   '/_authenticated/mensagens': typeof AuthenticatedMensagensRoute
   '/_authenticated/pagamentos': typeof AuthenticatedPagamentosRoute
+  '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/_authenticated/remarketing': typeof AuthenticatedRemarketingRoute
   '/admin/login': typeof AdminLoginRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
@@ -356,6 +365,7 @@ export interface FileRouteTypes {
     | '/kanban'
     | '/mensagens'
     | '/pagamentos'
+    | '/planos'
     | '/remarketing'
     | '/admin/login'
     | '/admin/calendario'
@@ -389,6 +399,7 @@ export interface FileRouteTypes {
     | '/kanban'
     | '/mensagens'
     | '/pagamentos'
+    | '/planos'
     | '/remarketing'
     | '/admin/login'
     | '/'
@@ -425,6 +436,7 @@ export interface FileRouteTypes {
     | '/_authenticated/kanban'
     | '/_authenticated/mensagens'
     | '/_authenticated/pagamentos'
+    | '/_authenticated/planos'
     | '/_authenticated/remarketing'
     | '/admin/login'
     | '/_authenticated/'
@@ -520,6 +532,13 @@ declare module '@tanstack/react-router' {
       path: '/remarketing'
       fullPath: '/remarketing'
       preLoaderRoute: typeof AuthenticatedRemarketingRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/planos': {
+      id: '/_authenticated/planos'
+      path: '/planos'
+      fullPath: '/planos'
+      preLoaderRoute: typeof AuthenticatedPlanosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/pagamentos': {
@@ -743,6 +762,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedKanbanRoute: typeof AuthenticatedKanbanRoute
   AuthenticatedMensagensRoute: typeof AuthenticatedMensagensRoute
   AuthenticatedPagamentosRoute: typeof AuthenticatedPagamentosRoute
+  AuthenticatedPlanosRoute: typeof AuthenticatedPlanosRoute
   AuthenticatedRemarketingRoute: typeof AuthenticatedRemarketingRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
@@ -759,6 +779,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedKanbanRoute: AuthenticatedKanbanRoute,
   AuthenticatedMensagensRoute: AuthenticatedMensagensRoute,
   AuthenticatedPagamentosRoute: AuthenticatedPagamentosRoute,
+  AuthenticatedPlanosRoute: AuthenticatedPlanosRoute,
   AuthenticatedRemarketingRoute: AuthenticatedRemarketingRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
@@ -782,3 +803,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
