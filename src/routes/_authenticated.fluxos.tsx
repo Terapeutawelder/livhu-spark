@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   Plus, Play, Pause, Trash2, Zap, MessageSquare, GitBranch, Clock, Bot, CheckCircle2, Loader2,
   ArrowDown, Sparkles, Copy, ChevronUp, ChevronDown, FlaskConical, History, Rocket, AlertTriangle,
+  Download, Upload, Users, Pencil,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -19,7 +20,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentTenant } from "@/hooks/use-tenant";
 import { FLOW_TEMPLATES, CATEGORY_LABEL, type FlowTemplate } from "@/lib/flow-templates";
-import { runFlow, listFlowRuns, getFlowRunSteps } from "@/lib/flows.functions";
+import { runFlow, listFlowRuns, getFlowRunSteps, simulateFlowRun } from "@/lib/flows.functions";
 
 export const Route = createFileRoute("/_authenticated/fluxos")({
   head: () => ({
