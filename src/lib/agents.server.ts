@@ -19,7 +19,8 @@ export async function runAgentChat(agent: AgentRow, input: AgentChatInput) {
 
   const credential = await loadTenantAiCredential(agent.tenant_id);
   const { provider, client } = createProvider(credential);
-  const model = isAllowedModel(provider, agent.model ?? "") ? agent.model! : defaultModel(provider);
+  const configuredModel = agent.model ?? "";
+  const model = isAllowedModel(provider, configuredModel) ? configuredModel : defaultModel(provider);
 
   const tools = Array.isArray(agent.tools) ? (agent.tools as string[]) : [];
   const handoff = Array.isArray(agent.handoff_rules) ? (agent.handoff_rules as string[]) : [];
