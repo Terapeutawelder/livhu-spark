@@ -76,7 +76,7 @@ function AgentesPage() {
         .eq("tenant_id", tenant!.id)
         .order("created_at", { ascending: true });
       if (error) throw error;
-      return (data ?? []) as Agent[];
+      return ((data ?? []) as Agent[]).filter((a) => !(a as any).is_orchestrator);
     },
   });
 
@@ -147,6 +147,13 @@ function AgentesPage() {
       </div>
 
       <AiOrchestratorPanel />
+
+      <div>
+        <h2 className="text-sm font-semibold">Agentes especializados supervisionados</h2>
+        <p className="text-xs text-muted-foreground">
+          Cada agente atua em uma frente do atendimento sob governança do Orquestrador Master.
+        </p>
+      </div>
 
       <div className="grid gap-3 sm:grid-cols-4">
         <StatCard label="Agentes ativos" value={String(agents.filter((a) => a.is_active).length)} hint={`de ${agents.length} criados`} />

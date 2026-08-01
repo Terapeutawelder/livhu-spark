@@ -21,8 +21,10 @@ export type Database = {
           handoff_rules: Json
           id: string
           is_active: boolean
+          is_orchestrator: boolean
           language: string
           model: string
+          module_access: Json
           name: string
           role: string
           system_prompt: string
@@ -37,8 +39,10 @@ export type Database = {
           handoff_rules?: Json
           id?: string
           is_active?: boolean
+          is_orchestrator?: boolean
           language?: string
           model?: string
+          module_access?: Json
           name: string
           role?: string
           system_prompt?: string
@@ -53,8 +57,10 @@ export type Database = {
           handoff_rules?: Json
           id?: string
           is_active?: boolean
+          is_orchestrator?: boolean
           language?: string
           model?: string
+          module_access?: Json
           name?: string
           role?: string
           system_prompt?: string
@@ -66,6 +72,53 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "ai_agents_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_memory_sources: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          kind: string
+          size_bytes: number
+          tenant_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          kind?: string
+          size_bytes?: number
+          tenant_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          kind?: string
+          size_bytes?: number
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_memory_sources_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -954,6 +1007,7 @@ export type Database = {
       tenant_ai_credentials: {
         Row: {
           api_key_enc: string
+          base_url: string | null
           created_at: string
           created_by: string | null
           id: string
@@ -964,6 +1018,7 @@ export type Database = {
         }
         Insert: {
           api_key_enc: string
+          base_url?: string | null
           created_at?: string
           created_by?: string | null
           id?: string
@@ -974,6 +1029,7 @@ export type Database = {
         }
         Update: {
           api_key_enc?: string
+          base_url?: string | null
           created_at?: string
           created_by?: string | null
           id?: string
