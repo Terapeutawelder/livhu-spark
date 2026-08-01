@@ -840,69 +840,110 @@ function TemplatesDialog({
   isPending: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const [cat, setCat] = useState<string>("todas");
+  const [preview, setPreview] = useState<FlowTemplate | null>(null);
+
+  const categories = ["todas", ...Array.from(new Set(FLOW_TEMPLATES.map((t) => t.category)))];
+  const list = FLOW_TEMPLATES.filter((t) => cat === "todas" || t.category === cat);
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setPreview(null); }}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
           <Sparkles className="h-4 w-4 text-gold" />
-          Templates prontos
+          Modelos prontos
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-gold" />
-            Automações prontas
+            Criar fluxo a partir de um modelo
           </DialogTitle>
           <DialogDescription>
-            Instale com 1 clique. O fluxo entra como <b>rascunho</b> — revise e ative quando quiser.
+            O modelo entra como <b>rascunho</b> e abre no editor — ajuste os textos e ative quando quiser.
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="max-h-[60vh] pr-3">
-          <div className="grid gap-3 sm:grid-cols-2">
-            {FLOW_TEMPLATES.map((t) => (
-              <div
-                key={t.id}
-                className="flex flex-col rounded-lg border bg-card p-4 shadow-sm transition hover:border-gold/40 hover:shadow-gold/10"
-              >
-                <div className="mb-2 flex items-start justify-between gap-2">
-                  <span className="text-2xl leading-none">{t.icon}</span>
-                  <Badge variant="outline" className="text-[10px]">
-                    {CATEGORY_LABEL[t.category]}
-                  </Badge>
+
+        <div className="flex flex-wrap gap-1">
+          {categories.map((c) => (
+            <button
+              key={c}
+              onClick={() => setCat(c)}
+              className={`rounded-full px-3 py-1 text-[11px] transition ${
+                cat === c ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {c === "todas" ? "Todas" : CATEGORY_LABEL[c as FlowTemplate["category"]]}
+            </button>
+          ))}
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-[1fr_300px]">
+          <ScrollArea className="max-h-[56vh] pr-3">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {list.map((t) => (
+                <div
+                  key={t.id}
+                  className={`flex cursor-pointer flex-col rounded-lg border bg-card p-4 shadow-sm transition hover:border-gold/40 ${
+                    preview?.id === t.id ? "border-gold/60 ring-1 ring-gold/30" : ""
+                  }`}
+                  onClick={() => setPreview(t)}
+                >
+                  <div className="mb-2 flex items-start justify-between gap-2">
+                    <span className="text-2xl leading-none">{t.icon}</span>
+                    <Badge variant="outline" className="text-[10px]">
+                      {CATEGORY_LABEL[t.category]}
+                    </Badge>
+                  </div>
+                  <p className="mb-1 text-sm font-semibold leading-tight">{t.name}</p>
+                  <p className="mb-3 flex-1 text-xs text-muted-foreground">{t.description}</p>
+                  <p className="text-[10px] text-muted-foreground">{t.steps.length} passos</p>
                 </div>
-                <p className="mb-1 text-sm font-semibold leading-tight">{t.name}</p>
-                <p className="mb-3 flex-1 text-xs text-muted-foreground">{t.description}</p>
-                <div className="mb-3 flex flex-wrap gap-1">
-                  {t.steps.slice(0, 4).map((s, i) => (
-                    <span
-                      key={i}
-                      className="rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground"
-                    >
-                      {s.label}
-                    </span>
-                  ))}
-                  {t.steps.length > 4 && (
-                    <span className="text-[10px] text-muted-foreground">
-                      +{t.steps.length - 4}
-                    </span>
-                  )}
-                </div>
+              ))}
+            </div>
+          </ScrollArea>
+
+          <div className="rounded-lg border bg-muted/20 p-3">
+            {!preview ? (
+              <p className="py-8 text-center text-xs text-muted-foreground">
+                Selecione um modelo para ver os passos antes de criar.
+              </p>
+            ) : (
+              <>
+                <p className="mb-1 text-sm font-semibold">{preview.name}</p>
+                <p className="mb-3 flex items-center gap-1 text-[11px] text-muted-foreground">
+                  <Zap className="h-3 w-3" />
+                  {TRIGGERS.find((x) => x.id === preview.trigger)?.label ?? preview.trigger}
+                </p>
+                <ScrollArea className="max-h-[36vh] pr-2">
+                  <div className="space-y-2">
+                    {preview.steps.map((s, i) => (
+                      <div key={i} className="rounded-md border bg-card p-2">
+                        <p className="text-[11px] font-semibold">
+                          {i + 1}. {s.label}{" "}
+                          <span className="font-normal text-muted-foreground">({s.kind})</span>
+                        </p>
+                        <p className="mt-1 whitespace-pre-wrap text-[11px] text-muted-foreground">{s.content}</p>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
                 <Button
                   size="sm"
-                  className="w-full gap-1"
+                  className="mt-3 w-full gap-1"
                   disabled={isPending}
                   onClick={() => {
-                    onInstall(t);
+                    onInstall(preview);
                     setOpen(false);
                   }}
                 >
-                  <Plus className="h-3 w-3" /> Instalar template
+                  <Pencil className="h-3 w-3" /> Criar rascunho e editar
                 </Button>
-              </div>
-            ))}
+              </>
+            )}
           </div>
-        </ScrollArea>
+        </div>
       </DialogContent>
     </Dialog>
   );
