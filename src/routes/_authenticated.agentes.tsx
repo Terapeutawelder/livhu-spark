@@ -83,7 +83,18 @@ function AgentesPage() {
         .eq("tenant_id", tenant!.id)
         .order("created_at", { ascending: true });
       if (error) throw error;
-      return ((data ?? []) as Agent[]).filter((a) => !(a as any).is_orchestrator);
+      return ((data ?? []) as any[])
+        .filter((a) => !a.is_orchestrator)
+        .map((a) => ({
+          ...a,
+          tools: Array.isArray(a.tools) ? a.tools : [],
+          handoff_rules: Array.isArray(a.handoff_rules) ? a.handoff_rules : [],
+          system_prompt: a.system_prompt ?? "",
+          role: a.role ?? "",
+          model: a.model ?? "google/gemini-2.5-flash",
+          language: a.language ?? "pt-BR",
+          temperature: Number(a.temperature ?? 0.4),
+        })) as Agent[];
     },
   });
 
