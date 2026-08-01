@@ -58,6 +58,13 @@ export const Route = createFileRoute("/_authenticated/agentes")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 p-6 text-center">
+      <h2 className="text-lg font-semibold">Não foi possível abrir os Agentes IA</h2>
+      <p className="max-w-md text-sm text-muted-foreground">{error?.message ?? "Erro desconhecido"}</p>
+      <Button size="sm" onClick={() => reset()}>Tentar novamente</Button>
+    </div>
+  ),
   component: AgentesPage,
 });
 
@@ -76,7 +83,18 @@ function AgentesPage() {
         .eq("tenant_id", tenant!.id)
         .order("created_at", { ascending: true });
       if (error) throw error;
-      return ((data ?? []) as Agent[]).filter((a) => !(a as any).is_orchestrator);
+      return ((data ?? []) as any[])
+        .filter((a) => !a.is_orchestrator)
+        .map((a) => ({
+          ...a,
+          tools: Array.isArray(a.tools) ? a.tools : [],
+          handoff_rules: Array.isArray(a.handoff_rules) ? a.handoff_rules : [],
+          system_prompt: a.system_prompt ?? "",
+          role: a.role ?? "",
+          model: a.model ?? "google/gemini-2.5-flash",
+          language: a.language ?? "pt-BR",
+          temperature: Number(a.temperature ?? 0.4),
+        })) as Agent[];
     },
   });
 
