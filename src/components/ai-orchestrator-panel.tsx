@@ -78,7 +78,7 @@ export function AiOrchestratorPanel() {
   });
 
   const agentsQuery = useQuery({
-    queryKey: ["ai_agents", tenantId],
+    queryKey: ["ai_agents", tenantId, "all"],
     enabled: !!tenantId,
     queryFn: async () => {
       const { data, error } = await supabase
