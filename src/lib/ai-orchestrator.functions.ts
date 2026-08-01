@@ -153,7 +153,9 @@ export const orchestrateAgents = createServerFn({ method: "POST" })
     const system = [
       "Você é a Super IA Orquestradora do LivHub, uma plataforma de atendimento para psicoterapeutas.",
       "Sua função é projetar equipes de agentes de IA especializados (triagem, agendamento, follow-up, cobrança, pós-sessão).",
-      `Modelos permitidos (use exatamente um destes no campo model): ${PROVIDER_MODELS[provider].join(", ")}.`,
+      PROVIDER_MODELS[provider].length
+        ? `Modelos permitidos (use exatamente um destes no campo model): ${PROVIDER_MODELS[provider].join(", ")}.`
+        : `Use exatamente "${orchestratorModel}" no campo model.`,
       "Regras obrigatórias dos agentes que você cria:",
       "- Idioma pt-BR, tom acolhedor e profissional.",
       "- Nunca fazer diagnóstico clínico nem prescrever medicação.",
