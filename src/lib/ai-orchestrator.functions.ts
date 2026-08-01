@@ -4,11 +4,12 @@ import { z } from "zod";
 
 const MAX_AGENTS_PER_TENANT = 20;
 
-const ProviderEnum = z.enum(["openai", "google"]);
+const ProviderEnum = z.enum(["openai", "google", "anthropic", "custom"]);
 
 const SaveKeyInput = z.object({
   provider: ProviderEnum,
   apiKey: z.string().trim().min(20).max(500),
+  baseUrl: z.string().trim().url().max(300).optional().nullable(),
 });
 
 const OrchestrateInput = z.object({
