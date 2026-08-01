@@ -1,11 +1,12 @@
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { decryptToken } from "./token-crypto.server";
 
-export type AiProvider = "openai" | "google" | "lovable";
+export type AiProvider = "openai" | "google" | "anthropic" | "custom" | "lovable";
 
-const PROVIDER_BASE_URL: Record<Exclude<AiProvider, "lovable">, string> = {
+const PROVIDER_BASE_URL: Record<Exclude<AiProvider, "lovable" | "custom">, string> = {
   openai: "https://api.openai.com/v1",
   google: "https://generativelanguage.googleapis.com/v1beta/openai",
+  anthropic: "https://api.anthropic.com/v1",
 };
 
 /** Modelos permitidos por provedor (allowlist do servidor). */
@@ -18,17 +19,25 @@ export const PROVIDER_MODELS: Record<AiProvider, string[]> = {
   ],
   openai: ["gpt-4o-mini", "gpt-4o", "gpt-4.1-mini", "gpt-4.1"],
   google: ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"],
+  anthropic: [
+    "claude-sonnet-4-5",
+    "claude-opus-4-1",
+    "claude-3-5-haiku-latest",
+  ],
+  // Endpoint compatível com OpenAI informado pelo próprio consultório.
+  custom: [],
 };
 
 export function isAllowedModel(provider: AiProvider, model: string) {
+  if (provider === "custom") return typeof model === "string" && model.trim().length > 0;
   return PROVIDER_MODELS[provider].includes(model);
 }
 
 export function defaultModel(provider: AiProvider) {
-  return PROVIDER_MODELS[provider][0];
+  return PROVIDER_MODELS[provider][0] ?? "gpt-4o-mini";
 }
 
-type Credential = { provider: AiProvider; apiKey: string };
+type Credential = { provider: AiProvider; apiKey: string; baseUrl?: string | null };
 
 /**
  * Lê a credencial de IA do tenant (cifrada em repouso) usando o cliente admin.
@@ -38,14 +47,18 @@ export async function loadTenantAiCredential(tenantId: string): Promise<Credenti
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data, error } = await supabaseAdmin
     .from("tenant_ai_credentials")
-    .select("provider, api_key_enc")
+    .select("provider, api_key_enc, base_url")
     .eq("tenant_id", tenantId)
     .maybeSingle();
 
   if (error || !data) return null;
   const apiKey = await decryptToken(data.api_key_enc);
   if (!apiKey) return null;
-  return { provider: data.provider as AiProvider, apiKey };
+  return {
+    provider: data.provider as AiProvider,
+    apiKey,
+    baseUrl: (data as { base_url?: string | null }).base_url ?? null,
+  };
 }
 
 /**
@@ -54,11 +67,18 @@ export async function loadTenantAiCredential(tenantId: string): Promise<Credenti
  */
 export function createProvider(credential: Credential | null) {
   if (credential) {
+    const baseURL =
+      credential.provider === "custom"
+        ? (credential.baseUrl ?? "").trim()
+        : PROVIDER_BASE_URL[credential.provider as Exclude<AiProvider, "lovable" | "custom">];
+
+    if (!baseURL) throw new Error("Endereço do provedor de IA não configurado.");
+
     return {
       provider: credential.provider,
       client: createOpenAICompatible({
         name: "lovable",
-        baseURL: PROVIDER_BASE_URL[credential.provider as Exclude<AiProvider, "lovable">],
+        baseURL,
         apiKey: credential.apiKey,
       }),
     };
