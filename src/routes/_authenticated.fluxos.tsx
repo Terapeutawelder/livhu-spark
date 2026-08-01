@@ -191,6 +191,10 @@ function FluxosPage() {
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <ImportFlowButton
+            onImport={(payload) => importFlow.mutate(payload)}
+            isPending={importFlow.isPending}
+          />
           <TemplatesDialog onInstall={(t) => installTemplate.mutate(t)} isPending={installTemplate.isPending} />
           <Button size="sm" className="gap-2" onClick={() => createFlow.mutate()} disabled={createFlow.isPending}>
             {createFlow.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
