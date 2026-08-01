@@ -55,7 +55,7 @@ export function TrialBanner() {
             </p>
           </div>
           <Link
-            to="/pagamentos"
+            to="/planos"
             className="rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-rose-700"
           >
             Ver planos
@@ -82,7 +82,7 @@ export function TrialBanner() {
           </span>
         </div>
         <Link
-          to="/pagamentos"
+          to="/planos"
           className="rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:opacity-90"
         >
           Fazer upgrade
