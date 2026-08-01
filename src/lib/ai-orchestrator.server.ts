@@ -1,9 +1,10 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
+
 export const MAX_AGENTS_PER_TENANT = 20;
 
 type TenantContext = {
-  supabase: {
-    rpc: (name: string, params?: Record<string, unknown>) => Promise<{ data: unknown }>;
-  };
+  supabase: SupabaseClient<Database>;
   userId: string;
 };
 
