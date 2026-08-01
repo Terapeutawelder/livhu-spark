@@ -58,6 +58,13 @@ export const Route = createFileRoute("/_authenticated/agentes")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
+  errorComponent: ({ error, reset }) => (
+    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 p-6 text-center">
+      <h2 className="text-lg font-semibold">Não foi possível abrir os Agentes IA</h2>
+      <p className="max-w-md text-sm text-muted-foreground">{error?.message ?? "Erro desconhecido"}</p>
+      <Button size="sm" onClick={() => reset()}>Tentar novamente</Button>
+    </div>
+  ),
   component: AgentesPage,
 });
 
