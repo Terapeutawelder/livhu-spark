@@ -1,37 +1,13 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
-
-const MAX_AGENTS_PER_TENANT = 20;
-
-const ProviderEnum = z.enum(["openai", "google", "anthropic", "custom"]);
-
-const SaveKeyInput = z.object({
-  provider: ProviderEnum,
-  apiKey: z.string().trim().min(20).max(500),
-  baseUrl: z.string().trim().url().max(300).optional().nullable(),
-});
-
-const OrchestrateInput = z.object({
-  instruction: z.string().trim().min(10).max(2000),
-  count: z.number().int().min(1).max(3).default(1),
-});
-
-/** tenant do usuário autenticado + papel, via RLS/funções do banco. */
-async function resolveTenant(context: { supabase: any; userId: string }) {
-  const { data: tenantId } = await context.supabase.rpc("current_tenant_id");
-  if (!tenantId) throw new Error("Consultório não encontrado para este usuário.");
-  const { data: role } = await context.supabase.rpc("tenant_role_of", {
-    _tenant_id: tenantId,
-    _user_id: context.userId,
-  });
-  return { tenantId: tenantId as string, role: (role as string) ?? "" };
-}
+import { OrchestrateAgentsInput, SaveAiKeyInput } from "./ai-orchestrator.schema";
+import { MAX_AGENTS_PER_TENANT, resolveAiTenant } from "./ai-orchestrator.server";
 
 export const getAiKeyStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { tenantId, role } = await resolveTenant(context);
+    const { tenantId, role } = await resolveAiTenant(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data } = await supabaseAdmin
       .from("tenant_ai_credentials")
@@ -51,9 +27,9 @@ export const getAiKeyStatus = createServerFn({ method: "POST" })
 
 export const saveAiKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => SaveKeyInput.parse(input))
+  .inputValidator((input: unknown) => SaveAiKeyInput.parse(input))
   .handler(async ({ data, context }) => {
-    const { tenantId, role } = await resolveTenant(context);
+    const { tenantId, role } = await resolveAiTenant(context);
     if (role !== "owner" && role !== "admin") {
       throw new Error("Apenas o responsável pelo consultório pode configurar a chave de IA.");
     }
@@ -87,7 +63,7 @@ export const saveAiKey = createServerFn({ method: "POST" })
 export const removeAiKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { tenantId, role } = await resolveTenant(context);
+    const { tenantId, role } = await resolveAiTenant(context);
     if (role !== "owner" && role !== "admin") {
       throw new Error("Apenas o responsável pelo consultório pode remover a chave de IA.");
     }
@@ -102,9 +78,9 @@ export const removeAiKey = createServerFn({ method: "POST" })
  */
 export const orchestrateAgents = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => OrchestrateInput.parse(input))
+  .inputValidator((input: unknown) => OrchestrateAgentsInput.parse(input))
   .handler(async ({ data, context }) => {
-    const { tenantId } = await resolveTenant(context);
+    const { tenantId } = await resolveAiTenant(context);
 
     const { data: existing, error: listError } = await context.supabase
       .from("ai_agents")
