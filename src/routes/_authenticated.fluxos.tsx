@@ -178,6 +178,33 @@ function FluxosPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const importFlow = useMutation({
+    mutationFn: async (payload: ImportedFlow) => {
+      if (!tenant) throw new Error("Consultório não encontrado");
+      const { data, error } = await supabase
+        .from("flows")
+        .insert({
+          tenant_id: tenant.id,
+          name: payload.name,
+          description: payload.description ?? "",
+          trigger: payload.trigger,
+          steps: payload.steps.map((s) => ({ ...s, id: crypto.randomUUID() })) as never,
+          is_active: false,
+        })
+        .select()
+        .single();
+      if (error) throw error;
+      return data as unknown as Flow;
+    },
+    onSuccess: (f) => {
+      qc.invalidateQueries({ queryKey: ["flows"] });
+      setSelectedId(f.id);
+      toast.success("Fluxo importado como rascunho");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+
   const activeCount = flows.filter((f) => f.is_active).length;
   const totalRuns = flows.reduce((acc, f) => acc + (f.runs_count ?? 0), 0);
 
