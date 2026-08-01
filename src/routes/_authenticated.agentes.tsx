@@ -10,7 +10,6 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
-import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentTenant } from "@/hooks/use-tenant";
@@ -364,11 +363,15 @@ function AgentEditor({ agent, onDelete }: { agent: Agent; onDelete: () => void }
               <span className="text-muted-foreground">Temperatura</span>
               <span className="font-medium">{Number(form.temperature).toFixed(1)}</span>
             </div>
-            <Slider
-              value={[Number(form.temperature)]}
-              onValueChange={(v) => setForm({ ...form, temperature: v[0] })}
+            <input
+              type="range"
+              aria-label="Temperatura do agente"
+              value={Number(form.temperature)}
+              onChange={(e) => setForm({ ...form, temperature: Number(e.target.value) })}
+              min={0}
               max={1}
               step={0.1}
+              className="h-2 w-full cursor-pointer accent-primary"
             />
           </div>
         </Section>
