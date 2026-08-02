@@ -228,7 +228,12 @@ export function AppSidebar() {
         </div>
 
         {/* Nav */}
-        <nav className={"flex-1 space-y-1 py-4 " + (collapsed ? "lg:px-2 px-3" : "px-3")}>
+        <nav
+          className={
+            "min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain py-4 [scrollbar-width:thin] " +
+            (collapsed ? "lg:px-2 px-3" : "px-3")
+          }
+        >
           {items.map((item) => {
             const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
             const Icon = item.icon;
