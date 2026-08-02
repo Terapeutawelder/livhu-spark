@@ -19,6 +19,7 @@ import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated.
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as AuthenticatedAgendamentoRouteImport } from './routes/_authenticated.agendamento'
 import { Route as AuthenticatedAgentesRouteImport } from './routes/_authenticated.agentes'
+import { Route as AuthenticatedCalendarioRouteImport } from './routes/_authenticated.calendario'
 import { Route as AuthenticatedConfiguracoesRouteImport } from './routes/_authenticated.configuracoes'
 import { Route as AuthenticatedContatosRouteImport } from './routes/_authenticated.contatos'
 import { Route as AuthenticatedCursosRouteImport } from './routes/_authenticated.cursos'
@@ -105,6 +106,11 @@ const AuthenticatedAgentesRoute = AuthenticatedAgentesRouteImport.update({
 } as any).lazy(() =>
   import('./routes/_authenticated.agentes.lazy').then((d) => d.Route),
 )
+const AuthenticatedCalendarioRoute = AuthenticatedCalendarioRouteImport.update({
+  id: '/calendario',
+  path: '/calendario',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedConfiguracoesRoute =
   AuthenticatedConfiguracoesRouteImport.update({
     id: '/configuracoes',
@@ -297,6 +303,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamento': typeof AuthenticatedAgendamentoRoute
   '/agentes': typeof AuthenticatedAgentesRoute
+  '/calendario': typeof AuthenticatedCalendarioRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/contatos': typeof AuthenticatedContatosRoute
   '/cursos': typeof AuthenticatedCursosRoute
@@ -339,6 +346,7 @@ export interface FileRoutesByTo {
   '/termos': typeof TermosRoute
   '/agendamento': typeof AuthenticatedAgendamentoRoute
   '/agentes': typeof AuthenticatedAgentesRoute
+  '/calendario': typeof AuthenticatedCalendarioRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/contatos': typeof AuthenticatedContatosRoute
   '/cursos': typeof AuthenticatedCursosRoute
@@ -385,6 +393,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/agendamento': typeof AuthenticatedAgendamentoRoute
   '/_authenticated/agentes': typeof AuthenticatedAgentesRoute
+  '/_authenticated/calendario': typeof AuthenticatedCalendarioRoute
   '/_authenticated/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/_authenticated/contatos': typeof AuthenticatedContatosRoute
   '/_authenticated/cursos': typeof AuthenticatedCursosRoute
@@ -432,6 +441,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/agendamento'
     | '/agentes'
+    | '/calendario'
     | '/configuracoes'
     | '/contatos'
     | '/cursos'
@@ -474,6 +484,7 @@ export interface FileRouteTypes {
     | '/termos'
     | '/agendamento'
     | '/agentes'
+    | '/calendario'
     | '/configuracoes'
     | '/contatos'
     | '/cursos'
@@ -519,6 +530,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/agendamento'
     | '/_authenticated/agentes'
+    | '/_authenticated/calendario'
     | '/_authenticated/configuracoes'
     | '/_authenticated/contatos'
     | '/_authenticated/cursos'
@@ -642,6 +654,13 @@ declare module '@tanstack/react-router' {
       path: '/agentes'
       fullPath: '/agentes'
       preLoaderRoute: typeof AuthenticatedAgentesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/calendario': {
+      id: '/_authenticated/calendario'
+      path: '/calendario'
+      fullPath: '/calendario'
+      preLoaderRoute: typeof AuthenticatedCalendarioRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/configuracoes': {
@@ -913,6 +932,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedAgendamentoRoute: typeof AuthenticatedAgendamentoRoute
   AuthenticatedAgentesRoute: typeof AuthenticatedAgentesRoute
+  AuthenticatedCalendarioRoute: typeof AuthenticatedCalendarioRoute
   AuthenticatedConfiguracoesRoute: typeof AuthenticatedConfiguracoesRoute
   AuthenticatedContatosRoute: typeof AuthenticatedContatosRoute
   AuthenticatedCursosRoute: typeof AuthenticatedCursosRoute
@@ -934,6 +954,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedAgendamentoRoute: AuthenticatedAgendamentoRoute,
   AuthenticatedAgentesRoute: AuthenticatedAgentesRoute,
+  AuthenticatedCalendarioRoute: AuthenticatedCalendarioRoute,
   AuthenticatedConfiguracoesRoute: AuthenticatedConfiguracoesRoute,
   AuthenticatedContatosRoute: AuthenticatedContatosRoute,
   AuthenticatedCursosRoute: AuthenticatedCursosRoute,
