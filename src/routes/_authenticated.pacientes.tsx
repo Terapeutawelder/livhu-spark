@@ -23,6 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentTenant } from "@/hooks/use-tenant";
+import { MetricCard } from "@/components/metric-card";
 
 export const Route = createFileRoute("/_authenticated/pacientes")({
   head: () => ({
