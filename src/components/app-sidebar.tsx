@@ -10,6 +10,8 @@ import {
   HeartPulse,
   KanbanSquare,
   CalendarDays,
+  CalendarClock,
+  Stethoscope,
   Workflow,
   Megaphone,
   Send,
