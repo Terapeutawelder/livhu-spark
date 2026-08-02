@@ -516,6 +516,44 @@ function BookingWidget({
           })}
         </div>
 
+        {/* Planos de terapia */}
+        <p className="mt-6 text-xs font-semibold uppercase tracking-wider" style={{ color: theme.muted }}>
+          Plano de terapia
+        </p>
+        <div className="mt-3 grid gap-2 sm:grid-cols-3">
+          {THERAPY_PLANS.map((p) => {
+            const active = p.id === planId;
+            const value = service ? Math.round(service.price_cents * p.sessions * (1 - p.discount)) : 0;
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setPlanId(p.id)}
+                className="p-4 text-left transition"
+                style={{
+                  borderRadius: theme.radius,
+                  border: `1.5px solid ${active ? theme.accent : "rgba(125,125,125,.25)"}`,
+                  background: active ? `${theme.accent}14` : "transparent",
+                }}
+              >
+                <span className="block text-sm font-semibold" style={{ color: theme.text }}>
+                  {p.name}
+                </span>
+                <span className="mt-1 block text-xs" style={{ color: theme.muted }}>
+                  {p.note}
+                </span>
+                {service && service.price_cents > 0 && (
+                  <span className="mt-2 block text-sm font-semibold" style={{ color: theme.accent }}>
+                    {money(value)}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+
+
         {/* Calendário */}
         <p className="mt-6 text-xs font-semibold uppercase tracking-wider" style={{ color: theme.muted }}>
           Data
