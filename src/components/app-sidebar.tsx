@@ -260,7 +260,7 @@ export function AppSidebar() {
         </nav>
 
         {/* User card */}
-        <div className={collapsed ? "m-3 rounded-xl bg-sidebar-hover p-3 lg:m-2 lg:bg-transparent lg:p-0" : "m-3 rounded-xl bg-sidebar-hover p-3"}>
+        <div className={collapsed ? "shrink-0 m-3 rounded-xl bg-sidebar-hover p-3 lg:m-2 lg:bg-transparent lg:p-0" : "shrink-0 m-3 rounded-xl bg-sidebar-hover p-3"}>
           <div className={"flex items-center gap-3 " + (collapsed ? "lg:flex-col lg:gap-2" : "")}>
             <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
               {initials}
