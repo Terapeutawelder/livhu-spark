@@ -19,12 +19,12 @@ import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated.
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as AuthenticatedAgendamentoRouteImport } from './routes/_authenticated.agendamento'
 import { Route as AuthenticatedAgentesRouteImport } from './routes/_authenticated.agentes'
+import { Route as AuthenticatedCalendarioRouteImport } from './routes/_authenticated.calendario'
 import { Route as AuthenticatedConfiguracoesRouteImport } from './routes/_authenticated.configuracoes'
 import { Route as AuthenticatedContatosRouteImport } from './routes/_authenticated.contatos'
 import { Route as AuthenticatedCursosRouteImport } from './routes/_authenticated.cursos'
 import { Route as AuthenticatedDisparosRouteImport } from './routes/_authenticated.disparos'
 import { Route as AuthenticatedFluxosRouteImport } from './routes/_authenticated.fluxos'
-import { Route as AuthenticatedHorariosRouteImport } from './routes/_authenticated.horarios'
 import { Route as AuthenticatedKanbanRouteImport } from './routes/_authenticated.kanban'
 import { Route as AuthenticatedMensagensRouteImport } from './routes/_authenticated.mensagens'
 import { Route as AuthenticatedPacientesRouteImport } from './routes/_authenticated.pacientes'
@@ -105,6 +105,11 @@ const AuthenticatedAgentesRoute = AuthenticatedAgentesRouteImport.update({
 } as any).lazy(() =>
   import('./routes/_authenticated.agentes.lazy').then((d) => d.Route),
 )
+const AuthenticatedCalendarioRoute = AuthenticatedCalendarioRouteImport.update({
+  id: '/calendario',
+  path: '/calendario',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedConfiguracoesRoute =
   AuthenticatedConfiguracoesRouteImport.update({
     id: '/configuracoes',
@@ -129,11 +134,6 @@ const AuthenticatedDisparosRoute = AuthenticatedDisparosRouteImport.update({
 const AuthenticatedFluxosRoute = AuthenticatedFluxosRouteImport.update({
   id: '/fluxos',
   path: '/fluxos',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedHorariosRoute = AuthenticatedHorariosRouteImport.update({
-  id: '/horarios',
-  path: '/horarios',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedKanbanRoute = AuthenticatedKanbanRouteImport.update({
@@ -297,12 +297,12 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamento': typeof AuthenticatedAgendamentoRoute
   '/agentes': typeof AuthenticatedAgentesRoute
+  '/calendario': typeof AuthenticatedCalendarioRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/contatos': typeof AuthenticatedContatosRoute
   '/cursos': typeof AuthenticatedCursosRoute
   '/disparos': typeof AuthenticatedDisparosRoute
   '/fluxos': typeof AuthenticatedFluxosRoute
-  '/horarios': typeof AuthenticatedHorariosRoute
   '/kanban': typeof AuthenticatedKanbanRoute
   '/mensagens': typeof AuthenticatedMensagensRoute
   '/pacientes': typeof AuthenticatedPacientesRoute
@@ -339,12 +339,12 @@ export interface FileRoutesByTo {
   '/termos': typeof TermosRoute
   '/agendamento': typeof AuthenticatedAgendamentoRoute
   '/agentes': typeof AuthenticatedAgentesRoute
+  '/calendario': typeof AuthenticatedCalendarioRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/contatos': typeof AuthenticatedContatosRoute
   '/cursos': typeof AuthenticatedCursosRoute
   '/disparos': typeof AuthenticatedDisparosRoute
   '/fluxos': typeof AuthenticatedFluxosRoute
-  '/horarios': typeof AuthenticatedHorariosRoute
   '/kanban': typeof AuthenticatedKanbanRoute
   '/mensagens': typeof AuthenticatedMensagensRoute
   '/pacientes': typeof AuthenticatedPacientesRoute
@@ -385,12 +385,12 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/agendamento': typeof AuthenticatedAgendamentoRoute
   '/_authenticated/agentes': typeof AuthenticatedAgentesRoute
+  '/_authenticated/calendario': typeof AuthenticatedCalendarioRoute
   '/_authenticated/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/_authenticated/contatos': typeof AuthenticatedContatosRoute
   '/_authenticated/cursos': typeof AuthenticatedCursosRoute
   '/_authenticated/disparos': typeof AuthenticatedDisparosRoute
   '/_authenticated/fluxos': typeof AuthenticatedFluxosRoute
-  '/_authenticated/horarios': typeof AuthenticatedHorariosRoute
   '/_authenticated/kanban': typeof AuthenticatedKanbanRoute
   '/_authenticated/mensagens': typeof AuthenticatedMensagensRoute
   '/_authenticated/pacientes': typeof AuthenticatedPacientesRoute
@@ -432,12 +432,12 @@ export interface FileRouteTypes {
     | '/admin'
     | '/agendamento'
     | '/agentes'
+    | '/calendario'
     | '/configuracoes'
     | '/contatos'
     | '/cursos'
     | '/disparos'
     | '/fluxos'
-    | '/horarios'
     | '/kanban'
     | '/mensagens'
     | '/pacientes'
@@ -474,12 +474,12 @@ export interface FileRouteTypes {
     | '/termos'
     | '/agendamento'
     | '/agentes'
+    | '/calendario'
     | '/configuracoes'
     | '/contatos'
     | '/cursos'
     | '/disparos'
     | '/fluxos'
-    | '/horarios'
     | '/kanban'
     | '/mensagens'
     | '/pacientes'
@@ -519,12 +519,12 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/agendamento'
     | '/_authenticated/agentes'
+    | '/_authenticated/calendario'
     | '/_authenticated/configuracoes'
     | '/_authenticated/contatos'
     | '/_authenticated/cursos'
     | '/_authenticated/disparos'
     | '/_authenticated/fluxos'
-    | '/_authenticated/horarios'
     | '/_authenticated/kanban'
     | '/_authenticated/mensagens'
     | '/_authenticated/pacientes'
@@ -644,6 +644,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAgentesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/calendario': {
+      id: '/_authenticated/calendario'
+      path: '/calendario'
+      fullPath: '/calendario'
+      preLoaderRoute: typeof AuthenticatedCalendarioRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/configuracoes': {
       id: '/_authenticated/configuracoes'
       path: '/configuracoes'
@@ -677,13 +684,6 @@ declare module '@tanstack/react-router' {
       path: '/fluxos'
       fullPath: '/fluxos'
       preLoaderRoute: typeof AuthenticatedFluxosRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/horarios': {
-      id: '/_authenticated/horarios'
-      path: '/horarios'
-      fullPath: '/horarios'
-      preLoaderRoute: typeof AuthenticatedHorariosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/kanban': {
@@ -913,12 +913,12 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedAgendamentoRoute: typeof AuthenticatedAgendamentoRoute
   AuthenticatedAgentesRoute: typeof AuthenticatedAgentesRoute
+  AuthenticatedCalendarioRoute: typeof AuthenticatedCalendarioRoute
   AuthenticatedConfiguracoesRoute: typeof AuthenticatedConfiguracoesRoute
   AuthenticatedContatosRoute: typeof AuthenticatedContatosRoute
   AuthenticatedCursosRoute: typeof AuthenticatedCursosRoute
   AuthenticatedDisparosRoute: typeof AuthenticatedDisparosRoute
   AuthenticatedFluxosRoute: typeof AuthenticatedFluxosRoute
-  AuthenticatedHorariosRoute: typeof AuthenticatedHorariosRoute
   AuthenticatedKanbanRoute: typeof AuthenticatedKanbanRoute
   AuthenticatedMensagensRoute: typeof AuthenticatedMensagensRoute
   AuthenticatedPacientesRoute: typeof AuthenticatedPacientesRoute
@@ -934,12 +934,12 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedAgendamentoRoute: AuthenticatedAgendamentoRoute,
   AuthenticatedAgentesRoute: AuthenticatedAgentesRoute,
+  AuthenticatedCalendarioRoute: AuthenticatedCalendarioRoute,
   AuthenticatedConfiguracoesRoute: AuthenticatedConfiguracoesRoute,
   AuthenticatedContatosRoute: AuthenticatedContatosRoute,
   AuthenticatedCursosRoute: AuthenticatedCursosRoute,
   AuthenticatedDisparosRoute: AuthenticatedDisparosRoute,
   AuthenticatedFluxosRoute: AuthenticatedFluxosRoute,
-  AuthenticatedHorariosRoute: AuthenticatedHorariosRoute,
   AuthenticatedKanbanRoute: AuthenticatedKanbanRoute,
   AuthenticatedMensagensRoute: AuthenticatedMensagensRoute,
   AuthenticatedPacientesRoute: AuthenticatedPacientesRoute,

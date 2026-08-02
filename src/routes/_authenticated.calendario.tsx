@@ -1,0 +1,431 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { CalendarClock, Ban, Trash2, Plus, Clock, Timer, Hourglass } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { supabase } from "@/integrations/supabase/client";
+import { useCurrentTenant } from "@/hooks/use-tenant";
+import { toast } from "sonner";
+
+export const Route = createFileRoute("/_authenticated/calendario")({
+  head: () => ({
+    meta: [
+      { title: "Calendário — LivHub" },
+      {
+        name: "description",
+        content:
+          "Configure janelas de atendimento por dia, intervalo entre sessões, antecedência mínima e bloqueios da agenda.",
+      },
+      { property: "og:title", content: "Calendário — LivHub" },
+      {
+        property: "og:description",
+        content: "Disponibilidade, intervalos e bloqueios de agenda do consultório.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "twitter:title", content: "Calendário — LivHub" },
+      { name: "twitter:description", content: "Disponibilidade e regras de agendamento." },
+    ],
+  }),
+  component: CalendarioPage,
+});
+
+type Window = { day: number; start: string; end: string };
+type Availability = {
+  start_hour?: number;
+  end_hour?: number;
+  days?: number[];
+  windows?: Window[];
+  gap_minutes?: number;
+  min_advance_hours?: number;
+};
+type TenantSettings = { availability?: Availability } & Record<string, unknown>;
+
+type Block = {
+  id: string;
+  title: string;
+  starts_at: string;
+  ends_at: string;
+};
+
+const WEEK_DAYS_FULL = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+const WEEK_DAYS_SHORT = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+
+function toLocalInput(d: Date) {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function fmt(dt: string) {
+  return new Date(dt).toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function hm(v: unknown, fallback: string) {
+  return typeof v === "string" && /^\d{2}:\d{2}$/.test(v) ? v : fallback;
+}
+
+/** Constrói janelas a partir das settings, com fallback ao formato antigo. */
+function buildWindows(av: Availability): Window[] {
+  if (Array.isArray(av.windows) && av.windows.length) {
+    return av.windows
+      .filter((w) => w && typeof w.day === "number")
+      .map((w) => ({ day: w.day, start: hm(w.start, "08:00"), end: hm(w.end, "12:00") }));
+  }
+  const days = av.days ?? [1, 2, 3, 4, 5];
+  const start = `${String(av.start_hour ?? 8).padStart(2, "0")}:00`;
+  const end = `${String(av.end_hour ?? 19).padStart(2, "0")}:00`;
+  return days.map((d) => ({ day: d, start, end }));
+}
+
+function CalendarioPage() {
+  const { data: tenant } = useCurrentTenant();
+  const tenantId = tenant?.id;
+  const qc = useQueryClient();
+  const settings = ((tenant as unknown as { settings?: TenantSettings } | null)?.settings ??
+    {}) as TenantSettings;
+
+  const [windows, setWindows] = useState<Window[]>(() => buildWindows(settings.availability ?? {}));
+  const [gapMinutes, setGapMinutes] = useState(settings.availability?.gap_minutes ?? 10);
+  const [minAdvance, setMinAdvance] = useState(settings.availability?.min_advance_hours ?? 1);
+
+  useEffect(() => {
+    const a = settings.availability ?? {};
+    setWindows(buildWindows(a));
+    setGapMinutes(a.gap_minutes ?? 10);
+    setMinAdvance(a.min_advance_hours ?? 1);
+  }, [settings]);
+
+  const addWindow = (day: number) =>
+    setWindows((prev) => [...prev, { day, start: "08:00", end: "12:00" }]);
+
+  const updateWindow = (index: number, patch: Partial<Window>) =>
+    setWindows((prev) => prev.map((w, i) => (i === index ? { ...w, ...patch } : w)));
+
+  const removeWindow = (index: number) =>
+    setWindows((prev) => prev.filter((_, i) => i !== index));
+
+  const saveAvailability = useMutation({
+    mutationFn: async () => {
+      if (!tenantId) throw new Error("Consultório não encontrado");
+      for (const w of windows) {
+        if (w.end <= w.start) {
+          throw new Error(
+            `Em ${WEEK_DAYS_FULL[w.day]}, o horário final deve ser maior que o inicial`,
+          );
+        }
+      }
+      const days = Array.from(new Set(windows.map((w) => w.day))).sort();
+      const hours = windows.flatMap((w) => [Number(w.start.slice(0, 2)), Number(w.end.slice(0, 2))]);
+      const next = {
+        ...settings,
+        availability: {
+          // compatibilidade com o formato antigo
+          start_hour: hours.length ? Math.min(...hours) : 8,
+          end_hour: hours.length ? Math.max(...hours) : 19,
+          days,
+          windows,
+          gap_minutes: Math.max(0, gapMinutes),
+          min_advance_hours: Math.max(0, minAdvance),
+        },
+      };
+      const { error } = await supabase
+        .from("tenants")
+        .update({ settings: next as never })
+        .eq("id", tenantId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["current-tenant"] });
+      toast.success("Calendário atualizado");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const { data: blocks = [] } = useQuery({
+    enabled: !!tenantId,
+    queryKey: ["agenda-blocks", tenantId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("appointments")
+        .select("id, title, starts_at, ends_at")
+        .eq("tenant_id", tenantId!)
+        .eq("kind", "block")
+        .gte("ends_at", new Date().toISOString())
+        .order("starts_at");
+      if (error) throw error;
+      return data as Block[];
+    },
+  });
+
+  const now = new Date();
+  const defaultStart = new Date(now.getTime() + 60 * 60 * 1000);
+  defaultStart.setMinutes(0, 0, 0);
+  const [blockTitle, setBlockTitle] = useState("Indisponível");
+  const [blockStart, setBlockStart] = useState(toLocalInput(defaultStart));
+  const [blockEnd, setBlockEnd] = useState(
+    toLocalInput(new Date(defaultStart.getTime() + 60 * 60 * 1000)),
+  );
+
+  const createBlock = useMutation({
+    mutationFn: async () => {
+      if (!tenantId) throw new Error("Consultório não encontrado");
+      const s = new Date(blockStart);
+      const e = new Date(blockEnd);
+      if (Number.isNaN(s.getTime()) || Number.isNaN(e.getTime()) || e <= s) {
+        throw new Error("Informe um período válido");
+      }
+      const { error } = await supabase.from("appointments").insert({
+        tenant_id: tenantId,
+        title: blockTitle.trim() || "Indisponível",
+        starts_at: s.toISOString(),
+        ends_at: e.toISOString(),
+        modality: "online" as const,
+        status: "scheduled" as const,
+        kind: "block",
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["agenda-blocks", tenantId] });
+      qc.invalidateQueries({ queryKey: ["appointments"] });
+      toast.success("Período bloqueado");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const removeBlock = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("appointments").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["agenda-blocks", tenantId] });
+      qc.invalidateQueries({ queryKey: ["appointments"] });
+      toast.success("Bloqueio removido");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  return (
+    <div className="p-4 sm:p-6 lg:p-8">
+      <div className="mx-auto max-w-6xl space-y-6">
+        <div>
+          <h1 className="font-display text-2xl font-bold tracking-tight">Calendário</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Defina janelas de atendimento (várias por dia), o intervalo entre sessões e a
+            antecedência mínima — o agendamento público segue exatamente essas regras.
+          </p>
+        </div>
+
+        <Card className="space-y-4 border-gold/20 bg-gold/5 p-5">
+          <div className="flex items-center gap-2">
+            <CalendarClock className="h-4 w-4 text-gold" />
+            <h2 className="font-display text-lg font-semibold">Janelas de atendimento</h2>
+          </div>
+
+          <div className="space-y-3">
+            {WEEK_DAYS_SHORT.map((label, day) => {
+              const dayWindows = windows
+                .map((w, index) => ({ ...w, index }))
+                .filter((w) => w.day === day);
+              return (
+                <div
+                  key={label}
+                  className="rounded-lg border border-border bg-background/60 p-3 sm:p-4"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold">{WEEK_DAYS_FULL[day]}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {dayWindows.length
+                          ? `${dayWindows.length} janela${dayWindows.length > 1 ? "s" : ""}`
+                          : "Sem atendimento"}
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="gap-1.5"
+                      onClick={() => addWindow(day)}
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      Adicionar horário
+                    </Button>
+                  </div>
+
+                  {dayWindows.length > 0 && (
+                    <div className="mt-3 space-y-2">
+                      {dayWindows.map((w) => (
+                        <div key={w.index} className="flex items-center gap-2">
+                          <Input
+                            type="time"
+                            className="w-32"
+                            value={w.start}
+                            onChange={(e) => updateWindow(w.index, { start: e.target.value })}
+                            aria-label={`Início em ${WEEK_DAYS_FULL[day]}`}
+                          />
+                          <span className="text-xs text-muted-foreground">até</span>
+                          <Input
+                            type="time"
+                            className="w-32"
+                            value={w.end}
+                            onChange={(e) => updateWindow(w.index, { end: e.target.value })}
+                            aria-label={`Fim em ${WEEK_DAYS_FULL[day]}`}
+                          />
+                          <Button
+                            size="icon"
+                            variant="ghost"
+                            className="text-destructive hover:text-destructive"
+                            onClick={() => removeWindow(w.index)}
+                            aria-label="Remover janela"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-1.5">
+              <Label className="flex items-center gap-1.5 text-xs">
+                <Timer className="h-3.5 w-3.5 text-gold" />
+                Intervalo entre sessões (minutos)
+              </Label>
+              <Input
+                type="number"
+                min={0}
+                max={120}
+                step={5}
+                value={gapMinutes}
+                onChange={(e) => setGapMinutes(Math.max(0, Number(e.target.value) || 0))}
+              />
+              <p className="text-[11px] text-muted-foreground">
+                Tempo de respiro reservado antes e depois de cada sessão já marcada.
+              </p>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="flex items-center gap-1.5 text-xs">
+                <Hourglass className="h-3.5 w-3.5 text-gold" />
+                Antecedência mínima (horas)
+              </Label>
+              <Input
+                type="number"
+                min={0}
+                max={720}
+                value={minAdvance}
+                onChange={(e) => setMinAdvance(Math.max(0, Number(e.target.value) || 0))}
+              />
+              <p className="text-[11px] text-muted-foreground">
+                Pacientes só conseguem agendar horários a partir desse prazo.
+              </p>
+            </div>
+          </div>
+
+          <Button
+            className="w-full"
+            onClick={() => saveAvailability.mutate()}
+            disabled={saveAvailability.isPending}
+          >
+            {saveAvailability.isPending ? "Salvando…" : "Salvar calendário"}
+          </Button>
+        </Card>
+
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Card className="space-y-4 p-5">
+            <div className="flex items-center gap-2">
+              <Ban className="h-4 w-4 text-gold" />
+              <h2 className="font-display text-lg font-semibold">Bloquear período</h2>
+            </div>
+            <p className="-mt-2 text-xs text-muted-foreground">
+              Férias, almoço, supervisão — o horário deixa de aparecer para os pacientes.
+            </p>
+
+            <div className="grid gap-3">
+              <div>
+                <Label className="text-xs">Motivo</Label>
+                <Input
+                  value={blockTitle}
+                  onChange={(e) => setBlockTitle(e.target.value)}
+                  placeholder="Ex: Supervisão clínica"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label className="text-xs">Início</Label>
+                  <Input
+                    type="datetime-local"
+                    value={blockStart}
+                    onChange={(e) => setBlockStart(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <Label className="text-xs">Fim</Label>
+                  <Input
+                    type="datetime-local"
+                    value={blockEnd}
+                    onChange={(e) => setBlockEnd(e.target.value)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <Button
+              variant="outline"
+              className="w-full gap-2"
+              onClick={() => createBlock.mutate()}
+              disabled={createBlock.isPending}
+            >
+              <Plus className="h-4 w-4" />
+              {createBlock.isPending ? "Bloqueando…" : "Bloquear horário"}
+            </Button>
+          </Card>
+
+          <Card className="p-5">
+            <div className="mb-3 flex items-center gap-2">
+              <Clock className="h-4 w-4 text-gold" />
+              <h2 className="font-display text-lg font-semibold">Bloqueios ativos</h2>
+            </div>
+            {blocks.length === 0 ? (
+              <p className="text-sm text-muted-foreground">Nenhum período bloqueado no momento.</p>
+            ) : (
+              <ul className="divide-y divide-border">
+                {blocks.map((b) => (
+                  <li key={b.id} className="flex items-center justify-between gap-3 py-2.5">
+                    <div>
+                      <p className="text-sm font-medium">{b.title}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {fmt(b.starts_at)} → {fmt(b.ends_at)}
+                      </p>
+                    </div>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      className="text-destructive hover:text-destructive"
+                      onClick={() => removeBlock.mutate(b.id)}
+                      aria-label="Remover bloqueio"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}

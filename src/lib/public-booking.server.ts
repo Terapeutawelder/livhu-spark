@@ -1,14 +1,38 @@
 import type { Database } from "@/integrations/supabase/types";
 
-type Availability = { start_hour?: number; end_hour?: number; days?: number[] };
+export type AvailabilityWindow = { day: number; start: string; end: string };
+type Availability = {
+  start_hour?: number;
+  end_hour?: number;
+  days?: number[];
+  windows?: AvailabilityWindow[];
+  gap_minutes?: number;
+  min_advance_hours?: number;
+};
 type TenantSettings = { availability?: Availability } & Record<string, unknown>;
 
 export type PublicTenant = {
   tenantId: string;
   timezone: string;
-  availability: Required<Availability>;
+  availability: {
+    start_hour: number;
+    end_hour: number;
+    days: number[];
+    windows: AvailabilityWindow[];
+    gap_minutes: number;
+    min_advance_hours: number;
+  };
   content: Record<string, unknown>;
 };
+
+function parseHm(v: string): { h: number; m: number } | null {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(v ?? "");
+  if (!m) return null;
+  const h = Number(m[1]);
+  const min = Number(m[2]);
+  if (h < 0 || h > 24 || min < 0 || min > 59) return null;
+  return { h, m: min };
+}
 
 function tzOffsetMs(timeZone: string, date: Date): number {
   const dtf = new Intl.DateTimeFormat("en-US", {
@@ -66,13 +90,28 @@ export async function loadPublicTenant(slug: string): Promise<PublicTenant | nul
 
   const settings = (tenant.settings ?? {}) as TenantSettings;
   const av = settings.availability ?? {};
+  const startHour = av.start_hour ?? 8;
+  const endHour = av.end_hour ?? 19;
+  const days = av.days ?? [1, 2, 3, 4, 5];
+  const windows = (Array.isArray(av.windows) ? av.windows : [])
+    .filter((w) => w && parseHm(w.start) && parseHm(w.end) && w.day >= 0 && w.day <= 6)
+    .map((w) => ({ day: Number(w.day), start: w.start, end: w.end }));
   return {
     tenantId: tenant.id,
     timezone: tenant.timezone || "America/Sao_Paulo",
     availability: {
-      start_hour: av.start_hour ?? 8,
-      end_hour: av.end_hour ?? 19,
-      days: av.days ?? [1, 2, 3, 4, 5],
+      start_hour: startHour,
+      end_hour: endHour,
+      days,
+      windows: windows.length
+        ? windows
+        : days.map((d) => ({
+            day: d,
+            start: `${String(startHour).padStart(2, "0")}:00`,
+            end: `${String(endHour).padStart(2, "0")}:00`,
+          })),
+      gap_minutes: Math.max(0, av.gap_minutes ?? 0),
+      min_advance_hours: Math.max(0, av.min_advance_hours ?? 1),
     },
     content: (profile.content ?? {}) as Record<string, unknown>,
   };
@@ -87,33 +126,56 @@ export async function computeSlots(
   if (!tenant) return { slots: [], timezone: "America/Sao_Paulo" };
 
   const weekday = weekdayOf(dateStr, tenant.timezone);
-  if (!tenant.availability.days.includes(weekday)) return { slots: [], timezone: tenant.timezone };
+  const dayWindows = tenant.availability.windows.filter((w) => w.day === weekday);
+  if (!dayWindows.length) return { slots: [], timezone: tenant.timezone };
 
-  const dayStart = zonedToUtc(dateStr, tenant.availability.start_hour, 0, tenant.timezone);
-  const dayEnd = zonedToUtc(dateStr, tenant.availability.end_hour, 0, tenant.timezone);
+  const ranges = dayWindows
+    .map((w) => {
+      const s = parseHm(w.start)!;
+      const e = parseHm(w.end)!;
+      return [
+        zonedToUtc(dateStr, s.h, s.m, tenant.timezone).getTime(),
+        zonedToUtc(dateStr, e.h, e.m, tenant.timezone).getTime(),
+      ] as const;
+    })
+    .filter(([s, e]) => e > s)
+    .sort((a, b) => a[0] - b[0]);
+  if (!ranges.length) return { slots: [], timezone: tenant.timezone };
+
+  const dayStart = ranges[0][0];
+  const dayEnd = Math.max(...ranges.map(([, e]) => e));
 
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data: busy } = await supabaseAdmin
     .from("appointments")
     .select("starts_at, ends_at, status")
     .eq("tenant_id", tenant.tenantId)
-    .lt("starts_at", dayEnd.toISOString())
-    .gt("ends_at", dayStart.toISOString());
+    .lt("starts_at", new Date(dayEnd + 24 * 60 * 60 * 1000).toISOString())
+    .gt("ends_at", new Date(dayStart - 24 * 60 * 60 * 1000).toISOString());
 
+  const gap = tenant.availability.gap_minutes * 60 * 1000;
   const blocks = (busy ?? [])
     .filter((b) => b.status !== "canceled")
-    .map((b) => [new Date(b.starts_at).getTime(), new Date(b.ends_at).getTime()] as const);
+    .map(
+      (b) =>
+        [new Date(b.starts_at).getTime() - gap, new Date(b.ends_at).getTime() + gap] as const,
+    );
 
   const step = 30 * 60 * 1000;
   const dur = durationMinutes * 60 * 1000;
-  const now = Date.now() + 60 * 60 * 1000; // antecedência mínima de 1h
+  const now = Date.now() + tenant.availability.min_advance_hours * 60 * 60 * 1000;
   const slots: string[] = [];
 
-  for (let t = dayStart.getTime(); t + dur <= dayEnd.getTime(); t += step) {
-    if (t < now) continue;
-    const overlaps = blocks.some(([s, e]) => t < e && t + dur > s);
-    if (!overlaps) slots.push(new Date(t).toISOString());
+  for (const [rStart, rEnd] of ranges) {
+    for (let t = rStart; t + dur <= rEnd; t += step) {
+      if (t < now) continue;
+      const overlaps = blocks.some(([s, e]) => t < e && t + dur > s);
+      if (!overlaps && !slots.includes(new Date(t).toISOString())) {
+        slots.push(new Date(t).toISOString());
+      }
+    }
   }
+  slots.sort();
   return { slots, timezone: tenant.timezone };
 }
 

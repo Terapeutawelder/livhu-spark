@@ -42,7 +42,7 @@ const items: NavItem[] = [
   { to: "/kanban", label: "Kanban", icon: KanbanSquare },
   { to: "/agendamento", label: "Agendamento", icon: CalendarDays },
   { to: "/servicos", label: "Serviços", icon: Stethoscope },
-  { to: "/horarios", label: "Horários", icon: CalendarClock },
+  { to: "/calendario", label: "Calendário", icon: CalendarClock },
   { to: "/fluxos", label: "Fluxos", icon: Workflow },
   { to: "/remarketing", label: "Remarketing", icon: Megaphone },
   { to: "/disparos", label: "Disparos", icon: Send },
@@ -211,7 +211,7 @@ export function AppSidebar() {
         {/* Brand */}
         <div
           className={
-            "flex h-16 items-center " + (collapsed ? "lg:justify-center lg:px-2 px-5" : "px-5")
+            "flex h-16 shrink-0 items-center " + (collapsed ? "lg:justify-center lg:px-2 px-5" : "px-5")
           }
         >
           <Link to="/" className="inline-flex items-center">
@@ -228,7 +228,12 @@ export function AppSidebar() {
         </div>
 
         {/* Nav */}
-        <nav className={"flex-1 space-y-1 py-4 " + (collapsed ? "lg:px-2 px-3" : "px-3")}>
+        <nav
+          className={
+            "min-h-0 flex-1 space-y-1 overflow-y-auto overscroll-contain py-4 [scrollbar-width:thin] " +
+            (collapsed ? "lg:px-2 px-3" : "px-3")
+          }
+        >
           {items.map((item) => {
             const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
             const Icon = item.icon;
@@ -255,7 +260,7 @@ export function AppSidebar() {
         </nav>
 
         {/* User card */}
-        <div className={collapsed ? "m-3 rounded-xl bg-sidebar-hover p-3 lg:m-2 lg:bg-transparent lg:p-0" : "m-3 rounded-xl bg-sidebar-hover p-3"}>
+        <div className={collapsed ? "shrink-0 m-3 rounded-xl bg-sidebar-hover p-3 lg:m-2 lg:bg-transparent lg:p-0" : "shrink-0 m-3 rounded-xl bg-sidebar-hover p-3"}>
           <div className={"flex items-center gap-3 " + (collapsed ? "lg:flex-col lg:gap-2" : "")}>
             <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
               {initials}
