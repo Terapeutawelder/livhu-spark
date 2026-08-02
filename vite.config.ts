@@ -14,6 +14,10 @@ export default defineConfig({
   },
   vite: {
     build: {
+      // Rolldown 1.1.0 can assign the same minified identifier to an internal
+      // React DOM function and TanStack's useServerFn. That collision caused
+      // /agentes to fail at mount time with "l is not a function".
+      minify: false,
       // Vite 8/Rolldown can drop or initialize shared bindings out of order in
       // code-split TanStack route chunks. The /agentes production chunk then
       // calls an undefined minified import ("l is not a function").

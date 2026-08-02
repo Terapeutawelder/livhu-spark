@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { Bot, Plus, Sparkles, MessageSquare, Zap, Settings2, Send, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -460,14 +459,13 @@ type ChatMsg = { role: "user" | "assistant"; content: string };
 function TestChatPanel({ agent }: { agent: Agent }) {
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [input, setInput] = useState("");
-  const chat = useServerFn(chatWithAgent);
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   const send = useMutation({
     mutationFn: async (text: string) => {
       const next = [...messages, { role: "user" as const, content: text }];
       setMessages(next);
-      const res = await chat({ data: { agentId: agent.id, messages: next } });
+      const res = await chatWithAgent({ data: { agentId: agent.id, messages: next } });
       setMessages([...next, { role: "assistant" as const, content: res.reply }]);
     },
     onError: (e: Error) => {
@@ -551,7 +549,7 @@ function TestChatPanel({ agent }: { agent: Agent }) {
   );
 }
 
-function Section({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
+function Section({ title, icon, children }: { title: string; icon: ReactNode; children: ReactNode }) {
   return (
     <div>
       <div className="mb-2 flex items-center gap-2">

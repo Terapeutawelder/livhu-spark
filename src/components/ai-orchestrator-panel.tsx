@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import {
   Sparkles, KeyRound, Loader2, Wand2, ShieldCheck, Trash2, Plus, Database,
   Users, MessageSquare, CalendarDays, CreditCard, Workflow, Megaphone, BrainCircuit,
@@ -57,11 +56,6 @@ export function AiOrchestratorPanel() {
   const { data: tenant } = useCurrentTenant();
   const tenantId = tenant?.id;
 
-  const status = useServerFn(getAiKeyStatus);
-  const save = useServerFn(saveAiKey);
-  const remove = useServerFn(removeAiKey);
-  const orchestrate = useServerFn(orchestrateAgents);
-
   const [provider, setProvider] = useState<Provider>("openai");
   const [apiKey, setApiKey] = useState("");
   const [baseUrl, setBaseUrl] = useState("");
@@ -74,7 +68,7 @@ export function AiOrchestratorPanel() {
 
   const keyQuery = useQuery({
     queryKey: ["ai_key_status"],
-    queryFn: () => status({ data: undefined }),
+    queryFn: () => getAiKeyStatus({ data: undefined }),
   });
 
   const agentsQuery = useQuery({
@@ -176,7 +170,7 @@ export function AiOrchestratorPanel() {
 
   const saveKey = useMutation({
     mutationFn: () =>
-      save({
+      saveAiKey({
         data: {
           provider,
           apiKey: apiKey.trim(),
@@ -193,7 +187,7 @@ export function AiOrchestratorPanel() {
   });
 
   const removeKey = useMutation({
-    mutationFn: () => remove({ data: undefined }),
+    mutationFn: () => removeAiKey({ data: undefined }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["ai_key_status"] });
       toast.success("Conexão removida.");
@@ -202,7 +196,7 @@ export function AiOrchestratorPanel() {
   });
 
   const run = useMutation({
-    mutationFn: () => orchestrate({ data: { instruction: instruction.trim(), count } }),
+    mutationFn: () => orchestrateAgents({ data: { instruction: instruction.trim(), count } }),
     onSuccess: (res) => {
       setSummary(res.summary);
       setInstruction("");
