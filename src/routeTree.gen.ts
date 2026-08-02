@@ -25,7 +25,6 @@ import { Route as AuthenticatedContatosRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedCursosRouteImport } from './routes/_authenticated.cursos'
 import { Route as AuthenticatedDisparosRouteImport } from './routes/_authenticated.disparos'
 import { Route as AuthenticatedFluxosRouteImport } from './routes/_authenticated.fluxos'
-import { Route as AuthenticatedHorariosRouteImport } from './routes/_authenticated.horarios'
 import { Route as AuthenticatedKanbanRouteImport } from './routes/_authenticated.kanban'
 import { Route as AuthenticatedMensagensRouteImport } from './routes/_authenticated.mensagens'
 import { Route as AuthenticatedPacientesRouteImport } from './routes/_authenticated.pacientes'
@@ -135,11 +134,6 @@ const AuthenticatedDisparosRoute = AuthenticatedDisparosRouteImport.update({
 const AuthenticatedFluxosRoute = AuthenticatedFluxosRouteImport.update({
   id: '/fluxos',
   path: '/fluxos',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedHorariosRoute = AuthenticatedHorariosRouteImport.update({
-  id: '/horarios',
-  path: '/horarios',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedKanbanRoute = AuthenticatedKanbanRouteImport.update({
@@ -309,7 +303,6 @@ export interface FileRoutesByFullPath {
   '/cursos': typeof AuthenticatedCursosRoute
   '/disparos': typeof AuthenticatedDisparosRoute
   '/fluxos': typeof AuthenticatedFluxosRoute
-  '/horarios': typeof AuthenticatedHorariosRoute
   '/kanban': typeof AuthenticatedKanbanRoute
   '/mensagens': typeof AuthenticatedMensagensRoute
   '/pacientes': typeof AuthenticatedPacientesRoute
@@ -352,7 +345,6 @@ export interface FileRoutesByTo {
   '/cursos': typeof AuthenticatedCursosRoute
   '/disparos': typeof AuthenticatedDisparosRoute
   '/fluxos': typeof AuthenticatedFluxosRoute
-  '/horarios': typeof AuthenticatedHorariosRoute
   '/kanban': typeof AuthenticatedKanbanRoute
   '/mensagens': typeof AuthenticatedMensagensRoute
   '/pacientes': typeof AuthenticatedPacientesRoute
@@ -399,7 +391,6 @@ export interface FileRoutesById {
   '/_authenticated/cursos': typeof AuthenticatedCursosRoute
   '/_authenticated/disparos': typeof AuthenticatedDisparosRoute
   '/_authenticated/fluxos': typeof AuthenticatedFluxosRoute
-  '/_authenticated/horarios': typeof AuthenticatedHorariosRoute
   '/_authenticated/kanban': typeof AuthenticatedKanbanRoute
   '/_authenticated/mensagens': typeof AuthenticatedMensagensRoute
   '/_authenticated/pacientes': typeof AuthenticatedPacientesRoute
@@ -447,7 +438,6 @@ export interface FileRouteTypes {
     | '/cursos'
     | '/disparos'
     | '/fluxos'
-    | '/horarios'
     | '/kanban'
     | '/mensagens'
     | '/pacientes'
@@ -490,7 +480,6 @@ export interface FileRouteTypes {
     | '/cursos'
     | '/disparos'
     | '/fluxos'
-    | '/horarios'
     | '/kanban'
     | '/mensagens'
     | '/pacientes'
@@ -536,7 +525,6 @@ export interface FileRouteTypes {
     | '/_authenticated/cursos'
     | '/_authenticated/disparos'
     | '/_authenticated/fluxos'
-    | '/_authenticated/horarios'
     | '/_authenticated/kanban'
     | '/_authenticated/mensagens'
     | '/_authenticated/pacientes'
@@ -696,13 +684,6 @@ declare module '@tanstack/react-router' {
       path: '/fluxos'
       fullPath: '/fluxos'
       preLoaderRoute: typeof AuthenticatedFluxosRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/horarios': {
-      id: '/_authenticated/horarios'
-      path: '/horarios'
-      fullPath: '/horarios'
-      preLoaderRoute: typeof AuthenticatedHorariosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/kanban': {
@@ -938,7 +919,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCursosRoute: typeof AuthenticatedCursosRoute
   AuthenticatedDisparosRoute: typeof AuthenticatedDisparosRoute
   AuthenticatedFluxosRoute: typeof AuthenticatedFluxosRoute
-  AuthenticatedHorariosRoute: typeof AuthenticatedHorariosRoute
   AuthenticatedKanbanRoute: typeof AuthenticatedKanbanRoute
   AuthenticatedMensagensRoute: typeof AuthenticatedMensagensRoute
   AuthenticatedPacientesRoute: typeof AuthenticatedPacientesRoute
@@ -960,7 +940,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCursosRoute: AuthenticatedCursosRoute,
   AuthenticatedDisparosRoute: AuthenticatedDisparosRoute,
   AuthenticatedFluxosRoute: AuthenticatedFluxosRoute,
-  AuthenticatedHorariosRoute: AuthenticatedHorariosRoute,
   AuthenticatedKanbanRoute: AuthenticatedKanbanRoute,
   AuthenticatedMensagensRoute: AuthenticatedMensagensRoute,
   AuthenticatedPacientesRoute: AuthenticatedPacientesRoute,
