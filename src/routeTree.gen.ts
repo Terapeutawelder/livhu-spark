@@ -45,6 +45,7 @@ import { Route as AuthenticatedAdminWhiteLabelRouteImport } from './routes/_auth
 import { Route as ApiPublicMetaDataDeletionRouteImport } from './routes/api.public.meta.data-deletion'
 import { Route as ApiPublicMetaDeauthorizeRouteImport } from './routes/api.public.meta.deauthorize'
 import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api.public.whatsapp.webhook'
+import { Route as ApiPublicPerfilImgSplatRouteImport } from './routes/api.public.perfil.img.$'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
@@ -243,6 +244,11 @@ const ApiPublicWhatsappWebhookRoute =
     path: '/api/public/whatsapp/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicPerfilImgSplatRoute = ApiPublicPerfilImgSplatRouteImport.update({
+  id: '/api/public/perfil/img/$',
+  path: '/api/public/perfil/img/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -280,6 +286,7 @@ export interface FileRoutesByFullPath {
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
+  '/api/public/perfil/img/$': typeof ApiPublicPerfilImgSplatRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
@@ -316,6 +323,7 @@ export interface FileRoutesByTo {
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
+  '/api/public/perfil/img/$': typeof ApiPublicPerfilImgSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -355,6 +363,7 @@ export interface FileRoutesById {
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
+  '/api/public/perfil/img/$': typeof ApiPublicPerfilImgSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -394,6 +403,7 @@ export interface FileRouteTypes {
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
     | '/api/public/whatsapp/webhook'
+    | '/api/public/perfil/img/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
@@ -430,6 +440,7 @@ export interface FileRouteTypes {
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
     | '/api/public/whatsapp/webhook'
+    | '/api/public/perfil/img/$'
   id:
     | '__root__'
     | '/_authenticated'
@@ -468,6 +479,7 @@ export interface FileRouteTypes {
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
     | '/api/public/whatsapp/webhook'
+    | '/api/public/perfil/img/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -481,6 +493,7 @@ export interface RootRouteChildren {
   ApiPublicMetaDataDeletionRoute: typeof ApiPublicMetaDataDeletionRoute
   ApiPublicMetaDeauthorizeRoute: typeof ApiPublicMetaDeauthorizeRoute
   ApiPublicWhatsappWebhookRoute: typeof ApiPublicWhatsappWebhookRoute
+  ApiPublicPerfilImgSplatRoute: typeof ApiPublicPerfilImgSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -737,6 +750,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWhatsappWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/perfil/img/$': {
+      id: '/api/public/perfil/img/$'
+      path: '/api/public/perfil/img/$'
+      fullPath: '/api/public/perfil/img/$'
+      preLoaderRoute: typeof ApiPublicPerfilImgSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -822,6 +842,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicMetaDataDeletionRoute: ApiPublicMetaDataDeletionRoute,
   ApiPublicMetaDeauthorizeRoute: ApiPublicMetaDeauthorizeRoute,
   ApiPublicWhatsappWebhookRoute: ApiPublicWhatsappWebhookRoute,
+  ApiPublicPerfilImgSplatRoute: ApiPublicPerfilImgSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
