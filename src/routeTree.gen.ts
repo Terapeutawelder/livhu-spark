@@ -8,6 +8,8 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -18,7 +20,6 @@ import { Route as TermosRouteImport } from './routes/termos'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated.index'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as AuthenticatedAgendamentoRouteImport } from './routes/_authenticated.agendamento'
-import { Route as AuthenticatedAgentesRouteImport } from './routes/_authenticated.agentes'
 import { Route as AuthenticatedConfiguracoesRouteImport } from './routes/_authenticated.configuracoes'
 import { Route as AuthenticatedContatosRouteImport } from './routes/_authenticated.contatos'
 import { Route as AuthenticatedCursosRouteImport } from './routes/_authenticated.cursos'
@@ -44,6 +45,10 @@ import { Route as AuthenticatedAdminWhiteLabelRouteImport } from './routes/_auth
 import { Route as ApiPublicMetaDataDeletionRouteImport } from './routes/api.public.meta.data-deletion'
 import { Route as ApiPublicMetaDeauthorizeRouteImport } from './routes/api.public.meta.deauthorize'
 import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api.public.whatsapp.webhook'
+
+const AuthenticatedAgentesLazyRouteImport = createFileRoute(
+  '/_authenticated/agentes',
+)()
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
@@ -90,11 +95,14 @@ const AuthenticatedAgendamentoRoute =
     path: '/agendamento',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedAgentesRoute = AuthenticatedAgentesRouteImport.update({
-  id: '/agentes',
-  path: '/agentes',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
+const AuthenticatedAgentesLazyRoute =
+  AuthenticatedAgentesLazyRouteImport.update({
+    id: '/agentes',
+    path: '/agentes',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated.agentes.lazy').then((d) => d.Route),
+  )
 const AuthenticatedConfiguracoesRoute =
   AuthenticatedConfiguracoesRouteImport.update({
     id: '/configuracoes',
@@ -245,7 +253,6 @@ export interface FileRoutesByFullPath {
   '/termos': typeof TermosRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamento': typeof AuthenticatedAgendamentoRoute
-  '/agentes': typeof AuthenticatedAgentesRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/contatos': typeof AuthenticatedContatosRoute
   '/cursos': typeof AuthenticatedCursosRoute
@@ -257,6 +264,7 @@ export interface FileRoutesByFullPath {
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
   '/admin/login': typeof AdminLoginRoute
+  '/agentes': typeof AuthenticatedAgentesLazyRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
   '/admin/dominios': typeof AuthenticatedAdminDominiosRoute
@@ -279,7 +287,6 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
   '/agendamento': typeof AuthenticatedAgendamentoRoute
-  '/agentes': typeof AuthenticatedAgentesRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/contatos': typeof AuthenticatedContatosRoute
   '/cursos': typeof AuthenticatedCursosRoute
@@ -291,6 +298,7 @@ export interface FileRoutesByTo {
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
   '/admin/login': typeof AdminLoginRoute
+  '/agentes': typeof AuthenticatedAgentesLazyRoute
   '/': typeof AuthenticatedIndexRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
@@ -317,7 +325,6 @@ export interface FileRoutesById {
   '/termos': typeof TermosRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/agendamento': typeof AuthenticatedAgendamentoRoute
-  '/_authenticated/agentes': typeof AuthenticatedAgentesRoute
   '/_authenticated/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/_authenticated/contatos': typeof AuthenticatedContatosRoute
   '/_authenticated/cursos': typeof AuthenticatedCursosRoute
@@ -329,6 +336,7 @@ export interface FileRoutesById {
   '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/_authenticated/remarketing': typeof AuthenticatedRemarketingRoute
   '/admin/login': typeof AdminLoginRoute
+  '/_authenticated/agentes': typeof AuthenticatedAgentesLazyRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/_authenticated/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
@@ -356,7 +364,6 @@ export interface FileRouteTypes {
     | '/termos'
     | '/admin'
     | '/agendamento'
-    | '/agentes'
     | '/configuracoes'
     | '/contatos'
     | '/cursos'
@@ -368,6 +375,7 @@ export interface FileRouteTypes {
     | '/planos'
     | '/remarketing'
     | '/admin/login'
+    | '/agentes'
     | '/admin/calendario'
     | '/admin/configuracao'
     | '/admin/dominios'
@@ -390,7 +398,6 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/termos'
     | '/agendamento'
-    | '/agentes'
     | '/configuracoes'
     | '/contatos'
     | '/cursos'
@@ -402,6 +409,7 @@ export interface FileRouteTypes {
     | '/planos'
     | '/remarketing'
     | '/admin/login'
+    | '/agentes'
     | '/'
     | '/admin/calendario'
     | '/admin/configuracao'
@@ -427,7 +435,6 @@ export interface FileRouteTypes {
     | '/termos'
     | '/_authenticated/admin'
     | '/_authenticated/agendamento'
-    | '/_authenticated/agentes'
     | '/_authenticated/configuracoes'
     | '/_authenticated/contatos'
     | '/_authenticated/cursos'
@@ -439,6 +446,7 @@ export interface FileRouteTypes {
     | '/_authenticated/planos'
     | '/_authenticated/remarketing'
     | '/admin/login'
+    | '/_authenticated/agentes'
     | '/_authenticated/'
     | '/_authenticated/admin/calendario'
     | '/_authenticated/admin/configuracao'
@@ -538,7 +546,7 @@ declare module '@tanstack/react-router' {
       id: '/_authenticated/agentes'
       path: '/agentes'
       fullPath: '/agentes'
-      preLoaderRoute: typeof AuthenticatedAgentesRouteImport
+      preLoaderRoute: typeof AuthenticatedAgentesLazyRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/configuracoes': {
@@ -753,7 +761,6 @@ const AuthenticatedAdminRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedAgendamentoRoute: typeof AuthenticatedAgendamentoRoute
-  AuthenticatedAgentesRoute: typeof AuthenticatedAgentesRoute
   AuthenticatedConfiguracoesRoute: typeof AuthenticatedConfiguracoesRoute
   AuthenticatedContatosRoute: typeof AuthenticatedContatosRoute
   AuthenticatedCursosRoute: typeof AuthenticatedCursosRoute
@@ -764,13 +771,13 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPagamentosRoute: typeof AuthenticatedPagamentosRoute
   AuthenticatedPlanosRoute: typeof AuthenticatedPlanosRoute
   AuthenticatedRemarketingRoute: typeof AuthenticatedRemarketingRoute
+  AuthenticatedAgentesLazyRoute: typeof AuthenticatedAgentesLazyRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedAgendamentoRoute: AuthenticatedAgendamentoRoute,
-  AuthenticatedAgentesRoute: AuthenticatedAgentesRoute,
   AuthenticatedConfiguracoesRoute: AuthenticatedConfiguracoesRoute,
   AuthenticatedContatosRoute: AuthenticatedContatosRoute,
   AuthenticatedCursosRoute: AuthenticatedCursosRoute,
@@ -781,6 +788,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPagamentosRoute: AuthenticatedPagamentosRoute,
   AuthenticatedPlanosRoute: AuthenticatedPlanosRoute,
   AuthenticatedRemarketingRoute: AuthenticatedRemarketingRoute,
+  AuthenticatedAgentesLazyRoute: AuthenticatedAgentesLazyRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 

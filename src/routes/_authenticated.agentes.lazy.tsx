@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createLazyFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Bot, Plus, Sparkles, MessageSquare, Zap, Settings2, Send, Loader2, Trash2 } from "lucide-react";
@@ -45,7 +45,7 @@ const MODELS = [
   { id: "openai/gpt-5", label: "GPT-5" },
 ];
 
-export const Route = createFileRoute("/_authenticated/agentes")({
+export const Route = createLazyFileRoute("/_authenticated/agentes")({
   head: () => ({
     meta: [
       { title: "Agentes IA — LivHub" },
