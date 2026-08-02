@@ -180,6 +180,27 @@ export function PublicLanding({ template, theme, content, services, slug, intera
         </section>
       )}
 
+      {/* Agendamento */}
+      {content.sections.booking && (
+        <section id="agendar" className="mx-auto max-w-6xl px-5 py-14 md:py-20">
+          <h2 className="text-3xl md:text-4xl" style={h}>
+            {content.bookingTitle}
+          </h2>
+          <p className="mt-3 max-w-2xl text-sm" style={{ color: theme.muted }}>
+            {content.bookingIntro}
+          </p>
+          <BookingWidget
+            slug={slug}
+            services={services}
+            theme={theme}
+            card={card}
+            btn={btn}
+            heading={h}
+            interactive={interactive}
+          />
+        </section>
+      )}
+
       {/* Depoimentos */}
       {content.sections.testimonials && content.testimonials.length > 0 && (
         <section className="py-14" style={{ background: theme.band, color: theme.bandText }}>
@@ -203,45 +224,108 @@ export function PublicLanding({ template, theme, content, services, slug, intera
         </section>
       )}
 
-      {/* Agendamento */}
-      {content.sections.booking && (
-        <section id="agendar" className="mx-auto max-w-6xl px-5 py-14 md:py-20">
-          <h2 className="text-3xl md:text-4xl" style={h}>
-            {content.bookingTitle}
-          </h2>
-          <p className="mt-3 max-w-2xl text-sm" style={{ color: theme.muted }}>
-            {content.bookingIntro}
-          </p>
-          <BookingWidget
-            slug={slug}
-            services={services}
-            theme={theme}
-            card={card}
-            btn={btn}
-            heading={h}
-            interactive={interactive}
-          />
-        </section>
-      )}
+      {/* CTA final */}
+      <section className="mx-auto max-w-6xl px-5 pb-14">
+        <div
+          className="flex flex-col items-center gap-4 px-6 py-10 text-center md:flex-row md:justify-between md:text-left"
+          style={card}
+        >
+          <div>
+            <h3 className="text-2xl" style={{ ...h, color: theme.text }}>
+              Pronto para dar o primeiro passo?
+            </h3>
+            <p className="mt-2 text-sm" style={{ color: theme.muted }}>
+              Escolha o plano de terapia que combina com você e reserve seu horário.
+            </p>
+          </div>
+          <a href="#agendar" className="px-6 py-3 text-sm font-semibold" style={btn}>
+            {content.ctaLabel}
+          </a>
+        </div>
+      </section>
 
       {/* Footer */}
-      {content.sections.footer && (
-        <footer className="py-10" style={{ background: theme.band, color: theme.bandText }}>
-          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 text-xs">
+      <footer className="py-12" style={{ background: theme.band, color: theme.bandText }}>
+        <div className="mx-auto max-w-6xl px-5">
+          <div className="grid gap-8 md:grid-cols-3">
+            <div>
+              <p className="text-lg font-semibold" style={h}>
+                {content.name}
+              </p>
+              <p className="mt-2 text-xs" style={{ opacity: 0.75 }}>
+                {content.credential}
+                {content.city ? ` · ${content.city}` : ""}
+              </p>
+            </div>
+            <div className="text-sm">
+              <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ opacity: 0.7 }}>
+                Navegação
+              </p>
+              <ul className="space-y-2" style={{ opacity: 0.85 }}>
+                {content.sections.topics && (
+                  <li>
+                    <a href="#servicos">Como ajudo</a>
+                  </li>
+                )}
+                {content.sections.about && (
+                  <li>
+                    <a href="#sobre">Sobre</a>
+                  </li>
+                )}
+                {content.sections.booking && (
+                  <li>
+                    <a href="#agendar">Agendar sessão</a>
+                  </li>
+                )}
+              </ul>
+            </div>
+            <div className="text-sm">
+              <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ opacity: 0.7 }}>
+                Contato
+              </p>
+              <ul className="space-y-2" style={{ opacity: 0.85 }}>
+                {content.whatsapp && (
+                  <li>
+                    <a
+                      href={`https://wa.me/${content.whatsapp.replace(/\D/g, "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      WhatsApp {content.whatsapp}
+                    </a>
+                  </li>
+                )}
+                {content.email && (
+                  <li>
+                    <a href={`mailto:${content.email}`}>{content.email}</a>
+                  </li>
+                )}
+                {content.instagram && (
+                  <li>
+                    <a
+                      href={`https://instagram.com/${content.instagram.replace("@", "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      @{content.instagram.replace("@", "")}
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </div>
+          </div>
+          <div
+            className="mt-10 flex flex-wrap items-center justify-between gap-3 pt-6 text-[11px]"
+            style={{ borderTop: `1px solid ${dark ? "rgba(255,255,255,.12)" : "rgba(0,0,0,.1)"}`, opacity: 0.75 }}
+          >
             <span>
               © {new Date().getFullYear()} {content.name} · {content.footerNote}
             </span>
-            <div className="flex flex-wrap gap-4">
-              {content.email && <a href={`mailto:${content.email}`}>{content.email}</a>}
-              {content.instagram && (
-                <a href={`https://instagram.com/${content.instagram.replace("@", "")}`} target="_blank" rel="noreferrer">
-                  @{content.instagram.replace("@", "")}
-                </a>
-              )}
-            </div>
+            <span>Atendimento psicológico com sigilo e ética profissional.</span>
           </div>
-        </footer>
-      )}
+        </div>
+      </footer>
+
     </div>
   );
 }
@@ -251,6 +335,21 @@ export function PublicLanding({ template, theme, content, services, slug, intera
 function toDateKey(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
+
+type TherapyPlan = {
+  id: string;
+  name: string;
+  sessions: number;
+  discount: number;
+  note: string;
+};
+
+const THERAPY_PLANS: TherapyPlan[] = [
+  { id: "single", name: "Sessão avulsa", sessions: 1, discount: 0, note: "Sem compromisso — ideal para começar" },
+  { id: "monthly", name: "Plano mensal", sessions: 4, discount: 0.05, note: "4 sessões · 5% de desconto" },
+  { id: "quarterly", name: "Plano trimestral", sessions: 12, discount: 0.12, note: "12 sessões · 12% de desconto" },
+];
+
 
 function BookingWidget({
   slug,
@@ -270,6 +369,7 @@ function BookingWidget({
   interactive: boolean;
 }) {
   const [serviceId, setServiceId] = useState<string | null>(services[0]?.id ?? null);
+  const [planId, setPlanId] = useState<string>("single");
   const [date, setDate] = useState<string>(toDateKey(new Date()));
   const [slots, setSlots] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -281,6 +381,9 @@ function BookingWidget({
 
   const service = services.find((x) => x.id === serviceId) ?? null;
   const duration = service?.duration_minutes ?? 50;
+  const plan = THERAPY_PLANS.find((p) => p.id === planId) ?? THERAPY_PLANS[0];
+  const total = service ? Math.round(service.price_cents * plan.sessions * (1 - plan.discount)) : 0;
+
 
   const days = useMemo(() => {
     const out: Date[] = [];
@@ -336,7 +439,7 @@ function BookingWidget({
           name: form.name.trim(),
           phone: form.phone,
           email: form.email || undefined,
-          notes: form.notes || undefined,
+          notes: [`Plano escolhido: ${plan.name} (${plan.sessions}x)`, form.notes].filter(Boolean).join(" · "),
         }),
       });
       const data = (await res.json()) as { ok: boolean; error?: string; checkoutUrl?: string | null; startsAt?: string };
@@ -412,6 +515,44 @@ function BookingWidget({
             );
           })}
         </div>
+
+        {/* Planos de terapia */}
+        <p className="mt-6 text-xs font-semibold uppercase tracking-wider" style={{ color: theme.muted }}>
+          Plano de terapia
+        </p>
+        <div className="mt-3 grid gap-2 sm:grid-cols-3">
+          {THERAPY_PLANS.map((p) => {
+            const active = p.id === planId;
+            const value = service ? Math.round(service.price_cents * p.sessions * (1 - p.discount)) : 0;
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setPlanId(p.id)}
+                className="p-4 text-left transition"
+                style={{
+                  borderRadius: theme.radius,
+                  border: `1.5px solid ${active ? theme.accent : "rgba(125,125,125,.25)"}`,
+                  background: active ? `${theme.accent}14` : "transparent",
+                }}
+              >
+                <span className="block text-sm font-semibold" style={{ color: theme.text }}>
+                  {p.name}
+                </span>
+                <span className="mt-1 block text-xs" style={{ color: theme.muted }}>
+                  {p.note}
+                </span>
+                {service && service.price_cents > 0 && (
+                  <span className="mt-2 block text-sm font-semibold" style={{ color: theme.accent }}>
+                    {money(value)}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+
 
         {/* Calendário */}
         <p className="mt-6 text-xs font-semibold uppercase tracking-wider" style={{ color: theme.muted }}>
@@ -530,10 +671,19 @@ function BookingWidget({
           />
         </div>
 
-        <div className="mt-5 flex items-center justify-between text-sm">
-          <span style={{ color: theme.muted }}>Total</span>
-          <span className="font-semibold">{service ? money(service.price_cents) : "—"}</span>
+        <div className="mt-5 space-y-1 text-sm">
+          <div className="flex items-center justify-between">
+            <span style={{ color: theme.muted }}>{plan.name}</span>
+            <span style={{ color: theme.muted }}>
+              {plan.sessions} {plan.sessions > 1 ? "sessões" : "sessão"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span style={{ color: theme.muted }}>Total</span>
+            <span className="font-semibold">{service ? money(total) : "—"}</span>
+          </div>
         </div>
+
 
         {error && (
           <p className="mt-3 text-xs" style={{ color: "#c0392b" }}>
