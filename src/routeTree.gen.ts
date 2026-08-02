@@ -26,6 +26,7 @@ import { Route as AuthenticatedDisparosRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedFluxosRouteImport } from './routes/_authenticated.fluxos'
 import { Route as AuthenticatedKanbanRouteImport } from './routes/_authenticated.kanban'
 import { Route as AuthenticatedMensagensRouteImport } from './routes/_authenticated.mensagens'
+import { Route as AuthenticatedPacientesRouteImport } from './routes/_authenticated.pacientes'
 import { Route as AuthenticatedPagamentosRouteImport } from './routes/_authenticated.pagamentos'
 import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated.planos'
 import { Route as AuthenticatedRemarketingRouteImport } from './routes/_authenticated.remarketing'
@@ -131,6 +132,11 @@ const AuthenticatedKanbanRoute = AuthenticatedKanbanRouteImport.update({
 const AuthenticatedMensagensRoute = AuthenticatedMensagensRouteImport.update({
   id: '/mensagens',
   path: '/mensagens',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedPacientesRoute = AuthenticatedPacientesRouteImport.update({
+  id: '/pacientes',
+  path: '/pacientes',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedPagamentosRoute = AuthenticatedPagamentosRouteImport.update({
@@ -255,6 +261,7 @@ export interface FileRoutesByFullPath {
   '/fluxos': typeof AuthenticatedFluxosRoute
   '/kanban': typeof AuthenticatedKanbanRoute
   '/mensagens': typeof AuthenticatedMensagensRoute
+  '/pacientes': typeof AuthenticatedPacientesRoute
   '/pagamentos': typeof AuthenticatedPagamentosRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
@@ -289,6 +296,7 @@ export interface FileRoutesByTo {
   '/fluxos': typeof AuthenticatedFluxosRoute
   '/kanban': typeof AuthenticatedKanbanRoute
   '/mensagens': typeof AuthenticatedMensagensRoute
+  '/pacientes': typeof AuthenticatedPacientesRoute
   '/pagamentos': typeof AuthenticatedPagamentosRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
@@ -327,6 +335,7 @@ export interface FileRoutesById {
   '/_authenticated/fluxos': typeof AuthenticatedFluxosRoute
   '/_authenticated/kanban': typeof AuthenticatedKanbanRoute
   '/_authenticated/mensagens': typeof AuthenticatedMensagensRoute
+  '/_authenticated/pacientes': typeof AuthenticatedPacientesRoute
   '/_authenticated/pagamentos': typeof AuthenticatedPagamentosRoute
   '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/_authenticated/remarketing': typeof AuthenticatedRemarketingRoute
@@ -366,6 +375,7 @@ export interface FileRouteTypes {
     | '/fluxos'
     | '/kanban'
     | '/mensagens'
+    | '/pacientes'
     | '/pagamentos'
     | '/planos'
     | '/remarketing'
@@ -400,6 +410,7 @@ export interface FileRouteTypes {
     | '/fluxos'
     | '/kanban'
     | '/mensagens'
+    | '/pacientes'
     | '/pagamentos'
     | '/planos'
     | '/remarketing'
@@ -437,6 +448,7 @@ export interface FileRouteTypes {
     | '/_authenticated/fluxos'
     | '/_authenticated/kanban'
     | '/_authenticated/mensagens'
+    | '/_authenticated/pacientes'
     | '/_authenticated/pagamentos'
     | '/_authenticated/planos'
     | '/_authenticated/remarketing'
@@ -590,6 +602,13 @@ declare module '@tanstack/react-router' {
       path: '/mensagens'
       fullPath: '/mensagens'
       preLoaderRoute: typeof AuthenticatedMensagensRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/pacientes': {
+      id: '/_authenticated/pacientes'
+      path: '/pacientes'
+      fullPath: '/pacientes'
+      preLoaderRoute: typeof AuthenticatedPacientesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/pagamentos': {
@@ -763,6 +782,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedFluxosRoute: typeof AuthenticatedFluxosRoute
   AuthenticatedKanbanRoute: typeof AuthenticatedKanbanRoute
   AuthenticatedMensagensRoute: typeof AuthenticatedMensagensRoute
+  AuthenticatedPacientesRoute: typeof AuthenticatedPacientesRoute
   AuthenticatedPagamentosRoute: typeof AuthenticatedPagamentosRoute
   AuthenticatedPlanosRoute: typeof AuthenticatedPlanosRoute
   AuthenticatedRemarketingRoute: typeof AuthenticatedRemarketingRoute
@@ -780,6 +800,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFluxosRoute: AuthenticatedFluxosRoute,
   AuthenticatedKanbanRoute: AuthenticatedKanbanRoute,
   AuthenticatedMensagensRoute: AuthenticatedMensagensRoute,
+  AuthenticatedPacientesRoute: AuthenticatedPacientesRoute,
   AuthenticatedPagamentosRoute: AuthenticatedPagamentosRoute,
   AuthenticatedPlanosRoute: AuthenticatedPlanosRoute,
   AuthenticatedRemarketingRoute: AuthenticatedRemarketingRoute,

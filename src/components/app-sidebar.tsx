@@ -34,6 +34,7 @@ const items: NavItem[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/mensagens", label: "Mensagens", icon: MessageSquare },
   { to: "/contatos", label: "Contatos", icon: Users },
+  { to: "/pacientes", label: "Pacientes", icon: HeartPulse },
   { to: "/kanban", label: "Kanban", icon: KanbanSquare },
   { to: "/agendamento", label: "Agendamento", icon: CalendarDays },
   { to: "/fluxos", label: "Fluxos", icon: Workflow },
