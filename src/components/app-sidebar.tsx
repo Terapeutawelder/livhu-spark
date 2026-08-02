@@ -211,7 +211,7 @@ export function AppSidebar() {
         {/* Brand */}
         <div
           className={
-            "flex h-16 items-center " + (collapsed ? "lg:justify-center lg:px-2 px-5" : "px-5")
+            "flex h-16 shrink-0 items-center " + (collapsed ? "lg:justify-center lg:px-2 px-5" : "px-5")
           }
         >
           <Link to="/" className="inline-flex items-center">
