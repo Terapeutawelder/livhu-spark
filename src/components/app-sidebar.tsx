@@ -15,6 +15,7 @@ import {
   Send,
   Bot,
   GraduationCap,
+  Globe,
   CreditCard,
   Settings,
   LogOut,
