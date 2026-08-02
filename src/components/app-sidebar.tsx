@@ -42,6 +42,7 @@ const items: NavItem[] = [
   { to: "/remarketing", label: "Remarketing", icon: Megaphone },
   { to: "/disparos", label: "Disparos", icon: Send },
   { to: "/agentes", label: "Agentes IA", icon: Bot },
+  { to: "/perfil-publico", label: "Perfil Público", icon: Globe },
   { to: "/cursos", label: "Cursos", icon: GraduationCap },
   { to: "/pagamentos", label: "Pagamentos", icon: CreditCard },
   { to: "/configuracoes", label: "Configurações", icon: Settings },
