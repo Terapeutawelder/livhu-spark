@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentTenant } from "@/hooks/use-tenant";
+import { getAiKeyStatus, saveAiKey, removeAiKey, orchestrateAgents } from "@/lib/ai-orchestrator.functions";
 
 type Provider = "openai" | "google" | "anthropic" | "custom";
 
@@ -67,10 +68,7 @@ export function AiOrchestratorPanel() {
 
   const keyQuery = useQuery({
     queryKey: ["ai_key_status"],
-    queryFn: async () => {
-      const { getAiKeyStatus } = await import("@/lib/ai-orchestrator.functions");
-      return getAiKeyStatus({ data: undefined });
-    },
+    queryFn: () => getAiKeyStatus({ data: undefined }),
   });
 
   const agentsQuery = useQuery({
@@ -171,16 +169,14 @@ export function AiOrchestratorPanel() {
   const memoryUsed = memory.reduce((acc, m: any) => acc + (m.size_bytes ?? 0), 0);
 
   const saveKey = useMutation({
-    mutationFn: async () => {
-      const { saveAiKey } = await import("@/lib/ai-orchestrator.functions");
-      return saveAiKey({
+    mutationFn: () =>
+      saveAiKey({
         data: {
           provider,
           apiKey: apiKey.trim(),
           baseUrl: provider === "custom" ? baseUrl.trim() : null,
         },
-      });
-    },
+      }),
     onSuccess: () => {
       setApiKey("");
       setKeyOpen(false);
@@ -191,10 +187,7 @@ export function AiOrchestratorPanel() {
   });
 
   const removeKey = useMutation({
-    mutationFn: async () => {
-      const { removeAiKey } = await import("@/lib/ai-orchestrator.functions");
-      return removeAiKey({ data: undefined });
-    },
+    mutationFn: () => removeAiKey({ data: undefined }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["ai_key_status"] });
       toast.success("Conexão removida.");
@@ -203,10 +196,7 @@ export function AiOrchestratorPanel() {
   });
 
   const run = useMutation({
-    mutationFn: async () => {
-      const { orchestrateAgents } = await import("@/lib/ai-orchestrator.functions");
-      return orchestrateAgents({ data: { instruction: instruction.trim(), count } });
-    },
+    mutationFn: () => orchestrateAgents({ data: { instruction: instruction.trim(), count } }),
     onSuccess: (res) => {
       setSummary(res.summary);
       setInstruction("");
