@@ -439,7 +439,7 @@ function BookingWidget({
           name: form.name.trim(),
           phone: form.phone,
           email: form.email || undefined,
-          notes: form.notes || undefined,
+          notes: [`Plano escolhido: ${plan.name} (${plan.sessions}x)`, form.notes].filter(Boolean).join(" · "),
         }),
       });
       const data = (await res.json()) as { ok: boolean; error?: string; checkoutUrl?: string | null; startsAt?: string };
