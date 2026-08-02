@@ -28,6 +28,7 @@ import { Route as AuthenticatedKanbanRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedMensagensRouteImport } from './routes/_authenticated.mensagens'
 import { Route as AuthenticatedPacientesRouteImport } from './routes/_authenticated.pacientes'
 import { Route as AuthenticatedPagamentosRouteImport } from './routes/_authenticated.pagamentos'
+import { Route as AuthenticatedPerfilPublicoRouteImport } from './routes/_authenticated.perfil-publico'
 import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated.planos'
 import { Route as AuthenticatedRemarketingRouteImport } from './routes/_authenticated.remarketing'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
@@ -148,6 +149,12 @@ const AuthenticatedPagamentosRoute = AuthenticatedPagamentosRouteImport.update({
   path: '/pagamentos',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPerfilPublicoRoute =
+  AuthenticatedPerfilPublicoRouteImport.update({
+    id: '/perfil-publico',
+    path: '/perfil-publico',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPlanosRoute = AuthenticatedPlanosRouteImport.update({
   id: '/planos',
   path: '/planos',
@@ -287,6 +294,7 @@ export interface FileRoutesByFullPath {
   '/mensagens': typeof AuthenticatedMensagensRoute
   '/pacientes': typeof AuthenticatedPacientesRoute
   '/pagamentos': typeof AuthenticatedPagamentosRoute
+  '/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
   '/admin/login': typeof AdminLoginRoute
@@ -326,6 +334,7 @@ export interface FileRoutesByTo {
   '/mensagens': typeof AuthenticatedMensagensRoute
   '/pacientes': typeof AuthenticatedPacientesRoute
   '/pagamentos': typeof AuthenticatedPagamentosRoute
+  '/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
   '/admin/login': typeof AdminLoginRoute
@@ -369,6 +378,7 @@ export interface FileRoutesById {
   '/_authenticated/mensagens': typeof AuthenticatedMensagensRoute
   '/_authenticated/pacientes': typeof AuthenticatedPacientesRoute
   '/_authenticated/pagamentos': typeof AuthenticatedPagamentosRoute
+  '/_authenticated/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
   '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/_authenticated/remarketing': typeof AuthenticatedRemarketingRoute
   '/admin/login': typeof AdminLoginRoute
@@ -413,6 +423,7 @@ export interface FileRouteTypes {
     | '/mensagens'
     | '/pacientes'
     | '/pagamentos'
+    | '/perfil-publico'
     | '/planos'
     | '/remarketing'
     | '/admin/login'
@@ -452,6 +463,7 @@ export interface FileRouteTypes {
     | '/mensagens'
     | '/pacientes'
     | '/pagamentos'
+    | '/perfil-publico'
     | '/planos'
     | '/remarketing'
     | '/admin/login'
@@ -494,6 +506,7 @@ export interface FileRouteTypes {
     | '/_authenticated/mensagens'
     | '/_authenticated/pacientes'
     | '/_authenticated/pagamentos'
+    | '/_authenticated/perfil-publico'
     | '/_authenticated/planos'
     | '/_authenticated/remarketing'
     | '/admin/login'
@@ -668,6 +681,13 @@ declare module '@tanstack/react-router' {
       path: '/pagamentos'
       fullPath: '/pagamentos'
       preLoaderRoute: typeof AuthenticatedPagamentosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/perfil-publico': {
+      id: '/_authenticated/perfil-publico'
+      path: '/perfil-publico'
+      fullPath: '/perfil-publico'
+      preLoaderRoute: typeof AuthenticatedPerfilPublicoRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/planos': {
@@ -864,6 +884,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedMensagensRoute: typeof AuthenticatedMensagensRoute
   AuthenticatedPacientesRoute: typeof AuthenticatedPacientesRoute
   AuthenticatedPagamentosRoute: typeof AuthenticatedPagamentosRoute
+  AuthenticatedPerfilPublicoRoute: typeof AuthenticatedPerfilPublicoRoute
   AuthenticatedPlanosRoute: typeof AuthenticatedPlanosRoute
   AuthenticatedRemarketingRoute: typeof AuthenticatedRemarketingRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
@@ -882,6 +903,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedMensagensRoute: AuthenticatedMensagensRoute,
   AuthenticatedPacientesRoute: AuthenticatedPacientesRoute,
   AuthenticatedPagamentosRoute: AuthenticatedPagamentosRoute,
+  AuthenticatedPerfilPublicoRoute: AuthenticatedPerfilPublicoRoute,
   AuthenticatedPlanosRoute: AuthenticatedPlanosRoute,
   AuthenticatedRemarketingRoute: AuthenticatedRemarketingRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,

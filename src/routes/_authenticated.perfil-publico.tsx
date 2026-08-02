@@ -162,8 +162,8 @@ function PerfilPublicoPage() {
         tenant_id: tenant.id,
         slug: clean,
         template,
-        theme: theme as unknown as Record<string, unknown>,
-        content: content as unknown as Record<string, unknown>,
+        theme: JSON.parse(JSON.stringify(theme)),
+        content: JSON.parse(JSON.stringify(content)),
         is_published: nextPublished,
       };
       const { error } = await supabase.from("public_profiles").upsert(payload, { onConflict: "tenant_id" });
