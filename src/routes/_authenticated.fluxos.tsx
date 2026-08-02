@@ -296,7 +296,9 @@ function FlowEditor({ flow, tenantId }: { flow: Flow; tenantId: string | null })
   const [tab, setTab] = useState("editor");
   const runFlowFn = useServerFn(runFlow);
 
-  useEffect(() => setForm(flow), [flow]);
+  useEffect(() => {
+    setForm(flow);
+  }, [flow]);
 
   const dirty = useMemo(() => JSON.stringify(form) !== JSON.stringify(flow), [form, flow]);
   const errors = useMemo(() => validateFlow(form), [form]);
