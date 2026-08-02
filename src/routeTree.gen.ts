@@ -44,6 +44,7 @@ import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminWhiteLabelRouteImport } from './routes/_authenticated.admin.white-label'
 import { Route as ApiPublicMetaDataDeletionRouteImport } from './routes/api.public.meta.data-deletion'
 import { Route as ApiPublicMetaDeauthorizeRouteImport } from './routes/api.public.meta.deauthorize'
+import { Route as ApiPublicPerfilBookRouteImport } from './routes/api.public.perfil.book'
 import { Route as ApiPublicPerfilSlotsRouteImport } from './routes/api.public.perfil.slots'
 import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api.public.whatsapp.webhook'
 import { Route as ApiPublicPerfilImgSplatRouteImport } from './routes/api.public.perfil.img.$'
@@ -239,6 +240,11 @@ const ApiPublicMetaDeauthorizeRoute =
     path: '/api/public/meta/deauthorize',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicPerfilBookRoute = ApiPublicPerfilBookRouteImport.update({
+  id: '/api/public/perfil/book',
+  path: '/api/public/perfil/book',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPerfilSlotsRoute = ApiPublicPerfilSlotsRouteImport.update({
   id: '/api/public/perfil/slots',
   path: '/api/public/perfil/slots',
@@ -291,6 +297,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
+  '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
   '/api/public/perfil/slots': typeof ApiPublicPerfilSlotsRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
   '/api/public/perfil/img/$': typeof ApiPublicPerfilImgSplatRoute
@@ -329,6 +336,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
+  '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
   '/api/public/perfil/slots': typeof ApiPublicPerfilSlotsRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
   '/api/public/perfil/img/$': typeof ApiPublicPerfilImgSplatRoute
@@ -370,6 +378,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
+  '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
   '/api/public/perfil/slots': typeof ApiPublicPerfilSlotsRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
   '/api/public/perfil/img/$': typeof ApiPublicPerfilImgSplatRoute
@@ -411,6 +420,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
+    | '/api/public/perfil/book'
     | '/api/public/perfil/slots'
     | '/api/public/whatsapp/webhook'
     | '/api/public/perfil/img/$'
@@ -449,6 +459,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
+    | '/api/public/perfil/book'
     | '/api/public/perfil/slots'
     | '/api/public/whatsapp/webhook'
     | '/api/public/perfil/img/$'
@@ -489,6 +500,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
+    | '/api/public/perfil/book'
     | '/api/public/perfil/slots'
     | '/api/public/whatsapp/webhook'
     | '/api/public/perfil/img/$'
@@ -504,6 +516,7 @@ export interface RootRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   ApiPublicMetaDataDeletionRoute: typeof ApiPublicMetaDataDeletionRoute
   ApiPublicMetaDeauthorizeRoute: typeof ApiPublicMetaDeauthorizeRoute
+  ApiPublicPerfilBookRoute: typeof ApiPublicPerfilBookRoute
   ApiPublicPerfilSlotsRoute: typeof ApiPublicPerfilSlotsRoute
   ApiPublicWhatsappWebhookRoute: typeof ApiPublicWhatsappWebhookRoute
   ApiPublicPerfilImgSplatRoute: typeof ApiPublicPerfilImgSplatRoute
@@ -756,6 +769,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicMetaDeauthorizeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/perfil/book': {
+      id: '/api/public/perfil/book'
+      path: '/api/public/perfil/book'
+      fullPath: '/api/public/perfil/book'
+      preLoaderRoute: typeof ApiPublicPerfilBookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/perfil/slots': {
       id: '/api/public/perfil/slots'
       path: '/api/public/perfil/slots'
@@ -861,6 +881,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   ApiPublicMetaDataDeletionRoute: ApiPublicMetaDataDeletionRoute,
   ApiPublicMetaDeauthorizeRoute: ApiPublicMetaDeauthorizeRoute,
+  ApiPublicPerfilBookRoute: ApiPublicPerfilBookRoute,
   ApiPublicPerfilSlotsRoute: ApiPublicPerfilSlotsRoute,
   ApiPublicWhatsappWebhookRoute: ApiPublicWhatsappWebhookRoute,
   ApiPublicPerfilImgSplatRoute: ApiPublicPerfilImgSplatRoute,
