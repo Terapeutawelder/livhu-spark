@@ -841,6 +841,53 @@ export type Database = {
         }
         Relationships: []
       }
+      public_profiles: {
+        Row: {
+          content: Json
+          created_at: string
+          gallery: Json
+          id: string
+          is_published: boolean
+          slug: string
+          template: string
+          tenant_id: string
+          theme: Json
+          updated_at: string
+        }
+        Insert: {
+          content?: Json
+          created_at?: string
+          gallery?: Json
+          id?: string
+          is_published?: boolean
+          slug: string
+          template?: string
+          tenant_id: string
+          theme?: Json
+          updated_at?: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          gallery?: Json
+          id?: string
+          is_published?: boolean
+          slug?: string
+          template?: string
+          tenant_id?: string
+          theme?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "public_profiles_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       services: {
         Row: {
           color: string

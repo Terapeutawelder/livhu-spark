@@ -28,9 +28,11 @@ import { Route as AuthenticatedKanbanRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedMensagensRouteImport } from './routes/_authenticated.mensagens'
 import { Route as AuthenticatedPacientesRouteImport } from './routes/_authenticated.pacientes'
 import { Route as AuthenticatedPagamentosRouteImport } from './routes/_authenticated.pagamentos'
+import { Route as AuthenticatedPerfilPublicoRouteImport } from './routes/_authenticated.perfil-publico'
 import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated.planos'
 import { Route as AuthenticatedRemarketingRouteImport } from './routes/_authenticated.remarketing'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
 import { Route as AuthenticatedAdminCalendarioRouteImport } from './routes/_authenticated.admin.calendario'
 import { Route as AuthenticatedAdminConfiguracaoRouteImport } from './routes/_authenticated.admin.configuracao'
@@ -44,7 +46,10 @@ import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminWhiteLabelRouteImport } from './routes/_authenticated.admin.white-label'
 import { Route as ApiPublicMetaDataDeletionRouteImport } from './routes/api.public.meta.data-deletion'
 import { Route as ApiPublicMetaDeauthorizeRouteImport } from './routes/api.public.meta.deauthorize'
+import { Route as ApiPublicPerfilBookRouteImport } from './routes/api.public.perfil.book'
+import { Route as ApiPublicPerfilSlotsRouteImport } from './routes/api.public.perfil.slots'
 import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api.public.whatsapp.webhook'
+import { Route as ApiPublicPerfilImgSplatRouteImport } from './routes/api.public.perfil.img.$'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
@@ -144,6 +149,12 @@ const AuthenticatedPagamentosRoute = AuthenticatedPagamentosRouteImport.update({
   path: '/pagamentos',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPerfilPublicoRoute =
+  AuthenticatedPerfilPublicoRouteImport.update({
+    id: '/perfil-publico',
+    path: '/perfil-publico',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPlanosRoute = AuthenticatedPlanosRouteImport.update({
   id: '/planos',
   path: '/planos',
@@ -158,6 +169,11 @@ const AuthenticatedRemarketingRoute =
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PSlugRoute = PSlugRouteImport.update({
+  id: '/p/$slug',
+  path: '/p/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
@@ -237,12 +253,27 @@ const ApiPublicMetaDeauthorizeRoute =
     path: '/api/public/meta/deauthorize',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicPerfilBookRoute = ApiPublicPerfilBookRouteImport.update({
+  id: '/api/public/perfil/book',
+  path: '/api/public/perfil/book',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicPerfilSlotsRoute = ApiPublicPerfilSlotsRouteImport.update({
+  id: '/api/public/perfil/slots',
+  path: '/api/public/perfil/slots',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicWhatsappWebhookRoute =
   ApiPublicWhatsappWebhookRouteImport.update({
     id: '/api/public/whatsapp/webhook',
     path: '/api/public/whatsapp/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicPerfilImgSplatRoute = ApiPublicPerfilImgSplatRouteImport.update({
+  id: '/api/public/perfil/img/$',
+  path: '/api/public/perfil/img/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -263,9 +294,11 @@ export interface FileRoutesByFullPath {
   '/mensagens': typeof AuthenticatedMensagensRoute
   '/pacientes': typeof AuthenticatedPacientesRoute
   '/pagamentos': typeof AuthenticatedPagamentosRoute
+  '/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
   '/admin/login': typeof AdminLoginRoute
+  '/p/$slug': typeof PSlugRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
   '/admin/dominios': typeof AuthenticatedAdminDominiosRoute
@@ -279,7 +312,10 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
+  '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
+  '/api/public/perfil/slots': typeof ApiPublicPerfilSlotsRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
+  '/api/public/perfil/img/$': typeof ApiPublicPerfilImgSplatRoute
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
@@ -298,9 +334,11 @@ export interface FileRoutesByTo {
   '/mensagens': typeof AuthenticatedMensagensRoute
   '/pacientes': typeof AuthenticatedPacientesRoute
   '/pagamentos': typeof AuthenticatedPagamentosRoute
+  '/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
   '/admin/login': typeof AdminLoginRoute
+  '/p/$slug': typeof PSlugRoute
   '/': typeof AuthenticatedIndexRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
@@ -315,7 +353,10 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
+  '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
+  '/api/public/perfil/slots': typeof ApiPublicPerfilSlotsRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
+  '/api/public/perfil/img/$': typeof ApiPublicPerfilImgSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -337,9 +378,11 @@ export interface FileRoutesById {
   '/_authenticated/mensagens': typeof AuthenticatedMensagensRoute
   '/_authenticated/pacientes': typeof AuthenticatedPacientesRoute
   '/_authenticated/pagamentos': typeof AuthenticatedPagamentosRoute
+  '/_authenticated/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
   '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/_authenticated/remarketing': typeof AuthenticatedRemarketingRoute
   '/admin/login': typeof AdminLoginRoute
+  '/p/$slug': typeof PSlugRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/_authenticated/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
@@ -354,7 +397,10 @@ export interface FileRoutesById {
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
+  '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
+  '/api/public/perfil/slots': typeof ApiPublicPerfilSlotsRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
+  '/api/public/perfil/img/$': typeof ApiPublicPerfilImgSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -377,9 +423,11 @@ export interface FileRouteTypes {
     | '/mensagens'
     | '/pacientes'
     | '/pagamentos'
+    | '/perfil-publico'
     | '/planos'
     | '/remarketing'
     | '/admin/login'
+    | '/p/$slug'
     | '/admin/calendario'
     | '/admin/configuracao'
     | '/admin/dominios'
@@ -393,7 +441,10 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
+    | '/api/public/perfil/book'
+    | '/api/public/perfil/slots'
     | '/api/public/whatsapp/webhook'
+    | '/api/public/perfil/img/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
@@ -412,9 +463,11 @@ export interface FileRouteTypes {
     | '/mensagens'
     | '/pacientes'
     | '/pagamentos'
+    | '/perfil-publico'
     | '/planos'
     | '/remarketing'
     | '/admin/login'
+    | '/p/$slug'
     | '/'
     | '/admin/calendario'
     | '/admin/configuracao'
@@ -429,7 +482,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
+    | '/api/public/perfil/book'
+    | '/api/public/perfil/slots'
     | '/api/public/whatsapp/webhook'
+    | '/api/public/perfil/img/$'
   id:
     | '__root__'
     | '/_authenticated'
@@ -450,9 +506,11 @@ export interface FileRouteTypes {
     | '/_authenticated/mensagens'
     | '/_authenticated/pacientes'
     | '/_authenticated/pagamentos'
+    | '/_authenticated/perfil-publico'
     | '/_authenticated/planos'
     | '/_authenticated/remarketing'
     | '/admin/login'
+    | '/p/$slug'
     | '/_authenticated/'
     | '/_authenticated/admin/calendario'
     | '/_authenticated/admin/configuracao'
@@ -467,7 +525,10 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
+    | '/api/public/perfil/book'
+    | '/api/public/perfil/slots'
     | '/api/public/whatsapp/webhook'
+    | '/api/public/perfil/img/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -478,9 +539,13 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermosRoute: typeof TermosRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  PSlugRoute: typeof PSlugRoute
   ApiPublicMetaDataDeletionRoute: typeof ApiPublicMetaDataDeletionRoute
   ApiPublicMetaDeauthorizeRoute: typeof ApiPublicMetaDeauthorizeRoute
+  ApiPublicPerfilBookRoute: typeof ApiPublicPerfilBookRoute
+  ApiPublicPerfilSlotsRoute: typeof ApiPublicPerfilSlotsRoute
   ApiPublicWhatsappWebhookRoute: typeof ApiPublicWhatsappWebhookRoute
+  ApiPublicPerfilImgSplatRoute: typeof ApiPublicPerfilImgSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -618,6 +683,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPagamentosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/perfil-publico': {
+      id: '/_authenticated/perfil-publico'
+      path: '/perfil-publico'
+      fullPath: '/perfil-publico'
+      preLoaderRoute: typeof AuthenticatedPerfilPublicoRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/planos': {
       id: '/_authenticated/planos'
       path: '/planos'
@@ -637,6 +709,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/login'
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/p/$slug': {
+      id: '/p/$slug'
+      path: '/p/$slug'
+      fullPath: '/p/$slug'
+      preLoaderRoute: typeof PSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -730,11 +809,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicMetaDeauthorizeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/perfil/book': {
+      id: '/api/public/perfil/book'
+      path: '/api/public/perfil/book'
+      fullPath: '/api/public/perfil/book'
+      preLoaderRoute: typeof ApiPublicPerfilBookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/perfil/slots': {
+      id: '/api/public/perfil/slots'
+      path: '/api/public/perfil/slots'
+      fullPath: '/api/public/perfil/slots'
+      preLoaderRoute: typeof ApiPublicPerfilSlotsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/whatsapp/webhook': {
       id: '/api/public/whatsapp/webhook'
       path: '/api/public/whatsapp/webhook'
       fullPath: '/api/public/whatsapp/webhook'
       preLoaderRoute: typeof ApiPublicWhatsappWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/perfil/img/$': {
+      id: '/api/public/perfil/img/$'
+      path: '/api/public/perfil/img/$'
+      fullPath: '/api/public/perfil/img/$'
+      preLoaderRoute: typeof ApiPublicPerfilImgSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -784,6 +884,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedMensagensRoute: typeof AuthenticatedMensagensRoute
   AuthenticatedPacientesRoute: typeof AuthenticatedPacientesRoute
   AuthenticatedPagamentosRoute: typeof AuthenticatedPagamentosRoute
+  AuthenticatedPerfilPublicoRoute: typeof AuthenticatedPerfilPublicoRoute
   AuthenticatedPlanosRoute: typeof AuthenticatedPlanosRoute
   AuthenticatedRemarketingRoute: typeof AuthenticatedRemarketingRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
@@ -802,6 +903,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedMensagensRoute: AuthenticatedMensagensRoute,
   AuthenticatedPacientesRoute: AuthenticatedPacientesRoute,
   AuthenticatedPagamentosRoute: AuthenticatedPagamentosRoute,
+  AuthenticatedPerfilPublicoRoute: AuthenticatedPerfilPublicoRoute,
   AuthenticatedPlanosRoute: AuthenticatedPlanosRoute,
   AuthenticatedRemarketingRoute: AuthenticatedRemarketingRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
@@ -819,9 +921,13 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   TermosRoute: TermosRoute,
   AdminLoginRoute: AdminLoginRoute,
+  PSlugRoute: PSlugRoute,
   ApiPublicMetaDataDeletionRoute: ApiPublicMetaDataDeletionRoute,
   ApiPublicMetaDeauthorizeRoute: ApiPublicMetaDeauthorizeRoute,
+  ApiPublicPerfilBookRoute: ApiPublicPerfilBookRoute,
+  ApiPublicPerfilSlotsRoute: ApiPublicPerfilSlotsRoute,
   ApiPublicWhatsappWebhookRoute: ApiPublicWhatsappWebhookRoute,
+  ApiPublicPerfilImgSplatRoute: ApiPublicPerfilImgSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
