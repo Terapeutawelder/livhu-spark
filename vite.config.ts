@@ -14,21 +14,11 @@ export default defineConfig({
   },
   vite: {
     build: {
-      // Rolldown 1.1.0 can assign the same minified identifier to an internal
-      // React DOM function and TanStack's useServerFn. That collision caused
-      // /agentes to fail at mount time with "l is not a function".
+      // Keep production identifiers stable while Vite 8/Rolldown's
+      // code-splitting regressions are being resolved upstream.
       minify: false,
-      // Vite 8/Rolldown can drop or initialize shared bindings out of order in
-      // code-split TanStack route chunks. The /agentes production chunk then
-      // calls an undefined minified import ("l is not a function").
       rolldownOptions: {
         treeshake: false,
-        experimental: {
-          // Rolldown 1.1.0's lazy barrel optimization can emit invalid
-          // initialization order for TanStack's split route plus the large
-          // Lucide/Radix re-export graphs used by /agentes.
-          lazyBarrel: false,
-        },
       },
     },
   },

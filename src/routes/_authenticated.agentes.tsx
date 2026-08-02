@@ -13,7 +13,6 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentTenant } from "@/hooks/use-tenant";
 import { AiOrchestratorPanel } from "@/components/ai-orchestrator-panel";
-import { chatWithAgent } from "@/lib/agents.functions";
 
 type Agent = {
   id: string;
@@ -465,6 +464,7 @@ function TestChatPanel({ agent }: { agent: Agent }) {
     mutationFn: async (text: string) => {
       const next = [...messages, { role: "user" as const, content: text }];
       setMessages(next);
+      const { chatWithAgent } = await import("@/lib/agents.functions");
       const res = await chatWithAgent({ data: { agentId: agent.id, messages: next } });
       setMessages([...next, { role: "assistant" as const, content: res.reply }]);
     },
