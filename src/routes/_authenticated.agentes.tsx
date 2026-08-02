@@ -259,7 +259,9 @@ function AgentEditor({ agent, onDelete }: { agent: Agent; onDelete: () => void }
   const qc = useQueryClient();
   const [form, setForm] = useState<Agent>(() => normalizeAgent(agent));
 
-  useEffect(() => setForm(normalizeAgent(agent)), [agent]);
+  useEffect(() => {
+    setForm(normalizeAgent(agent));
+  }, [agent]);
 
 
   const save = useMutation({
@@ -474,8 +476,12 @@ function TestChatPanel({ agent }: { agent: Agent }) {
     },
   });
 
-  useEffect(() => setMessages([]), [agent.id]);
-  useEffect(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), [messages, send.isPending]);
+  useEffect(() => {
+    setMessages([]);
+  }, [agent.id]);
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, send.isPending]);
 
   const canSend = useMemo(() => input.trim().length > 0 && !send.isPending, [input, send.isPending]);
 
