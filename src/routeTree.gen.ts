@@ -24,6 +24,7 @@ import { Route as AuthenticatedContatosRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedCursosRouteImport } from './routes/_authenticated.cursos'
 import { Route as AuthenticatedDisparosRouteImport } from './routes/_authenticated.disparos'
 import { Route as AuthenticatedFluxosRouteImport } from './routes/_authenticated.fluxos'
+import { Route as AuthenticatedHorariosRouteImport } from './routes/_authenticated.horarios'
 import { Route as AuthenticatedKanbanRouteImport } from './routes/_authenticated.kanban'
 import { Route as AuthenticatedMensagensRouteImport } from './routes/_authenticated.mensagens'
 import { Route as AuthenticatedPacientesRouteImport } from './routes/_authenticated.pacientes'
@@ -31,6 +32,7 @@ import { Route as AuthenticatedPagamentosRouteImport } from './routes/_authentic
 import { Route as AuthenticatedPerfilPublicoRouteImport } from './routes/_authenticated.perfil-publico'
 import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated.planos'
 import { Route as AuthenticatedRemarketingRouteImport } from './routes/_authenticated.remarketing'
+import { Route as AuthenticatedServicosRouteImport } from './routes/_authenticated.servicos'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
@@ -129,6 +131,11 @@ const AuthenticatedFluxosRoute = AuthenticatedFluxosRouteImport.update({
   path: '/fluxos',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedHorariosRoute = AuthenticatedHorariosRouteImport.update({
+  id: '/horarios',
+  path: '/horarios',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedKanbanRoute = AuthenticatedKanbanRouteImport.update({
   id: '/kanban',
   path: '/kanban',
@@ -166,6 +173,11 @@ const AuthenticatedRemarketingRoute =
     path: '/remarketing',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedServicosRoute = AuthenticatedServicosRouteImport.update({
+  id: '/servicos',
+  path: '/servicos',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
@@ -290,6 +302,7 @@ export interface FileRoutesByFullPath {
   '/cursos': typeof AuthenticatedCursosRoute
   '/disparos': typeof AuthenticatedDisparosRoute
   '/fluxos': typeof AuthenticatedFluxosRoute
+  '/horarios': typeof AuthenticatedHorariosRoute
   '/kanban': typeof AuthenticatedKanbanRoute
   '/mensagens': typeof AuthenticatedMensagensRoute
   '/pacientes': typeof AuthenticatedPacientesRoute
@@ -297,6 +310,7 @@ export interface FileRoutesByFullPath {
   '/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
+  '/servicos': typeof AuthenticatedServicosRoute
   '/admin/login': typeof AdminLoginRoute
   '/p/$slug': typeof PSlugRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
@@ -330,6 +344,7 @@ export interface FileRoutesByTo {
   '/cursos': typeof AuthenticatedCursosRoute
   '/disparos': typeof AuthenticatedDisparosRoute
   '/fluxos': typeof AuthenticatedFluxosRoute
+  '/horarios': typeof AuthenticatedHorariosRoute
   '/kanban': typeof AuthenticatedKanbanRoute
   '/mensagens': typeof AuthenticatedMensagensRoute
   '/pacientes': typeof AuthenticatedPacientesRoute
@@ -337,6 +352,7 @@ export interface FileRoutesByTo {
   '/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
+  '/servicos': typeof AuthenticatedServicosRoute
   '/admin/login': typeof AdminLoginRoute
   '/p/$slug': typeof PSlugRoute
   '/': typeof AuthenticatedIndexRoute
@@ -374,6 +390,7 @@ export interface FileRoutesById {
   '/_authenticated/cursos': typeof AuthenticatedCursosRoute
   '/_authenticated/disparos': typeof AuthenticatedDisparosRoute
   '/_authenticated/fluxos': typeof AuthenticatedFluxosRoute
+  '/_authenticated/horarios': typeof AuthenticatedHorariosRoute
   '/_authenticated/kanban': typeof AuthenticatedKanbanRoute
   '/_authenticated/mensagens': typeof AuthenticatedMensagensRoute
   '/_authenticated/pacientes': typeof AuthenticatedPacientesRoute
@@ -381,6 +398,7 @@ export interface FileRoutesById {
   '/_authenticated/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
   '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/_authenticated/remarketing': typeof AuthenticatedRemarketingRoute
+  '/_authenticated/servicos': typeof AuthenticatedServicosRoute
   '/admin/login': typeof AdminLoginRoute
   '/p/$slug': typeof PSlugRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
@@ -419,6 +437,7 @@ export interface FileRouteTypes {
     | '/cursos'
     | '/disparos'
     | '/fluxos'
+    | '/horarios'
     | '/kanban'
     | '/mensagens'
     | '/pacientes'
@@ -426,6 +445,7 @@ export interface FileRouteTypes {
     | '/perfil-publico'
     | '/planos'
     | '/remarketing'
+    | '/servicos'
     | '/admin/login'
     | '/p/$slug'
     | '/admin/calendario'
@@ -459,6 +479,7 @@ export interface FileRouteTypes {
     | '/cursos'
     | '/disparos'
     | '/fluxos'
+    | '/horarios'
     | '/kanban'
     | '/mensagens'
     | '/pacientes'
@@ -466,6 +487,7 @@ export interface FileRouteTypes {
     | '/perfil-publico'
     | '/planos'
     | '/remarketing'
+    | '/servicos'
     | '/admin/login'
     | '/p/$slug'
     | '/'
@@ -502,6 +524,7 @@ export interface FileRouteTypes {
     | '/_authenticated/cursos'
     | '/_authenticated/disparos'
     | '/_authenticated/fluxos'
+    | '/_authenticated/horarios'
     | '/_authenticated/kanban'
     | '/_authenticated/mensagens'
     | '/_authenticated/pacientes'
@@ -509,6 +532,7 @@ export interface FileRouteTypes {
     | '/_authenticated/perfil-publico'
     | '/_authenticated/planos'
     | '/_authenticated/remarketing'
+    | '/_authenticated/servicos'
     | '/admin/login'
     | '/p/$slug'
     | '/_authenticated/'
@@ -655,6 +679,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFluxosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/horarios': {
+      id: '/_authenticated/horarios'
+      path: '/horarios'
+      fullPath: '/horarios'
+      preLoaderRoute: typeof AuthenticatedHorariosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/kanban': {
       id: '/_authenticated/kanban'
       path: '/kanban'
@@ -702,6 +733,13 @@ declare module '@tanstack/react-router' {
       path: '/remarketing'
       fullPath: '/remarketing'
       preLoaderRoute: typeof AuthenticatedRemarketingRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/servicos': {
+      id: '/_authenticated/servicos'
+      path: '/servicos'
+      fullPath: '/servicos'
+      preLoaderRoute: typeof AuthenticatedServicosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/admin/login': {
@@ -880,6 +918,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCursosRoute: typeof AuthenticatedCursosRoute
   AuthenticatedDisparosRoute: typeof AuthenticatedDisparosRoute
   AuthenticatedFluxosRoute: typeof AuthenticatedFluxosRoute
+  AuthenticatedHorariosRoute: typeof AuthenticatedHorariosRoute
   AuthenticatedKanbanRoute: typeof AuthenticatedKanbanRoute
   AuthenticatedMensagensRoute: typeof AuthenticatedMensagensRoute
   AuthenticatedPacientesRoute: typeof AuthenticatedPacientesRoute
@@ -887,6 +926,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPerfilPublicoRoute: typeof AuthenticatedPerfilPublicoRoute
   AuthenticatedPlanosRoute: typeof AuthenticatedPlanosRoute
   AuthenticatedRemarketingRoute: typeof AuthenticatedRemarketingRoute
+  AuthenticatedServicosRoute: typeof AuthenticatedServicosRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
@@ -899,6 +939,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCursosRoute: AuthenticatedCursosRoute,
   AuthenticatedDisparosRoute: AuthenticatedDisparosRoute,
   AuthenticatedFluxosRoute: AuthenticatedFluxosRoute,
+  AuthenticatedHorariosRoute: AuthenticatedHorariosRoute,
   AuthenticatedKanbanRoute: AuthenticatedKanbanRoute,
   AuthenticatedMensagensRoute: AuthenticatedMensagensRoute,
   AuthenticatedPacientesRoute: AuthenticatedPacientesRoute,
@@ -906,6 +947,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPerfilPublicoRoute: AuthenticatedPerfilPublicoRoute,
   AuthenticatedPlanosRoute: AuthenticatedPlanosRoute,
   AuthenticatedRemarketingRoute: AuthenticatedRemarketingRoute,
+  AuthenticatedServicosRoute: AuthenticatedServicosRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
