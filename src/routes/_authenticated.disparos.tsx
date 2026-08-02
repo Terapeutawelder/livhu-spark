@@ -205,12 +205,16 @@ function DisparosPage() {
 
 function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <Card className="p-4">
-      <div className="flex items-center gap-2 text-xs text-muted-foreground">{icon}{label}</div>
-      <p className="mt-1 text-xl font-semibold">{value}</p>
-    </Card>
+    <div className="rounded-2xl border border-gold/25 bg-surface p-4 shadow-[0_10px_30px_-15px_color-mix(in_oklab,var(--gold)_35%,transparent)] transition hover:border-gold/50">
+      <div className="flex items-center justify-between">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</p>
+        <span className="grid h-8 w-8 place-items-center rounded-lg border border-gold/30 bg-gold/10 text-gold">{icon}</span>
+      </div>
+      <p className="mt-3 font-display text-2xl font-bold tracking-tight text-foreground">{value}</p>
+    </div>
   );
 }
+
 
 function NewBroadcastDialog({ onClose, channels, templates }: { onClose: () => void; channels: any[]; templates: any[] }) {
   const qc = useQueryClient();
