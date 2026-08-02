@@ -633,10 +633,19 @@ function BookingWidget({
           />
         </div>
 
-        <div className="mt-5 flex items-center justify-between text-sm">
-          <span style={{ color: theme.muted }}>Total</span>
-          <span className="font-semibold">{service ? money(service.price_cents) : "—"}</span>
+        <div className="mt-5 space-y-1 text-sm">
+          <div className="flex items-center justify-between">
+            <span style={{ color: theme.muted }}>{plan.name}</span>
+            <span style={{ color: theme.muted }}>
+              {plan.sessions} {plan.sessions > 1 ? "sessões" : "sessão"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span style={{ color: theme.muted }}>Total</span>
+            <span className="font-semibold">{service ? money(total) : "—"}</span>
+          </div>
         </div>
+
 
         {error && (
           <p className="mt-3 text-xs" style={{ color: "#c0392b" }}>
