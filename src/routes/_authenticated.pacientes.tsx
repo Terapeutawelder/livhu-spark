@@ -244,19 +244,11 @@ function PacientesPage() {
           </header>
 
           <div className="grid gap-3 sm:grid-cols-3">
-            <Card className="p-4">
-              <p className="text-xs uppercase text-muted-foreground">Pacientes</p>
-              <p className="mt-1 text-2xl font-bold">{patients.length}</p>
-            </Card>
-            <Card className="p-4">
-              <p className="text-xs uppercase text-muted-foreground">Sessões no mês</p>
-              <p className="mt-1 text-2xl font-bold">{monthSessions}</p>
-            </Card>
-            <Card className="p-4">
-              <p className="text-xs uppercase text-muted-foreground">Com sessão futura</p>
-              <p className="mt-1 text-2xl font-bold">{upcomingCount}</p>
-            </Card>
+            <MetricCard icon={HeartPulse} label="Pacientes" value={patients.length} hint="com sessões registradas" />
+            <MetricCard icon={CalendarDays} label="Sessões no mês" value={monthSessions} hint="agenda do mês atual" />
+            <MetricCard icon={CalendarClock} label="Com sessão futura" value={upcomingCount} hint="em acompanhamento" />
           </div>
+
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="relative w-full sm:max-w-sm">
