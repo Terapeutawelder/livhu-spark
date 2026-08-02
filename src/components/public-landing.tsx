@@ -336,6 +336,21 @@ function toDateKey(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
+type TherapyPlan = {
+  id: string;
+  name: string;
+  sessions: number;
+  discount: number;
+  note: string;
+};
+
+const THERAPY_PLANS: TherapyPlan[] = [
+  { id: "single", name: "Sessão avulsa", sessions: 1, discount: 0, note: "Sem compromisso — ideal para começar" },
+  { id: "monthly", name: "Plano mensal", sessions: 4, discount: 0.05, note: "4 sessões · 5% de desconto" },
+  { id: "quarterly", name: "Plano trimestral", sessions: 12, discount: 0.12, note: "12 sessões · 12% de desconto" },
+];
+
+
 function BookingWidget({
   slug,
   services,
