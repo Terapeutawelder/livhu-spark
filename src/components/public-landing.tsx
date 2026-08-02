@@ -180,6 +180,27 @@ export function PublicLanding({ template, theme, content, services, slug, intera
         </section>
       )}
 
+      {/* Agendamento */}
+      {content.sections.booking && (
+        <section id="agendar" className="mx-auto max-w-6xl px-5 py-14 md:py-20">
+          <h2 className="text-3xl md:text-4xl" style={h}>
+            {content.bookingTitle}
+          </h2>
+          <p className="mt-3 max-w-2xl text-sm" style={{ color: theme.muted }}>
+            {content.bookingIntro}
+          </p>
+          <BookingWidget
+            slug={slug}
+            services={services}
+            theme={theme}
+            card={card}
+            btn={btn}
+            heading={h}
+            interactive={interactive}
+          />
+        </section>
+      )}
+
       {/* Depoimentos */}
       {content.sections.testimonials && content.testimonials.length > 0 && (
         <section className="py-14" style={{ background: theme.band, color: theme.bandText }}>
@@ -203,45 +224,108 @@ export function PublicLanding({ template, theme, content, services, slug, intera
         </section>
       )}
 
-      {/* Agendamento */}
-      {content.sections.booking && (
-        <section id="agendar" className="mx-auto max-w-6xl px-5 py-14 md:py-20">
-          <h2 className="text-3xl md:text-4xl" style={h}>
-            {content.bookingTitle}
-          </h2>
-          <p className="mt-3 max-w-2xl text-sm" style={{ color: theme.muted }}>
-            {content.bookingIntro}
-          </p>
-          <BookingWidget
-            slug={slug}
-            services={services}
-            theme={theme}
-            card={card}
-            btn={btn}
-            heading={h}
-            interactive={interactive}
-          />
-        </section>
-      )}
+      {/* CTA final */}
+      <section className="mx-auto max-w-6xl px-5 pb-14">
+        <div
+          className="flex flex-col items-center gap-4 px-6 py-10 text-center md:flex-row md:justify-between md:text-left"
+          style={card}
+        >
+          <div>
+            <h3 className="text-2xl" style={{ ...h, color: theme.text }}>
+              Pronto para dar o primeiro passo?
+            </h3>
+            <p className="mt-2 text-sm" style={{ color: theme.muted }}>
+              Escolha o plano de terapia que combina com você e reserve seu horário.
+            </p>
+          </div>
+          <a href="#agendar" className="px-6 py-3 text-sm font-semibold" style={btn}>
+            {content.ctaLabel}
+          </a>
+        </div>
+      </section>
 
       {/* Footer */}
-      {content.sections.footer && (
-        <footer className="py-10" style={{ background: theme.band, color: theme.bandText }}>
-          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-5 text-xs">
+      <footer className="py-12" style={{ background: theme.band, color: theme.bandText }}>
+        <div className="mx-auto max-w-6xl px-5">
+          <div className="grid gap-8 md:grid-cols-3">
+            <div>
+              <p className="text-lg font-semibold" style={h}>
+                {content.name}
+              </p>
+              <p className="mt-2 text-xs" style={{ opacity: 0.75 }}>
+                {content.credential}
+                {content.city ? ` · ${content.city}` : ""}
+              </p>
+            </div>
+            <div className="text-sm">
+              <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ opacity: 0.7 }}>
+                Navegação
+              </p>
+              <ul className="space-y-2" style={{ opacity: 0.85 }}>
+                {content.sections.topics && (
+                  <li>
+                    <a href="#servicos">Como ajudo</a>
+                  </li>
+                )}
+                {content.sections.about && (
+                  <li>
+                    <a href="#sobre">Sobre</a>
+                  </li>
+                )}
+                {content.sections.booking && (
+                  <li>
+                    <a href="#agendar">Agendar sessão</a>
+                  </li>
+                )}
+              </ul>
+            </div>
+            <div className="text-sm">
+              <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em]" style={{ opacity: 0.7 }}>
+                Contato
+              </p>
+              <ul className="space-y-2" style={{ opacity: 0.85 }}>
+                {content.whatsapp && (
+                  <li>
+                    <a
+                      href={`https://wa.me/${content.whatsapp.replace(/\D/g, "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      WhatsApp {content.whatsapp}
+                    </a>
+                  </li>
+                )}
+                {content.email && (
+                  <li>
+                    <a href={`mailto:${content.email}`}>{content.email}</a>
+                  </li>
+                )}
+                {content.instagram && (
+                  <li>
+                    <a
+                      href={`https://instagram.com/${content.instagram.replace("@", "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      @{content.instagram.replace("@", "")}
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </div>
+          </div>
+          <div
+            className="mt-10 flex flex-wrap items-center justify-between gap-3 pt-6 text-[11px]"
+            style={{ borderTop: `1px solid ${dark ? "rgba(255,255,255,.12)" : "rgba(0,0,0,.1)"}`, opacity: 0.75 }}
+          >
             <span>
               © {new Date().getFullYear()} {content.name} · {content.footerNote}
             </span>
-            <div className="flex flex-wrap gap-4">
-              {content.email && <a href={`mailto:${content.email}`}>{content.email}</a>}
-              {content.instagram && (
-                <a href={`https://instagram.com/${content.instagram.replace("@", "")}`} target="_blank" rel="noreferrer">
-                  @{content.instagram.replace("@", "")}
-                </a>
-              )}
-            </div>
+            <span>Atendimento psicológico com sigilo e ética profissional.</span>
           </div>
-        </footer>
-      )}
+        </div>
+      </footer>
+
     </div>
   );
 }
