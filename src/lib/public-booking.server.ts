@@ -1,14 +1,38 @@
 import type { Database } from "@/integrations/supabase/types";
 
-type Availability = { start_hour?: number; end_hour?: number; days?: number[] };
+export type AvailabilityWindow = { day: number; start: string; end: string };
+type Availability = {
+  start_hour?: number;
+  end_hour?: number;
+  days?: number[];
+  windows?: AvailabilityWindow[];
+  gap_minutes?: number;
+  min_advance_hours?: number;
+};
 type TenantSettings = { availability?: Availability } & Record<string, unknown>;
 
 export type PublicTenant = {
   tenantId: string;
   timezone: string;
-  availability: Required<Availability>;
+  availability: {
+    start_hour: number;
+    end_hour: number;
+    days: number[];
+    windows: AvailabilityWindow[];
+    gap_minutes: number;
+    min_advance_hours: number;
+  };
   content: Record<string, unknown>;
 };
+
+function parseHm(v: string): { h: number; m: number } | null {
+  const m = /^(\d{1,2}):(\d{2})$/.exec(v ?? "");
+  if (!m) return null;
+  const h = Number(m[1]);
+  const min = Number(m[2]);
+  if (h < 0 || h > 24 || min < 0 || min > 59) return null;
+  return { h, m: min };
+}
 
 function tzOffsetMs(timeZone: string, date: Date): number {
   const dtf = new Intl.DateTimeFormat("en-US", {
