@@ -46,16 +46,6 @@ const MODELS = [
 ];
 
 export const Route = createLazyFileRoute("/_authenticated/agentes")({
-  head: () => ({
-    meta: [
-      { title: "Agentes IA — LivHub" },
-      { name: "description", content: "Configure agentes de IA para triagem, atendimento e follow-up automatizado." },
-      { property: "og:title", content: "Agentes IA — LivHub" },
-      { property: "og:description", content: "Agentes de IA especializados no atendimento terapêutico." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-    ],
-  }),
   errorComponent: ({ error, reset }) => (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-3 p-6 text-center">
       <h2 className="text-lg font-semibold">Não foi possível abrir os Agentes IA</h2>
