@@ -31,6 +31,7 @@ import { Route as AuthenticatedPagamentosRouteImport } from './routes/_authentic
 import { Route as AuthenticatedPerfilPublicoRouteImport } from './routes/_authenticated.perfil-publico'
 import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated.planos'
 import { Route as AuthenticatedRemarketingRouteImport } from './routes/_authenticated.remarketing'
+import { Route as AuthenticatedServicosRouteImport } from './routes/_authenticated.servicos'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
@@ -166,6 +167,11 @@ const AuthenticatedRemarketingRoute =
     path: '/remarketing',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedServicosRoute = AuthenticatedServicosRouteImport.update({
+  id: '/servicos',
+  path: '/servicos',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
@@ -297,6 +303,7 @@ export interface FileRoutesByFullPath {
   '/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
+  '/servicos': typeof AuthenticatedServicosRoute
   '/admin/login': typeof AdminLoginRoute
   '/p/$slug': typeof PSlugRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
@@ -337,6 +344,7 @@ export interface FileRoutesByTo {
   '/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
+  '/servicos': typeof AuthenticatedServicosRoute
   '/admin/login': typeof AdminLoginRoute
   '/p/$slug': typeof PSlugRoute
   '/': typeof AuthenticatedIndexRoute
@@ -381,6 +389,7 @@ export interface FileRoutesById {
   '/_authenticated/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
   '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/_authenticated/remarketing': typeof AuthenticatedRemarketingRoute
+  '/_authenticated/servicos': typeof AuthenticatedServicosRoute
   '/admin/login': typeof AdminLoginRoute
   '/p/$slug': typeof PSlugRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
@@ -426,6 +435,7 @@ export interface FileRouteTypes {
     | '/perfil-publico'
     | '/planos'
     | '/remarketing'
+    | '/servicos'
     | '/admin/login'
     | '/p/$slug'
     | '/admin/calendario'
@@ -466,6 +476,7 @@ export interface FileRouteTypes {
     | '/perfil-publico'
     | '/planos'
     | '/remarketing'
+    | '/servicos'
     | '/admin/login'
     | '/p/$slug'
     | '/'
@@ -509,6 +520,7 @@ export interface FileRouteTypes {
     | '/_authenticated/perfil-publico'
     | '/_authenticated/planos'
     | '/_authenticated/remarketing'
+    | '/_authenticated/servicos'
     | '/admin/login'
     | '/p/$slug'
     | '/_authenticated/'
@@ -704,6 +716,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRemarketingRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/servicos': {
+      id: '/_authenticated/servicos'
+      path: '/servicos'
+      fullPath: '/servicos'
+      preLoaderRoute: typeof AuthenticatedServicosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/admin/login'
@@ -887,6 +906,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPerfilPublicoRoute: typeof AuthenticatedPerfilPublicoRoute
   AuthenticatedPlanosRoute: typeof AuthenticatedPlanosRoute
   AuthenticatedRemarketingRoute: typeof AuthenticatedRemarketingRoute
+  AuthenticatedServicosRoute: typeof AuthenticatedServicosRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
@@ -906,6 +926,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPerfilPublicoRoute: AuthenticatedPerfilPublicoRoute,
   AuthenticatedPlanosRoute: AuthenticatedPlanosRoute,
   AuthenticatedRemarketingRoute: AuthenticatedRemarketingRoute,
+  AuthenticatedServicosRoute: AuthenticatedServicosRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
@@ -932,13 +953,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
