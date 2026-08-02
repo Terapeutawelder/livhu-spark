@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   MessageSquare,
   Users,
+  HeartPulse,
   KanbanSquare,
   CalendarDays,
   Workflow,
