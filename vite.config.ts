@@ -14,10 +14,10 @@ export default defineConfig({
   },
   vite: {
     build: {
-      // Keep production identifiers stable while Vite 8/Rolldown's
-      // code-splitting regressions are being resolved upstream.
+      // Vite 7 uses Rollup's stable production pipeline. Keep tree-shaking
+      // disabled until the affected route has been rebuilt without Rolldown.
       minify: false,
-      rolldownOptions: {
+      rollupOptions: {
         treeshake: false,
       },
     },
