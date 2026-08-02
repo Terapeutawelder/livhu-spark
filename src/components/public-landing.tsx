@@ -354,6 +354,7 @@ function BookingWidget({
   interactive: boolean;
 }) {
   const [serviceId, setServiceId] = useState<string | null>(services[0]?.id ?? null);
+  const [planId, setPlanId] = useState<string>("single");
   const [date, setDate] = useState<string>(toDateKey(new Date()));
   const [slots, setSlots] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
@@ -365,6 +366,9 @@ function BookingWidget({
 
   const service = services.find((x) => x.id === serviceId) ?? null;
   const duration = service?.duration_minutes ?? 50;
+  const plan = THERAPY_PLANS.find((p) => p.id === planId) ?? THERAPY_PLANS[0];
+  const total = service ? Math.round(service.price_cents * plan.sessions * (1 - plan.discount)) : 0;
+
 
   const days = useMemo(() => {
     const out: Date[] = [];
