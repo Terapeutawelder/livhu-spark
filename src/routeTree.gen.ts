@@ -22,6 +22,7 @@ import { Route as AuthenticatedAgentesRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedCalendarioRouteImport } from './routes/_authenticated.calendario'
 import { Route as AuthenticatedConfiguracoesRouteImport } from './routes/_authenticated.configuracoes'
 import { Route as AuthenticatedContatosRouteImport } from './routes/_authenticated.contatos'
+import { Route as AuthenticatedCreditosRouteImport } from './routes/_authenticated.creditos'
 import { Route as AuthenticatedCursosRouteImport } from './routes/_authenticated.cursos'
 import { Route as AuthenticatedDisparosRouteImport } from './routes/_authenticated.disparos'
 import { Route as AuthenticatedFluxosRouteImport } from './routes/_authenticated.fluxos'
@@ -122,6 +123,11 @@ const AuthenticatedConfiguracoesRoute =
 const AuthenticatedContatosRoute = AuthenticatedContatosRouteImport.update({
   id: '/contatos',
   path: '/contatos',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCreditosRoute = AuthenticatedCreditosRouteImport.update({
+  id: '/creditos',
+  path: '/creditos',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedCursosRoute = AuthenticatedCursosRouteImport.update({
@@ -320,6 +326,7 @@ export interface FileRoutesByFullPath {
   '/calendario': typeof AuthenticatedCalendarioRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/contatos': typeof AuthenticatedContatosRoute
+  '/creditos': typeof AuthenticatedCreditosRoute
   '/cursos': typeof AuthenticatedCursosRoute
   '/disparos': typeof AuthenticatedDisparosRoute
   '/fluxos': typeof AuthenticatedFluxosRoute
@@ -365,6 +372,7 @@ export interface FileRoutesByTo {
   '/calendario': typeof AuthenticatedCalendarioRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/contatos': typeof AuthenticatedContatosRoute
+  '/creditos': typeof AuthenticatedCreditosRoute
   '/cursos': typeof AuthenticatedCursosRoute
   '/disparos': typeof AuthenticatedDisparosRoute
   '/fluxos': typeof AuthenticatedFluxosRoute
@@ -414,6 +422,7 @@ export interface FileRoutesById {
   '/_authenticated/calendario': typeof AuthenticatedCalendarioRoute
   '/_authenticated/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/_authenticated/contatos': typeof AuthenticatedContatosRoute
+  '/_authenticated/creditos': typeof AuthenticatedCreditosRoute
   '/_authenticated/cursos': typeof AuthenticatedCursosRoute
   '/_authenticated/disparos': typeof AuthenticatedDisparosRoute
   '/_authenticated/fluxos': typeof AuthenticatedFluxosRoute
@@ -464,6 +473,7 @@ export interface FileRouteTypes {
     | '/calendario'
     | '/configuracoes'
     | '/contatos'
+    | '/creditos'
     | '/cursos'
     | '/disparos'
     | '/fluxos'
@@ -509,6 +519,7 @@ export interface FileRouteTypes {
     | '/calendario'
     | '/configuracoes'
     | '/contatos'
+    | '/creditos'
     | '/cursos'
     | '/disparos'
     | '/fluxos'
@@ -557,6 +568,7 @@ export interface FileRouteTypes {
     | '/_authenticated/calendario'
     | '/_authenticated/configuracoes'
     | '/_authenticated/contatos'
+    | '/_authenticated/creditos'
     | '/_authenticated/cursos'
     | '/_authenticated/disparos'
     | '/_authenticated/fluxos'
@@ -702,6 +714,13 @@ declare module '@tanstack/react-router' {
       path: '/contatos'
       fullPath: '/contatos'
       preLoaderRoute: typeof AuthenticatedContatosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/creditos': {
+      id: '/_authenticated/creditos'
+      path: '/creditos'
+      fullPath: '/creditos'
+      preLoaderRoute: typeof AuthenticatedCreditosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/cursos': {
@@ -976,6 +995,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCalendarioRoute: typeof AuthenticatedCalendarioRoute
   AuthenticatedConfiguracoesRoute: typeof AuthenticatedConfiguracoesRoute
   AuthenticatedContatosRoute: typeof AuthenticatedContatosRoute
+  AuthenticatedCreditosRoute: typeof AuthenticatedCreditosRoute
   AuthenticatedCursosRoute: typeof AuthenticatedCursosRoute
   AuthenticatedDisparosRoute: typeof AuthenticatedDisparosRoute
   AuthenticatedFluxosRoute: typeof AuthenticatedFluxosRoute
@@ -999,6 +1019,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCalendarioRoute: AuthenticatedCalendarioRoute,
   AuthenticatedConfiguracoesRoute: AuthenticatedConfiguracoesRoute,
   AuthenticatedContatosRoute: AuthenticatedContatosRoute,
+  AuthenticatedCreditosRoute: AuthenticatedCreditosRoute,
   AuthenticatedCursosRoute: AuthenticatedCursosRoute,
   AuthenticatedDisparosRoute: AuthenticatedDisparosRoute,
   AuthenticatedFluxosRoute: AuthenticatedFluxosRoute,
