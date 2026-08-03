@@ -270,18 +270,22 @@ export async function createPublicBooking(
       ? `Plano: ${plan.name} (${plan.sessions}x) · Total ${(totalCents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`
       : `Plano: ${plan.name} (${plan.sessions}x)`;
 
-  const { error: apptErr } = await supabaseAdmin.from("appointments").insert({
-    tenant_id: tenant.tenantId,
-    contact_id: contactId,
-    service_id: input.serviceId,
-    title: `${serviceName} — ${input.name}`,
-    starts_at: start.toISOString(),
-    ends_at: end.toISOString(),
-    modality,
-    status: "scheduled",
-    kind: "appointment",
-    notes: [planLine, input.notes].filter(Boolean).join(" · ") || null,
-  });
+  const { data: appt, error: apptErr } = await supabaseAdmin
+    .from("appointments")
+    .insert({
+      tenant_id: tenant.tenantId,
+      contact_id: contactId,
+      service_id: input.serviceId,
+      title: `${serviceName} — ${input.name}`,
+      starts_at: start.toISOString(),
+      ends_at: end.toISOString(),
+      modality,
+      status: "scheduled",
+      kind: "appointment",
+      notes: [planLine, input.notes].filter(Boolean).join(" · ") || null,
+    })
+    .select("id")
+    .single();
   if (apptErr) return { ok: false, error: apptErr.message };
 
   const links = (tenant.content.checkoutLinks ?? {}) as Record<string, string>;
@@ -291,6 +295,29 @@ export async function createPublicBooking(
     links.default ||
     "";
   const checkoutUrl = totalCents > 0 && rawLink ? rawLink : null;
+
+  // Aviso de pagamento pendente entra na mesma fila de notificações.
+  if (checkoutUrl) {
+    await supabaseAdmin.from("notification_jobs").insert([
+      {
+        tenant_id: tenant.tenantId,
+        event: "payment_pending" as const,
+        channel: "whatsapp" as const,
+        contact_id: contactId,
+        appointment_id: appt.id,
+        to_phone: phone || null,
+        send_at: new Date().toISOString(),
+        payload: {
+          title: serviceName,
+          starts_at: start.toISOString(),
+          modality,
+          checkout_url: checkoutUrl,
+          amount_cents: totalCents,
+        },
+        dedupe_key: `${tenant.tenantId}:payment_pending:whatsapp:${appt.id}`,
+      },
+    ]);
+  }
 
   return { ok: true, checkoutUrl, startsAt: start.toISOString(), totalCents, planId: plan.id };
 }
