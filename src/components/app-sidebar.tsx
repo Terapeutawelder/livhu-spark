@@ -12,6 +12,7 @@ import {
   CalendarDays,
   CalendarClock,
   HeartHandshake,
+  Bell,
   Workflow,
   Megaphone,
   Send,
