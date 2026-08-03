@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 
 /**
  * Processa a fila de notificações (WhatsApp + e-mail).
- * Chamado a cada 5 minutos pelo agendador do banco.
+ * Chamado imediatamente por trigger no banco quando um job é criado,
+ * e a cada 1 minuto pelo agendador para lembretes agendados no futuro.
  */
 export const Route = createFileRoute("/api/public/hooks/notifications-dispatch")({
   server: {
@@ -15,8 +16,17 @@ export const Route = createFileRoute("/api/public/hooks/notifications-dispatch")
         if (!accepted.length || !accepted.includes(apikey)) {
           return Response.json({ error: "unauthorized" }, { status: 401 });
         }
+
+        let jobId: string | undefined;
+        try {
+          const body = await request.json();
+          if (body && typeof body.job_id === "string") jobId = body.job_id;
+        } catch {
+          // corpo vazio ou inválido: processa todos os jobs vencidos
+        }
+
         const { processDueNotifications } = await import("@/lib/notifications.server");
-        const result = await processDueNotifications();
+        const result = await processDueNotifications(jobId ? { jobId } : undefined);
         return Response.json({ ok: true, ...result }, { headers: { "Cache-Control": "no-store" } });
       },
     },
