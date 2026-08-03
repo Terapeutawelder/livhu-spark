@@ -1,0 +1,1 @@
+ALTER TABLE public.appointments REPLICA IDENTITY FULL;

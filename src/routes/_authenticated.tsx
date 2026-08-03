@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppSidebar, SidebarProvider, useSidebar, MobileMenuButton } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TrialBanner } from "@/components/trial-banner";
-import { Bell, Search } from "lucide-react";
+import { NotificationBell } from "@/components/notification-bell";
+import { Search } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -73,13 +74,7 @@ function AppHeader() {
       </div>
       <div className="flex items-center gap-2">
         <ThemeToggle />
-        <button
-          aria-label="Notificações"
-          className="relative grid h-9 w-9 place-items-center rounded-full border border-border bg-surface text-foreground hover:bg-muted"
-        >
-          <Bell className="h-4 w-4" />
-          <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-gold" />
-        </button>
+        <NotificationBell />
       </div>
     </header>
   );
