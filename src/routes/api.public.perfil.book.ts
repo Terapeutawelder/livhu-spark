@@ -4,6 +4,7 @@ import { z } from "zod";
 const bodySchema = z.object({
   slug: z.string().min(1).max(64),
   serviceId: z.string().uuid().nullable().optional(),
+  planId: z.string().max(32).nullable().optional(),
   startsAt: z.string().min(10),
   name: z.string().min(2).max(120),
   phone: z.string().min(8).max(30),
