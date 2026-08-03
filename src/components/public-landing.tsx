@@ -370,8 +370,8 @@ function BookingWidget({
 
   const service = services.find((x) => x.id === serviceId) ?? null;
   const duration = service?.duration_minutes ?? 50;
-  const plan = THERAPY_PLANS.find((p) => p.id === planId) ?? THERAPY_PLANS[0];
-  const total = service ? Math.round(service.price_cents * plan.sessions * (1 - plan.discount)) : 0;
+  const plan = findPlan(planId);
+  const total = service ? planTotalCents(service.price_cents, plan) : 0;
 
 
   const days = useMemo(() => {
