@@ -140,7 +140,7 @@ export const sendTestNotification = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
 
     const { processDueNotifications } = await import("@/lib/notifications.server");
-    const result = await processDueNotifications(5);
+    const result = await processDueNotifications({ limit: 5 });
     return result;
   });
 
@@ -155,5 +155,5 @@ export const retryNotificationJob = createServerFn({ method: "POST" })
       .eq("id", data.id);
     if (error) throw new Error(error.message);
     const { processDueNotifications } = await import("@/lib/notifications.server");
-    return processDueNotifications(5);
+    return processDueNotifications({ limit: 5 });
   });
