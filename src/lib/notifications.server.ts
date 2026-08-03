@@ -207,6 +207,16 @@ async function sendViaWhatsApp(
     return { ok: false, retry: false, error: "Nenhum canal WhatsApp ativo." };
   }
 
+  // Créditos pré-pagos: consultórios no modo gerenciado precisam de saldo.
+  const { data: hasCredit, error: creditError } = await supabaseAdmin.rpc("consume_message_credit", {
+    _tenant_id: job.tenant_id,
+    _reference: job.id,
+  });
+  if (creditError) return { ok: false, retry: true, error: creditError.message };
+  if (hasCredit === false) {
+    return { ok: false, retry: false, error: "Sem créditos de mensagem. Compre um pacote para continuar." };
+  }
+
   const { decryptToken } = await import("@/lib/token-crypto.server");
   const { sendText, sendTemplate, normalizePhone } = await import("@/lib/whatsapp.server");
   const creds = { phoneNumberId: channel.phone_number_id, accessToken: await decryptToken(channel.access_token) };
