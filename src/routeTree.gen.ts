@@ -28,6 +28,7 @@ import { Route as AuthenticatedFluxosRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedHorariosRouteImport } from './routes/_authenticated.horarios'
 import { Route as AuthenticatedKanbanRouteImport } from './routes/_authenticated.kanban'
 import { Route as AuthenticatedMensagensRouteImport } from './routes/_authenticated.mensagens'
+import { Route as AuthenticatedNotificacoesRouteImport } from './routes/_authenticated.notificacoes'
 import { Route as AuthenticatedPacientesRouteImport } from './routes/_authenticated.pacientes'
 import { Route as AuthenticatedPagamentosRouteImport } from './routes/_authenticated.pagamentos'
 import { Route as AuthenticatedPerfilPublicoRouteImport } from './routes/_authenticated.perfil-publico'
@@ -47,6 +48,7 @@ import { Route as AuthenticatedAdminSuporteRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminTenantsRouteImport } from './routes/_authenticated.admin.tenants'
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated.admin.usuarios'
 import { Route as AuthenticatedAdminWhiteLabelRouteImport } from './routes/_authenticated.admin.white-label'
+import { Route as ApiPublicHooksNotificationsDispatchRouteImport } from './routes/api.public.hooks.notifications-dispatch'
 import { Route as ApiPublicMetaDataDeletionRouteImport } from './routes/api.public.meta.data-deletion'
 import { Route as ApiPublicMetaDeauthorizeRouteImport } from './routes/api.public.meta.deauthorize'
 import { Route as ApiPublicPerfilBookRouteImport } from './routes/api.public.perfil.book'
@@ -152,6 +154,12 @@ const AuthenticatedMensagensRoute = AuthenticatedMensagensRouteImport.update({
   path: '/mensagens',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedNotificacoesRoute =
+  AuthenticatedNotificacoesRouteImport.update({
+    id: '/notificacoes',
+    path: '/notificacoes',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPacientesRoute = AuthenticatedPacientesRouteImport.update({
   id: '/pacientes',
   path: '/pacientes',
@@ -259,6 +267,12 @@ const AuthenticatedAdminWhiteLabelRoute =
     path: '/white-label',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const ApiPublicHooksNotificationsDispatchRoute =
+  ApiPublicHooksNotificationsDispatchRouteImport.update({
+    id: '/api/public/hooks/notifications-dispatch',
+    path: '/api/public/hooks/notifications-dispatch',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicMetaDataDeletionRoute =
   ApiPublicMetaDataDeletionRouteImport.update({
     id: '/api/public/meta/data-deletion',
@@ -312,6 +326,7 @@ export interface FileRoutesByFullPath {
   '/horarios': typeof AuthenticatedHorariosRoute
   '/kanban': typeof AuthenticatedKanbanRoute
   '/mensagens': typeof AuthenticatedMensagensRoute
+  '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/pacientes': typeof AuthenticatedPacientesRoute
   '/pagamentos': typeof AuthenticatedPagamentosRoute
   '/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
@@ -331,6 +346,7 @@ export interface FileRoutesByFullPath {
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/admin/white-label': typeof AuthenticatedAdminWhiteLabelRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/hooks/notifications-dispatch': typeof ApiPublicHooksNotificationsDispatchRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
   '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
@@ -355,6 +371,7 @@ export interface FileRoutesByTo {
   '/horarios': typeof AuthenticatedHorariosRoute
   '/kanban': typeof AuthenticatedKanbanRoute
   '/mensagens': typeof AuthenticatedMensagensRoute
+  '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/pacientes': typeof AuthenticatedPacientesRoute
   '/pagamentos': typeof AuthenticatedPagamentosRoute
   '/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
@@ -375,6 +392,7 @@ export interface FileRoutesByTo {
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/admin/white-label': typeof AuthenticatedAdminWhiteLabelRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/api/public/hooks/notifications-dispatch': typeof ApiPublicHooksNotificationsDispatchRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
   '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
@@ -402,6 +420,7 @@ export interface FileRoutesById {
   '/_authenticated/horarios': typeof AuthenticatedHorariosRoute
   '/_authenticated/kanban': typeof AuthenticatedKanbanRoute
   '/_authenticated/mensagens': typeof AuthenticatedMensagensRoute
+  '/_authenticated/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/_authenticated/pacientes': typeof AuthenticatedPacientesRoute
   '/_authenticated/pagamentos': typeof AuthenticatedPagamentosRoute
   '/_authenticated/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
@@ -422,6 +441,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/_authenticated/admin/white-label': typeof AuthenticatedAdminWhiteLabelRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/hooks/notifications-dispatch': typeof ApiPublicHooksNotificationsDispatchRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
   '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
@@ -450,6 +470,7 @@ export interface FileRouteTypes {
     | '/horarios'
     | '/kanban'
     | '/mensagens'
+    | '/notificacoes'
     | '/pacientes'
     | '/pagamentos'
     | '/perfil-publico'
@@ -469,6 +490,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/admin/white-label'
     | '/admin/'
+    | '/api/public/hooks/notifications-dispatch'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
     | '/api/public/perfil/book'
@@ -493,6 +515,7 @@ export interface FileRouteTypes {
     | '/horarios'
     | '/kanban'
     | '/mensagens'
+    | '/notificacoes'
     | '/pacientes'
     | '/pagamentos'
     | '/perfil-publico'
@@ -513,6 +536,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/admin/white-label'
     | '/admin'
+    | '/api/public/hooks/notifications-dispatch'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
     | '/api/public/perfil/book'
@@ -539,6 +563,7 @@ export interface FileRouteTypes {
     | '/_authenticated/horarios'
     | '/_authenticated/kanban'
     | '/_authenticated/mensagens'
+    | '/_authenticated/notificacoes'
     | '/_authenticated/pacientes'
     | '/_authenticated/pagamentos'
     | '/_authenticated/perfil-publico'
@@ -559,6 +584,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/usuarios'
     | '/_authenticated/admin/white-label'
     | '/_authenticated/admin/'
+    | '/api/public/hooks/notifications-dispatch'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
     | '/api/public/perfil/book'
@@ -576,6 +602,7 @@ export interface RootRouteChildren {
   TermosRoute: typeof TermosRoute
   AdminLoginRoute: typeof AdminLoginRoute
   PSlugRoute: typeof PSlugRoute
+  ApiPublicHooksNotificationsDispatchRoute: typeof ApiPublicHooksNotificationsDispatchRoute
   ApiPublicMetaDataDeletionRoute: typeof ApiPublicMetaDataDeletionRoute
   ApiPublicMetaDeauthorizeRoute: typeof ApiPublicMetaDeauthorizeRoute
   ApiPublicPerfilBookRoute: typeof ApiPublicPerfilBookRoute
@@ -719,6 +746,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMensagensRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/notificacoes': {
+      id: '/_authenticated/notificacoes'
+      path: '/notificacoes'
+      fullPath: '/notificacoes'
+      preLoaderRoute: typeof AuthenticatedNotificacoesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/pacientes': {
       id: '/_authenticated/pacientes'
       path: '/pacientes'
@@ -852,6 +886,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminWhiteLabelRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/api/public/hooks/notifications-dispatch': {
+      id: '/api/public/hooks/notifications-dispatch'
+      path: '/api/public/hooks/notifications-dispatch'
+      fullPath: '/api/public/hooks/notifications-dispatch'
+      preLoaderRoute: typeof ApiPublicHooksNotificationsDispatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/meta/data-deletion': {
       id: '/api/public/meta/data-deletion'
       path: '/api/public/meta/data-deletion'
@@ -941,6 +982,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedHorariosRoute: typeof AuthenticatedHorariosRoute
   AuthenticatedKanbanRoute: typeof AuthenticatedKanbanRoute
   AuthenticatedMensagensRoute: typeof AuthenticatedMensagensRoute
+  AuthenticatedNotificacoesRoute: typeof AuthenticatedNotificacoesRoute
   AuthenticatedPacientesRoute: typeof AuthenticatedPacientesRoute
   AuthenticatedPagamentosRoute: typeof AuthenticatedPagamentosRoute
   AuthenticatedPerfilPublicoRoute: typeof AuthenticatedPerfilPublicoRoute
@@ -963,6 +1005,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedHorariosRoute: AuthenticatedHorariosRoute,
   AuthenticatedKanbanRoute: AuthenticatedKanbanRoute,
   AuthenticatedMensagensRoute: AuthenticatedMensagensRoute,
+  AuthenticatedNotificacoesRoute: AuthenticatedNotificacoesRoute,
   AuthenticatedPacientesRoute: AuthenticatedPacientesRoute,
   AuthenticatedPagamentosRoute: AuthenticatedPagamentosRoute,
   AuthenticatedPerfilPublicoRoute: AuthenticatedPerfilPublicoRoute,
@@ -985,6 +1028,8 @@ const rootRouteChildren: RootRouteChildren = {
   TermosRoute: TermosRoute,
   AdminLoginRoute: AdminLoginRoute,
   PSlugRoute: PSlugRoute,
+  ApiPublicHooksNotificationsDispatchRoute:
+    ApiPublicHooksNotificationsDispatchRoute,
   ApiPublicMetaDataDeletionRoute: ApiPublicMetaDataDeletionRoute,
   ApiPublicMetaDeauthorizeRoute: ApiPublicMetaDeauthorizeRoute,
   ApiPublicPerfilBookRoute: ApiPublicPerfilBookRoute,

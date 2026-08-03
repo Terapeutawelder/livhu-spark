@@ -760,6 +760,188 @@ export type Database = {
           },
         ]
       }
+      notification_jobs: {
+        Row: {
+          appointment_id: string | null
+          attempts: number
+          channel: Database["public"]["Enums"]["notification_channel"]
+          contact_id: string | null
+          created_at: string
+          dedupe_key: string | null
+          event: Database["public"]["Enums"]["notification_event"]
+          id: string
+          last_error: string | null
+          payload: Json
+          send_at: string
+          sent_at: string | null
+          status: Database["public"]["Enums"]["notification_job_status"]
+          tenant_id: string
+          to_email: string | null
+          to_phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          appointment_id?: string | null
+          attempts?: number
+          channel: Database["public"]["Enums"]["notification_channel"]
+          contact_id?: string | null
+          created_at?: string
+          dedupe_key?: string | null
+          event: Database["public"]["Enums"]["notification_event"]
+          id?: string
+          last_error?: string | null
+          payload?: Json
+          send_at?: string
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["notification_job_status"]
+          tenant_id: string
+          to_email?: string | null
+          to_phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          appointment_id?: string | null
+          attempts?: number
+          channel?: Database["public"]["Enums"]["notification_channel"]
+          contact_id?: string | null
+          created_at?: string
+          dedupe_key?: string | null
+          event?: Database["public"]["Enums"]["notification_event"]
+          id?: string
+          last_error?: string | null
+          payload?: Json
+          send_at?: string
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["notification_job_status"]
+          tenant_id?: string
+          to_email?: string | null
+          to_phone?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_jobs_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_jobs_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notification_jobs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_settings: {
+        Row: {
+          created_at: string
+          email_enabled: boolean
+          events: Json
+          quiet_end: number
+          quiet_start: number
+          reminder_offsets: number[]
+          reply_to: string | null
+          sender_name: string | null
+          tenant_id: string
+          updated_at: string
+          whatsapp_enabled: boolean
+        }
+        Insert: {
+          created_at?: string
+          email_enabled?: boolean
+          events?: Json
+          quiet_end?: number
+          quiet_start?: number
+          reminder_offsets?: number[]
+          reply_to?: string | null
+          sender_name?: string | null
+          tenant_id: string
+          updated_at?: string
+          whatsapp_enabled?: boolean
+        }
+        Update: {
+          created_at?: string
+          email_enabled?: boolean
+          events?: Json
+          quiet_end?: number
+          quiet_start?: number
+          reminder_offsets?: number[]
+          reply_to?: string | null
+          sender_name?: string | null
+          tenant_id?: string
+          updated_at?: string
+          whatsapp_enabled?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_settings_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_templates: {
+        Row: {
+          body: string
+          channel: Database["public"]["Enums"]["notification_channel"]
+          created_at: string
+          event: Database["public"]["Enums"]["notification_event"]
+          id: string
+          is_active: boolean
+          subject: string | null
+          tenant_id: string
+          updated_at: string
+          wa_template_language: string
+          wa_template_name: string | null
+        }
+        Insert: {
+          body: string
+          channel: Database["public"]["Enums"]["notification_channel"]
+          created_at?: string
+          event: Database["public"]["Enums"]["notification_event"]
+          id?: string
+          is_active?: boolean
+          subject?: string | null
+          tenant_id: string
+          updated_at?: string
+          wa_template_language?: string
+          wa_template_name?: string | null
+        }
+        Update: {
+          body?: string
+          channel?: Database["public"]["Enums"]["notification_channel"]
+          created_at?: string
+          event?: Database["public"]["Enums"]["notification_event"]
+          id?: string
+          is_active?: boolean
+          subject?: string | null
+          tenant_id?: string
+          updated_at?: string
+          wa_template_language?: string
+          wa_template_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_templates_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_settings: {
         Row: {
           allow_signups: boolean
@@ -1814,6 +1996,17 @@ export type Database = {
         Returns: string
       }
       current_tenant_id: { Args: never; Returns: string }
+      enqueue_notification: {
+        Args: {
+          _appointment_id: string
+          _contact_id: string
+          _event: Database["public"]["Enums"]["notification_event"]
+          _payload?: Json
+          _send_at: string
+          _tenant_id: string
+        }
+        Returns: undefined
+      }
       get_tenant_branding_by_slug: {
         Args: { _slug: string }
         Returns: {
@@ -1867,6 +2060,24 @@ export type Database = {
       channel_conn_status: "disconnected" | "pending" | "active" | "error"
       channel_kind: "instagram" | "messenger" | "tiktok" | "site" | "email"
       invoice_status: "paid" | "open" | "overdue" | "void" | "refunded"
+      notification_channel: "whatsapp" | "email"
+      notification_event:
+        | "contact_created"
+        | "appointment_created"
+        | "appointment_rescheduled"
+        | "appointment_canceled"
+        | "reminder_24h"
+        | "reminder_1h"
+        | "reminder_15m"
+        | "payment_received"
+        | "payment_pending"
+      notification_job_status:
+        | "pending"
+        | "sending"
+        | "sent"
+        | "failed"
+        | "canceled"
+        | "skipped"
       service_modality: "online" | "presencial" | "ambos"
       stage_trigger:
         | "manual"
@@ -2061,6 +2272,26 @@ export const Constants = {
       channel_conn_status: ["disconnected", "pending", "active", "error"],
       channel_kind: ["instagram", "messenger", "tiktok", "site", "email"],
       invoice_status: ["paid", "open", "overdue", "void", "refunded"],
+      notification_channel: ["whatsapp", "email"],
+      notification_event: [
+        "contact_created",
+        "appointment_created",
+        "appointment_rescheduled",
+        "appointment_canceled",
+        "reminder_24h",
+        "reminder_1h",
+        "reminder_15m",
+        "payment_received",
+        "payment_pending",
+      ],
+      notification_job_status: [
+        "pending",
+        "sending",
+        "sent",
+        "failed",
+        "canceled",
+        "skipped",
+      ],
       service_modality: ["online", "presencial", "ambos"],
       stage_trigger: [
         "manual",
