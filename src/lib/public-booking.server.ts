@@ -1,4 +1,5 @@
 import type { Database } from "@/integrations/supabase/types";
+import { findPlan, planTotalCents } from "@/lib/therapy-plans";
 
 export type AvailabilityWindow = { day: number; start: string; end: string };
 type Availability = {
