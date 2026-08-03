@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { WhatsappCloudPanel } from "@/components/whatsapp-cloud-panel";
 import { OmnichannelChannelsPanel } from "@/components/omnichannel-channels-panel";
+import { AlibabaOnboardingPanel } from "@/components/alibaba-onboarding-panel";
 import { useEffect, useState } from "react";
 import {
-  User, Bell, MessageCircle, Palette, Shield, KeyRound, Link2, Building2, Check, Copy, Globe, Loader2, ExternalLink, Radio,
+  User, Bell, MessageCircle, Cloud, Palette, Shield, KeyRound, Link2, Building2, Check, Copy, Globe, Loader2, ExternalLink, Radio,
 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -45,7 +46,8 @@ const tabs = [
   { id: "consultorio", label: "Consultório", icon: Building2 },
   { id: "dominio", label: "Meu domínio", icon: Globe },
   { id: "canais", label: "Canais Omnichannel", icon: Radio },
-  { id: "whatsapp", label: "WhatsApp", icon: MessageCircle },
+  { id: "whatsapp", label: "WhatsApp (Meta)", icon: MessageCircle },
+  { id: "alibaba", label: "WhatsApp fácil (Alibaba)", icon: Cloud },
   { id: "notificacoes", label: "Notificações", icon: Bell },
   { id: "marca", label: "Marca", icon: Palette },
   { id: "integracoes", label: "Integrações", icon: Link2 },
@@ -94,6 +96,7 @@ function ConfiguracoesPage() {
           {tab === "dominio" && <DominioPanel />}
           {tab === "canais" && <OmnichannelChannelsPanel onOpenWhatsapp={() => setTab("whatsapp")} />}
           {tab === "whatsapp" && <WhatsappPanel />}
+          {tab === "alibaba" && <AlibabaOnboardingPanel />}
           {tab === "notificacoes" && <NotificacoesPanel />}
           {tab === "marca" && <MarcaPanel />}
           {tab === "integracoes" && <IntegracoesPanel />}
