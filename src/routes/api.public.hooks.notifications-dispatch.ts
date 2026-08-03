@@ -9,8 +9,10 @@ export const Route = createFileRoute("/api/public/hooks/notifications-dispatch")
     handlers: {
       POST: async ({ request }) => {
         const apikey = request.headers.get("apikey") ?? "";
-        const expected = process.env.SUPABASE_ANON_KEY ?? process.env.SUPABASE_PUBLISHABLE_KEY ?? "";
-        if (!expected || apikey !== expected) {
+        const accepted = [process.env.SUPABASE_ANON_KEY, process.env.SUPABASE_PUBLISHABLE_KEY].filter(
+          (v): v is string => Boolean(v),
+        );
+        if (!accepted.length || !accepted.includes(apikey)) {
           return Response.json({ error: "unauthorized" }, { status: 401 });
         }
         const { processDueNotifications } = await import("@/lib/notifications.server");
