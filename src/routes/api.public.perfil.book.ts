@@ -30,6 +30,7 @@ export const Route = createFileRoute("/api/public/perfil/book")({
         const result = await createPublicBooking({
           slug: parsed.data.slug,
           serviceId: parsed.data.serviceId ?? null,
+          planId: parsed.data.planId ?? null,
           startsAt: parsed.data.startsAt,
           name: parsed.data.name,
           phone: parsed.data.phone,
