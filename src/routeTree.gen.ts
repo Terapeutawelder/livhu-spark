@@ -47,6 +47,7 @@ import { Route as AuthenticatedAdminSuporteRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminTenantsRouteImport } from './routes/_authenticated.admin.tenants'
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated.admin.usuarios'
 import { Route as AuthenticatedAdminWhiteLabelRouteImport } from './routes/_authenticated.admin.white-label'
+import { Route as ApiPublicHooksNotificationsDispatchRouteImport } from './routes/api.public.hooks.notifications-dispatch'
 import { Route as ApiPublicMetaDataDeletionRouteImport } from './routes/api.public.meta.data-deletion'
 import { Route as ApiPublicMetaDeauthorizeRouteImport } from './routes/api.public.meta.deauthorize'
 import { Route as ApiPublicPerfilBookRouteImport } from './routes/api.public.perfil.book'
@@ -259,6 +260,12 @@ const AuthenticatedAdminWhiteLabelRoute =
     path: '/white-label',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const ApiPublicHooksNotificationsDispatchRoute =
+  ApiPublicHooksNotificationsDispatchRouteImport.update({
+    id: '/api/public/hooks/notifications-dispatch',
+    path: '/api/public/hooks/notifications-dispatch',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicMetaDataDeletionRoute =
   ApiPublicMetaDataDeletionRouteImport.update({
     id: '/api/public/meta/data-deletion',
@@ -331,6 +338,7 @@ export interface FileRoutesByFullPath {
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/admin/white-label': typeof AuthenticatedAdminWhiteLabelRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/hooks/notifications-dispatch': typeof ApiPublicHooksNotificationsDispatchRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
   '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
@@ -375,6 +383,7 @@ export interface FileRoutesByTo {
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/admin/white-label': typeof AuthenticatedAdminWhiteLabelRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/api/public/hooks/notifications-dispatch': typeof ApiPublicHooksNotificationsDispatchRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
   '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
@@ -422,6 +431,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/_authenticated/admin/white-label': typeof AuthenticatedAdminWhiteLabelRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/hooks/notifications-dispatch': typeof ApiPublicHooksNotificationsDispatchRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
   '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
@@ -469,6 +479,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/admin/white-label'
     | '/admin/'
+    | '/api/public/hooks/notifications-dispatch'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
     | '/api/public/perfil/book'
@@ -513,6 +524,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/admin/white-label'
     | '/admin'
+    | '/api/public/hooks/notifications-dispatch'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
     | '/api/public/perfil/book'
@@ -559,6 +571,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/usuarios'
     | '/_authenticated/admin/white-label'
     | '/_authenticated/admin/'
+    | '/api/public/hooks/notifications-dispatch'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
     | '/api/public/perfil/book'
@@ -576,6 +589,7 @@ export interface RootRouteChildren {
   TermosRoute: typeof TermosRoute
   AdminLoginRoute: typeof AdminLoginRoute
   PSlugRoute: typeof PSlugRoute
+  ApiPublicHooksNotificationsDispatchRoute: typeof ApiPublicHooksNotificationsDispatchRoute
   ApiPublicMetaDataDeletionRoute: typeof ApiPublicMetaDataDeletionRoute
   ApiPublicMetaDeauthorizeRoute: typeof ApiPublicMetaDeauthorizeRoute
   ApiPublicPerfilBookRoute: typeof ApiPublicPerfilBookRoute
@@ -852,6 +866,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminWhiteLabelRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/api/public/hooks/notifications-dispatch': {
+      id: '/api/public/hooks/notifications-dispatch'
+      path: '/api/public/hooks/notifications-dispatch'
+      fullPath: '/api/public/hooks/notifications-dispatch'
+      preLoaderRoute: typeof ApiPublicHooksNotificationsDispatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/meta/data-deletion': {
       id: '/api/public/meta/data-deletion'
       path: '/api/public/meta/data-deletion'
@@ -985,6 +1006,8 @@ const rootRouteChildren: RootRouteChildren = {
   TermosRoute: TermosRoute,
   AdminLoginRoute: AdminLoginRoute,
   PSlugRoute: PSlugRoute,
+  ApiPublicHooksNotificationsDispatchRoute:
+    ApiPublicHooksNotificationsDispatchRoute,
   ApiPublicMetaDataDeletionRoute: ApiPublicMetaDataDeletionRoute,
   ApiPublicMetaDeauthorizeRoute: ApiPublicMetaDeauthorizeRoute,
   ApiPublicPerfilBookRoute: ApiPublicPerfilBookRoute,
