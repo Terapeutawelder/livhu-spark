@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppSidebar, SidebarProvider, useSidebar, MobileMenuButton } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TrialBanner } from "@/components/trial-banner";
-import { Bell, Search } from "lucide-react";
+import { NotificationBell } from "@/components/notification-bell";
+import { Search } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
