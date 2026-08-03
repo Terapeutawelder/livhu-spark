@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import type { ProfileContent, ProfileTheme } from "@/lib/public-profile.types";
+import { THERAPY_PLANS, findPlan, planTotalCents } from "@/lib/therapy-plans";
 
 export type PublicService = {
   id: string;
