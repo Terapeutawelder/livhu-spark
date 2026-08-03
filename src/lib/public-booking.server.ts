@@ -192,7 +192,10 @@ export type BookingInput = {
 
 export async function createPublicBooking(
   input: BookingInput,
-): Promise<{ ok: true; checkoutUrl: string | null; startsAt: string } | { ok: false; error: string }> {
+): Promise<
+  | { ok: true; checkoutUrl: string | null; startsAt: string; totalCents: number; planId: string }
+  | { ok: false; error: string }
+> {
   const tenant = await loadPublicTenant(input.slug);
   if (!tenant) return { ok: false, error: "Página não encontrada." };
 
