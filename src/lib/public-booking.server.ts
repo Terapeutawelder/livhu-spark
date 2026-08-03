@@ -262,6 +262,13 @@ export async function createPublicBooking(
     contactId = created.id;
   }
 
+  const plan = findPlan(input.planId);
+  const totalCents = planTotalCents(priceCents, plan);
+  const planLine =
+    priceCents > 0
+      ? `Plano: ${plan.name} (${plan.sessions}x) · Total ${(totalCents / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`
+      : `Plano: ${plan.name} (${plan.sessions}x)`;
+
   const { error: apptErr } = await supabaseAdmin.from("appointments").insert({
     tenant_id: tenant.tenantId,
     contact_id: contactId,
@@ -272,13 +279,17 @@ export async function createPublicBooking(
     modality,
     status: "scheduled",
     kind: "appointment",
-    notes: input.notes || null,
+    notes: [planLine, input.notes].filter(Boolean).join(" · ") || null,
   });
   if (apptErr) return { ok: false, error: apptErr.message };
 
   const links = (tenant.content.checkoutLinks ?? {}) as Record<string, string>;
-  const rawLink = (input.serviceId && links[input.serviceId]) || links.default || "";
-  const checkoutUrl = priceCents > 0 && rawLink ? rawLink : null;
+  const rawLink =
+    links[`${input.serviceId ?? "service"}:${plan.id}`] ||
+    (input.serviceId ? links[input.serviceId] : "") ||
+    links.default ||
+    "";
+  const checkoutUrl = totalCents > 0 && rawLink ? rawLink : null;
 
-  return { ok: true, checkoutUrl, startsAt: start.toISOString() };
+  return { ok: true, checkoutUrl, startsAt: start.toISOString(), totalCents, planId: plan.id };
 }
