@@ -48,7 +48,7 @@ export const saveAlibabaChannel = createServerFn({ method: "POST" })
     const tenantId = await getTenantId(context);
     const { encryptToken } = await import("./token-crypto.server");
 
-    const payload: Record<string, unknown> = {
+    const payload: any = {
       tenant_id: tenantId,
       provider: "alibaba",
       display_name: data.display_name,
@@ -106,7 +106,7 @@ export const testAlibabaChannel = createServerFn({ method: "POST" })
 
     try {
       const result = await listPhoneNumbers({
-        accessKeyId: ch.alibaba_access_key_id,
+        accessKeyId: ch.alibaba_access_key_id as string,
         accessKeySecret: secret,
         region: ch.alibaba_region || "ap-southeast-1",
         custSpaceId: ch.alibaba_cust_space_id,
@@ -164,7 +164,7 @@ export const sendAlibabaTestMessage = createServerFn({ method: "POST" })
     try {
       await camsSendText(
         {
-          accessKeyId: ch.alibaba_access_key_id,
+          accessKeyId: ch.alibaba_access_key_id as string,
           accessKeySecret: secret,
           region: ch.alibaba_region || "ap-southeast-1",
           custSpaceId: ch.alibaba_cust_space_id,
