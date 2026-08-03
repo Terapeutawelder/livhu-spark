@@ -182,6 +182,7 @@ export async function computeSlots(
 export type BookingInput = {
   slug: string;
   serviceId: string | null;
+  planId?: string | null;
   startsAt: string;
   name: string;
   phone: string;
