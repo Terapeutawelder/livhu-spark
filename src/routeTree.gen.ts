@@ -22,6 +22,7 @@ import { Route as AuthenticatedAgentesRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedCalendarioRouteImport } from './routes/_authenticated.calendario'
 import { Route as AuthenticatedConfiguracoesRouteImport } from './routes/_authenticated.configuracoes'
 import { Route as AuthenticatedContatosRouteImport } from './routes/_authenticated.contatos'
+import { Route as AuthenticatedCreditosRouteImport } from './routes/_authenticated.creditos'
 import { Route as AuthenticatedCursosRouteImport } from './routes/_authenticated.cursos'
 import { Route as AuthenticatedDisparosRouteImport } from './routes/_authenticated.disparos'
 import { Route as AuthenticatedFluxosRouteImport } from './routes/_authenticated.fluxos'
@@ -40,6 +41,7 @@ import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
 import { Route as AuthenticatedAdminCalendarioRouteImport } from './routes/_authenticated.admin.calendario'
 import { Route as AuthenticatedAdminConfiguracaoRouteImport } from './routes/_authenticated.admin.configuracao'
+import { Route as AuthenticatedAdminCreditosRouteImport } from './routes/_authenticated.admin.creditos'
 import { Route as AuthenticatedAdminDominiosRouteImport } from './routes/_authenticated.admin.dominios'
 import { Route as AuthenticatedAdminFaturamentoRouteImport } from './routes/_authenticated.admin.faturamento'
 import { Route as AuthenticatedAdminPlanosRouteImport } from './routes/_authenticated.admin.planos'
@@ -122,6 +124,11 @@ const AuthenticatedConfiguracoesRoute =
 const AuthenticatedContatosRoute = AuthenticatedContatosRouteImport.update({
   id: '/contatos',
   path: '/contatos',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCreditosRoute = AuthenticatedCreditosRouteImport.update({
+  id: '/creditos',
+  path: '/creditos',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedCursosRoute = AuthenticatedCursosRouteImport.update({
@@ -217,6 +224,12 @@ const AuthenticatedAdminConfiguracaoRoute =
   AuthenticatedAdminConfiguracaoRouteImport.update({
     id: '/configuracao',
     path: '/configuracao',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminCreditosRoute =
+  AuthenticatedAdminCreditosRouteImport.update({
+    id: '/creditos',
+    path: '/creditos',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
 const AuthenticatedAdminDominiosRoute =
@@ -320,6 +333,7 @@ export interface FileRoutesByFullPath {
   '/calendario': typeof AuthenticatedCalendarioRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/contatos': typeof AuthenticatedContatosRoute
+  '/creditos': typeof AuthenticatedCreditosRoute
   '/cursos': typeof AuthenticatedCursosRoute
   '/disparos': typeof AuthenticatedDisparosRoute
   '/fluxos': typeof AuthenticatedFluxosRoute
@@ -337,6 +351,7 @@ export interface FileRoutesByFullPath {
   '/p/$slug': typeof PSlugRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
+  '/admin/creditos': typeof AuthenticatedAdminCreditosRoute
   '/admin/dominios': typeof AuthenticatedAdminDominiosRoute
   '/admin/faturamento': typeof AuthenticatedAdminFaturamentoRoute
   '/admin/planos': typeof AuthenticatedAdminPlanosRoute
@@ -365,6 +380,7 @@ export interface FileRoutesByTo {
   '/calendario': typeof AuthenticatedCalendarioRoute
   '/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/contatos': typeof AuthenticatedContatosRoute
+  '/creditos': typeof AuthenticatedCreditosRoute
   '/cursos': typeof AuthenticatedCursosRoute
   '/disparos': typeof AuthenticatedDisparosRoute
   '/fluxos': typeof AuthenticatedFluxosRoute
@@ -383,6 +399,7 @@ export interface FileRoutesByTo {
   '/': typeof AuthenticatedIndexRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
+  '/admin/creditos': typeof AuthenticatedAdminCreditosRoute
   '/admin/dominios': typeof AuthenticatedAdminDominiosRoute
   '/admin/faturamento': typeof AuthenticatedAdminFaturamentoRoute
   '/admin/planos': typeof AuthenticatedAdminPlanosRoute
@@ -414,6 +431,7 @@ export interface FileRoutesById {
   '/_authenticated/calendario': typeof AuthenticatedCalendarioRoute
   '/_authenticated/configuracoes': typeof AuthenticatedConfiguracoesRoute
   '/_authenticated/contatos': typeof AuthenticatedContatosRoute
+  '/_authenticated/creditos': typeof AuthenticatedCreditosRoute
   '/_authenticated/cursos': typeof AuthenticatedCursosRoute
   '/_authenticated/disparos': typeof AuthenticatedDisparosRoute
   '/_authenticated/fluxos': typeof AuthenticatedFluxosRoute
@@ -432,6 +450,7 @@ export interface FileRoutesById {
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/_authenticated/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
+  '/_authenticated/admin/creditos': typeof AuthenticatedAdminCreditosRoute
   '/_authenticated/admin/dominios': typeof AuthenticatedAdminDominiosRoute
   '/_authenticated/admin/faturamento': typeof AuthenticatedAdminFaturamentoRoute
   '/_authenticated/admin/planos': typeof AuthenticatedAdminPlanosRoute
@@ -464,6 +483,7 @@ export interface FileRouteTypes {
     | '/calendario'
     | '/configuracoes'
     | '/contatos'
+    | '/creditos'
     | '/cursos'
     | '/disparos'
     | '/fluxos'
@@ -481,6 +501,7 @@ export interface FileRouteTypes {
     | '/p/$slug'
     | '/admin/calendario'
     | '/admin/configuracao'
+    | '/admin/creditos'
     | '/admin/dominios'
     | '/admin/faturamento'
     | '/admin/planos'
@@ -509,6 +530,7 @@ export interface FileRouteTypes {
     | '/calendario'
     | '/configuracoes'
     | '/contatos'
+    | '/creditos'
     | '/cursos'
     | '/disparos'
     | '/fluxos'
@@ -527,6 +549,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/calendario'
     | '/admin/configuracao'
+    | '/admin/creditos'
     | '/admin/dominios'
     | '/admin/faturamento'
     | '/admin/planos'
@@ -557,6 +580,7 @@ export interface FileRouteTypes {
     | '/_authenticated/calendario'
     | '/_authenticated/configuracoes'
     | '/_authenticated/contatos'
+    | '/_authenticated/creditos'
     | '/_authenticated/cursos'
     | '/_authenticated/disparos'
     | '/_authenticated/fluxos'
@@ -575,6 +599,7 @@ export interface FileRouteTypes {
     | '/_authenticated/'
     | '/_authenticated/admin/calendario'
     | '/_authenticated/admin/configuracao'
+    | '/_authenticated/admin/creditos'
     | '/_authenticated/admin/dominios'
     | '/_authenticated/admin/faturamento'
     | '/_authenticated/admin/planos'
@@ -704,6 +729,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedContatosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/creditos': {
+      id: '/_authenticated/creditos'
+      path: '/creditos'
+      fullPath: '/creditos'
+      preLoaderRoute: typeof AuthenticatedCreditosRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/cursos': {
       id: '/_authenticated/cursos'
       path: '/cursos'
@@ -830,6 +862,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminConfiguracaoRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/creditos': {
+      id: '/_authenticated/admin/creditos'
+      path: '/creditos'
+      fullPath: '/admin/creditos'
+      preLoaderRoute: typeof AuthenticatedAdminCreditosRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/dominios': {
       id: '/_authenticated/admin/dominios'
       path: '/dominios'
@@ -941,6 +980,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminCalendarioRoute: typeof AuthenticatedAdminCalendarioRoute
   AuthenticatedAdminConfiguracaoRoute: typeof AuthenticatedAdminConfiguracaoRoute
+  AuthenticatedAdminCreditosRoute: typeof AuthenticatedAdminCreditosRoute
   AuthenticatedAdminDominiosRoute: typeof AuthenticatedAdminDominiosRoute
   AuthenticatedAdminFaturamentoRoute: typeof AuthenticatedAdminFaturamentoRoute
   AuthenticatedAdminPlanosRoute: typeof AuthenticatedAdminPlanosRoute
@@ -955,6 +995,7 @@ interface AuthenticatedAdminRouteChildren {
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminCalendarioRoute: AuthenticatedAdminCalendarioRoute,
   AuthenticatedAdminConfiguracaoRoute: AuthenticatedAdminConfiguracaoRoute,
+  AuthenticatedAdminCreditosRoute: AuthenticatedAdminCreditosRoute,
   AuthenticatedAdminDominiosRoute: AuthenticatedAdminDominiosRoute,
   AuthenticatedAdminFaturamentoRoute: AuthenticatedAdminFaturamentoRoute,
   AuthenticatedAdminPlanosRoute: AuthenticatedAdminPlanosRoute,
@@ -976,6 +1017,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCalendarioRoute: typeof AuthenticatedCalendarioRoute
   AuthenticatedConfiguracoesRoute: typeof AuthenticatedConfiguracoesRoute
   AuthenticatedContatosRoute: typeof AuthenticatedContatosRoute
+  AuthenticatedCreditosRoute: typeof AuthenticatedCreditosRoute
   AuthenticatedCursosRoute: typeof AuthenticatedCursosRoute
   AuthenticatedDisparosRoute: typeof AuthenticatedDisparosRoute
   AuthenticatedFluxosRoute: typeof AuthenticatedFluxosRoute
@@ -999,6 +1041,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCalendarioRoute: AuthenticatedCalendarioRoute,
   AuthenticatedConfiguracoesRoute: AuthenticatedConfiguracoesRoute,
   AuthenticatedContatosRoute: AuthenticatedContatosRoute,
+  AuthenticatedCreditosRoute: AuthenticatedCreditosRoute,
   AuthenticatedCursosRoute: AuthenticatedCursosRoute,
   AuthenticatedDisparosRoute: AuthenticatedDisparosRoute,
   AuthenticatedFluxosRoute: AuthenticatedFluxosRoute,
@@ -1040,13 +1083,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -20,6 +20,7 @@ import {
   GraduationCap,
   Globe,
   CreditCard,
+  Coins,
   Settings,
   LogOut,
   PanelLeftClose,
@@ -52,6 +53,7 @@ const items: NavItem[] = [
   { to: "/perfil-publico", label: "Perfil Público", icon: Globe },
   { to: "/cursos", label: "Cursos", icon: GraduationCap },
   { to: "/pagamentos", label: "Pagamentos", icon: CreditCard },
+  { to: "/creditos", label: "Créditos", icon: Coins },
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ];
 

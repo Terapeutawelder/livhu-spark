@@ -760,6 +760,178 @@ export type Database = {
           },
         ]
       }
+      message_credit_ledger: {
+        Row: {
+          balance_after: number
+          created_at: string
+          created_by: string | null
+          delta: number
+          id: string
+          reason: string
+          reference_id: string | null
+          tenant_id: string
+        }
+        Insert: {
+          balance_after: number
+          created_at?: string
+          created_by?: string | null
+          delta: number
+          id?: string
+          reason: string
+          reference_id?: string | null
+          tenant_id: string
+        }
+        Update: {
+          balance_after?: number
+          created_at?: string
+          created_by?: string | null
+          delta?: number
+          id?: string
+          reason?: string
+          reference_id?: string | null
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_credit_ledger_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      message_credit_orders: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          credits: number
+          handled_at: string | null
+          handled_by: string | null
+          id: string
+          note: string | null
+          package_id: string | null
+          requested_by: string | null
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          credits: number
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          note?: string | null
+          package_id?: string | null
+          requested_by?: string | null
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          credits?: number
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          note?: string | null
+          package_id?: string | null
+          requested_by?: string | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_credit_orders_package_id_fkey"
+            columns: ["package_id"]
+            isOneToOne: false
+            referencedRelation: "message_credit_packages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_credit_orders_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      message_credit_packages: {
+        Row: {
+          created_at: string
+          credits: number
+          currency: string
+          id: string
+          is_active: boolean
+          name: string
+          price_cents: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          credits: number
+          currency?: string
+          id?: string
+          is_active?: boolean
+          name: string
+          price_cents: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          credits?: number
+          currency?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          price_cents?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      message_credit_wallets: {
+        Row: {
+          balance: number
+          billing_mode: string
+          created_at: string
+          low_balance_threshold: number
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          balance?: number
+          billing_mode?: string
+          created_at?: string
+          low_balance_threshold?: number
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          balance?: number
+          billing_mode?: string
+          created_at?: string
+          low_balance_threshold?: number
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_credit_wallets_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notification_jobs: {
         Row: {
           appointment_id: string | null
@@ -1995,6 +2167,10 @@ export type Database = {
         }
         Returns: string
       }
+      consume_message_credit: {
+        Args: { _reference?: string; _tenant_id: string }
+        Returns: boolean
+      }
       current_tenant_id: { Args: never; Returns: string }
       enqueue_notification: {
         Args: {
@@ -2031,6 +2207,10 @@ export type Database = {
           tenant_id: string
           trial_ends_at: string
         }[]
+      }
+      grant_message_credits: {
+        Args: { _amount: number; _reason?: string; _tenant_id: string }
+        Returns: number
       }
       has_role: {
         Args: {
