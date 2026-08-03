@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Pencil, Trash2, Video, MapPin, Clock, Stethoscope } from "lucide-react";
+import { Plus, Pencil, Trash2, Video, MapPin, Clock, HeartHandshake } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -211,7 +211,7 @@ function ServicosPage() {
 
         <Card className="flex flex-wrap items-center gap-6 border-gold/20 bg-gold/5 p-4">
           <div className="flex items-center gap-2">
-            <Stethoscope className="h-4 w-4 text-gold" />
+            <HeartHandshake className="h-4 w-4 text-gold" />
             <span className="text-sm">
               <strong>{services.length}</strong> serviços · <strong>{activeCount}</strong> ativos
             </span>

@@ -4,6 +4,7 @@ import { z } from "zod";
 const bodySchema = z.object({
   slug: z.string().min(1).max(64),
   serviceId: z.string().uuid().nullable().optional(),
+  planId: z.string().max(32).nullable().optional(),
   startsAt: z.string().min(10),
   name: z.string().min(2).max(120),
   phone: z.string().min(8).max(30),
@@ -29,6 +30,7 @@ export const Route = createFileRoute("/api/public/perfil/book")({
         const result = await createPublicBooking({
           slug: parsed.data.slug,
           serviceId: parsed.data.serviceId ?? null,
+          planId: parsed.data.planId ?? null,
           startsAt: parsed.data.startsAt,
           name: parsed.data.name,
           phone: parsed.data.phone,

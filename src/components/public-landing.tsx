@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import type { ProfileContent, ProfileTheme } from "@/lib/public-profile.types";
+import { THERAPY_PLANS, findPlan, planTotalCents } from "@/lib/therapy-plans";
 
 export type PublicService = {
   id: string;
@@ -336,19 +337,7 @@ function toDateKey(d: Date) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-type TherapyPlan = {
-  id: string;
-  name: string;
-  sessions: number;
-  discount: number;
-  note: string;
-};
-
-const THERAPY_PLANS: TherapyPlan[] = [
-  { id: "single", name: "Sessão avulsa", sessions: 1, discount: 0, note: "Sem compromisso — ideal para começar" },
-  { id: "monthly", name: "Plano mensal", sessions: 4, discount: 0.05, note: "4 sessões · 5% de desconto" },
-  { id: "quarterly", name: "Plano trimestral", sessions: 12, discount: 0.12, note: "12 sessões · 12% de desconto" },
-];
+/* planos compartilhados com o servidor: src/lib/therapy-plans.ts */
 
 
 function BookingWidget({
@@ -381,8 +370,8 @@ function BookingWidget({
 
   const service = services.find((x) => x.id === serviceId) ?? null;
   const duration = service?.duration_minutes ?? 50;
-  const plan = THERAPY_PLANS.find((p) => p.id === planId) ?? THERAPY_PLANS[0];
-  const total = service ? Math.round(service.price_cents * plan.sessions * (1 - plan.discount)) : 0;
+  const plan = findPlan(planId);
+  const total = service ? planTotalCents(service.price_cents, plan) : 0;
 
 
   const days = useMemo(() => {
@@ -439,7 +428,8 @@ function BookingWidget({
           name: form.name.trim(),
           phone: form.phone,
           email: form.email || undefined,
-          notes: [`Plano escolhido: ${plan.name} (${plan.sessions}x)`, form.notes].filter(Boolean).join(" · "),
+          planId: plan.id,
+          notes: form.notes || undefined,
         }),
       });
       const data = (await res.json()) as { ok: boolean; error?: string; checkoutUrl?: string | null; startsAt?: string };
@@ -523,7 +513,7 @@ function BookingWidget({
         <div className="mt-3 grid gap-2 sm:grid-cols-3">
           {THERAPY_PLANS.map((p) => {
             const active = p.id === planId;
-            const value = service ? Math.round(service.price_cents * p.sessions * (1 - p.discount)) : 0;
+            const value = service ? planTotalCents(service.price_cents, p) : 0;
             return (
               <button
                 key={p.id}
