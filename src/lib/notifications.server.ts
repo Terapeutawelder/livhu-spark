@@ -44,18 +44,25 @@ export function inQuietHours(nowIso: string, tz: string, start: number, end: num
   return start > end ? hour >= start || hour < end : hour >= start && hour < end;
 }
 
-export async function processDueNotifications(limit = BATCH_SIZE) {
+export async function processDueNotifications(opts?: { limit?: number; jobId?: string }) {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-  const { data: jobs } = await supabaseAdmin
+  let query = supabaseAdmin
     .from("notification_jobs")
     .select(
       "id, tenant_id, event, channel, contact_id, appointment_id, to_phone, to_email, payload, attempts",
     )
     .eq("status", "pending")
     .lte("send_at", new Date().toISOString())
-    .order("send_at", { ascending: true })
-    .limit(limit);
+    .order("send_at", { ascending: true });
+
+  if (opts?.jobId) {
+    query = query.eq("id", opts.jobId);
+  } else {
+    query = query.limit(opts?.limit ?? BATCH_SIZE);
+  }
+
+  const { data: jobs } = await query;
 
   const list = (jobs ?? []) as unknown as JobRow[];
   let sent = 0;
