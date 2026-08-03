@@ -1791,6 +1791,10 @@ export type Database = {
       whatsapp_channels: {
         Row: {
           access_token: string | null
+          alibaba_access_key_id: string | null
+          alibaba_access_key_secret: string | null
+          alibaba_cust_space_id: string | null
+          alibaba_region: string | null
           app_secret: string | null
           business_id: string | null
           created_at: string
@@ -1799,8 +1803,10 @@ export type Database = {
           is_coexistence: boolean
           last_error: string | null
           last_synced_at: string | null
+          onboarding_step: number
           phone_number: string | null
           phone_number_id: string | null
+          provider: string
           status: Database["public"]["Enums"]["wa_channel_status"]
           tenant_id: string
           updated_at: string
@@ -1809,6 +1815,10 @@ export type Database = {
         }
         Insert: {
           access_token?: string | null
+          alibaba_access_key_id?: string | null
+          alibaba_access_key_secret?: string | null
+          alibaba_cust_space_id?: string | null
+          alibaba_region?: string | null
           app_secret?: string | null
           business_id?: string | null
           created_at?: string
@@ -1817,8 +1827,10 @@ export type Database = {
           is_coexistence?: boolean
           last_error?: string | null
           last_synced_at?: string | null
+          onboarding_step?: number
           phone_number?: string | null
           phone_number_id?: string | null
+          provider?: string
           status?: Database["public"]["Enums"]["wa_channel_status"]
           tenant_id: string
           updated_at?: string
@@ -1827,6 +1839,10 @@ export type Database = {
         }
         Update: {
           access_token?: string | null
+          alibaba_access_key_id?: string | null
+          alibaba_access_key_secret?: string | null
+          alibaba_cust_space_id?: string | null
+          alibaba_region?: string | null
           app_secret?: string | null
           business_id?: string | null
           created_at?: string
@@ -1835,8 +1851,10 @@ export type Database = {
           is_coexistence?: boolean
           last_error?: string | null
           last_synced_at?: string | null
+          onboarding_step?: number
           phone_number?: string | null
           phone_number_id?: string | null
+          provider?: string
           status?: Database["public"]["Enums"]["wa_channel_status"]
           tenant_id?: string
           updated_at?: string
