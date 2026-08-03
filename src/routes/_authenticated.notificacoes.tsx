@@ -198,7 +198,7 @@ function NotificacoesPage() {
                         type="button"
                         onClick={() =>
                           setOffsets(
-                            on ? reminderOffsets.filter((x) => x !== o.m) : [...reminderOffsets, o.m].sort((a, b) => b - a),
+                            on ? reminderOffsets.filter((x: number) => x !== o.m) : [...reminderOffsets, o.m].sort((a: number, b: number) => b - a),
                           )
                         }
                         className={`rounded-full border px-3 py-1 text-sm transition ${

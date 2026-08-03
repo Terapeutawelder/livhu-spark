@@ -28,6 +28,7 @@ import { Route as AuthenticatedFluxosRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedHorariosRouteImport } from './routes/_authenticated.horarios'
 import { Route as AuthenticatedKanbanRouteImport } from './routes/_authenticated.kanban'
 import { Route as AuthenticatedMensagensRouteImport } from './routes/_authenticated.mensagens'
+import { Route as AuthenticatedNotificacoesRouteImport } from './routes/_authenticated.notificacoes'
 import { Route as AuthenticatedPacientesRouteImport } from './routes/_authenticated.pacientes'
 import { Route as AuthenticatedPagamentosRouteImport } from './routes/_authenticated.pagamentos'
 import { Route as AuthenticatedPerfilPublicoRouteImport } from './routes/_authenticated.perfil-publico'
@@ -153,6 +154,12 @@ const AuthenticatedMensagensRoute = AuthenticatedMensagensRouteImport.update({
   path: '/mensagens',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedNotificacoesRoute =
+  AuthenticatedNotificacoesRouteImport.update({
+    id: '/notificacoes',
+    path: '/notificacoes',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPacientesRoute = AuthenticatedPacientesRouteImport.update({
   id: '/pacientes',
   path: '/pacientes',
@@ -319,6 +326,7 @@ export interface FileRoutesByFullPath {
   '/horarios': typeof AuthenticatedHorariosRoute
   '/kanban': typeof AuthenticatedKanbanRoute
   '/mensagens': typeof AuthenticatedMensagensRoute
+  '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/pacientes': typeof AuthenticatedPacientesRoute
   '/pagamentos': typeof AuthenticatedPagamentosRoute
   '/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
@@ -363,6 +371,7 @@ export interface FileRoutesByTo {
   '/horarios': typeof AuthenticatedHorariosRoute
   '/kanban': typeof AuthenticatedKanbanRoute
   '/mensagens': typeof AuthenticatedMensagensRoute
+  '/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/pacientes': typeof AuthenticatedPacientesRoute
   '/pagamentos': typeof AuthenticatedPagamentosRoute
   '/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
@@ -411,6 +420,7 @@ export interface FileRoutesById {
   '/_authenticated/horarios': typeof AuthenticatedHorariosRoute
   '/_authenticated/kanban': typeof AuthenticatedKanbanRoute
   '/_authenticated/mensagens': typeof AuthenticatedMensagensRoute
+  '/_authenticated/notificacoes': typeof AuthenticatedNotificacoesRoute
   '/_authenticated/pacientes': typeof AuthenticatedPacientesRoute
   '/_authenticated/pagamentos': typeof AuthenticatedPagamentosRoute
   '/_authenticated/perfil-publico': typeof AuthenticatedPerfilPublicoRoute
@@ -460,6 +470,7 @@ export interface FileRouteTypes {
     | '/horarios'
     | '/kanban'
     | '/mensagens'
+    | '/notificacoes'
     | '/pacientes'
     | '/pagamentos'
     | '/perfil-publico'
@@ -504,6 +515,7 @@ export interface FileRouteTypes {
     | '/horarios'
     | '/kanban'
     | '/mensagens'
+    | '/notificacoes'
     | '/pacientes'
     | '/pagamentos'
     | '/perfil-publico'
@@ -551,6 +563,7 @@ export interface FileRouteTypes {
     | '/_authenticated/horarios'
     | '/_authenticated/kanban'
     | '/_authenticated/mensagens'
+    | '/_authenticated/notificacoes'
     | '/_authenticated/pacientes'
     | '/_authenticated/pagamentos'
     | '/_authenticated/perfil-publico'
@@ -731,6 +744,13 @@ declare module '@tanstack/react-router' {
       path: '/mensagens'
       fullPath: '/mensagens'
       preLoaderRoute: typeof AuthenticatedMensagensRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/notificacoes': {
+      id: '/_authenticated/notificacoes'
+      path: '/notificacoes'
+      fullPath: '/notificacoes'
+      preLoaderRoute: typeof AuthenticatedNotificacoesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/pacientes': {
@@ -962,6 +982,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedHorariosRoute: typeof AuthenticatedHorariosRoute
   AuthenticatedKanbanRoute: typeof AuthenticatedKanbanRoute
   AuthenticatedMensagensRoute: typeof AuthenticatedMensagensRoute
+  AuthenticatedNotificacoesRoute: typeof AuthenticatedNotificacoesRoute
   AuthenticatedPacientesRoute: typeof AuthenticatedPacientesRoute
   AuthenticatedPagamentosRoute: typeof AuthenticatedPagamentosRoute
   AuthenticatedPerfilPublicoRoute: typeof AuthenticatedPerfilPublicoRoute
@@ -984,6 +1005,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedHorariosRoute: AuthenticatedHorariosRoute,
   AuthenticatedKanbanRoute: AuthenticatedKanbanRoute,
   AuthenticatedMensagensRoute: AuthenticatedMensagensRoute,
+  AuthenticatedNotificacoesRoute: AuthenticatedNotificacoesRoute,
   AuthenticatedPacientesRoute: AuthenticatedPacientesRoute,
   AuthenticatedPagamentosRoute: AuthenticatedPagamentosRoute,
   AuthenticatedPerfilPublicoRoute: AuthenticatedPerfilPublicoRoute,
