@@ -513,7 +513,7 @@ function BookingWidget({
         <div className="mt-3 grid gap-2 sm:grid-cols-3">
           {THERAPY_PLANS.map((p) => {
             const active = p.id === planId;
-            const value = service ? Math.round(service.price_cents * p.sessions * (1 - p.discount)) : 0;
+            const value = service ? planTotalCents(service.price_cents, p) : 0;
             return (
               <button
                 key={p.id}
