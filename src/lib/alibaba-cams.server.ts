@@ -158,7 +158,7 @@ export async function camsSendTemplate(
 ) {
   const templateParams: Record<string, string> = {};
   variables.forEach((v, i) => { templateParams[String(i + 1)] = v; });
-  return camsSendText === undefined ? null : camsRequest(creds, "SendChatappMessage", {
+  return camsRequest(creds, "SendChatappMessage", {
     CustSpaceId: creds.custSpaceId ?? undefined,
     ChannelType: "whatsapp",
     MessageType: "template",
