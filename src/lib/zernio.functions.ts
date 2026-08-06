@@ -181,3 +181,21 @@ export const sendZernioTestMessage = createServerFn({ method: "POST" })
       return { ok: false as const, error: e instanceof Error ? e.message : "Falha no envio." };
     }
   });
+
+/**
+ * Cria o cadastro do consultório na Zernio (POST /v1/profiles) e guarda o id.
+ * Idempotente: se já existir profile para o tenant, apenas devolve o id.
+ */
+export const provisionZernioProfile = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { getZernioKey } = await import("./zernio.server");
+    if (!getZernioKey()) return { configured: false as const, profileId: null };
+    try {
+      const { profileId } = await ensureProfileId(context);
+      return { configured: true as const, profileId };
+    } catch (e) {
+      console.error("Falha ao provisionar perfil Zernio:", e);
+      return { configured: true as const, profileId: null };
+    }
+  });
