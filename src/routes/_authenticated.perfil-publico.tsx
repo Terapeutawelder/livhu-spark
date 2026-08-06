@@ -90,7 +90,7 @@ function PerfilPublicoPage() {
   const [saving, setSaving] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  const { data: profile } = useQuery({
+  const { data: profile, isFetched: profileFetched } = useQuery({
     enabled: !!tenant?.id,
     queryKey: ["public-profile-editor", tenant?.id],
     queryFn: async () => {
