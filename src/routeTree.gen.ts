@@ -53,6 +53,7 @@ import { Route as AuthenticatedAdminWhiteLabelRouteImport } from './routes/_auth
 import { Route as ApiPublicHooksNotificationsDispatchRouteImport } from './routes/api.public.hooks.notifications-dispatch'
 import { Route as ApiPublicMetaDataDeletionRouteImport } from './routes/api.public.meta.data-deletion'
 import { Route as ApiPublicMetaDeauthorizeRouteImport } from './routes/api.public.meta.deauthorize'
+import { Route as ApiPublicPaymentsStatusRouteImport } from './routes/api.public.payments.status'
 import { Route as ApiPublicPerfilBookRouteImport } from './routes/api.public.perfil.book'
 import { Route as ApiPublicPerfilSlotsRouteImport } from './routes/api.public.perfil.slots'
 import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api.public.whatsapp.webhook'
@@ -299,6 +300,11 @@ const ApiPublicMetaDeauthorizeRoute =
     path: '/api/public/meta/deauthorize',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicPaymentsStatusRoute = ApiPublicPaymentsStatusRouteImport.update({
+  id: '/api/public/payments/status',
+  path: '/api/public/payments/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPerfilBookRoute = ApiPublicPerfilBookRouteImport.update({
   id: '/api/public/perfil/book',
   path: '/api/public/perfil/book',
@@ -371,6 +377,7 @@ export interface FileRoutesByFullPath {
   '/api/public/hooks/notifications-dispatch': typeof ApiPublicHooksNotificationsDispatchRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
+  '/api/public/payments/status': typeof ApiPublicPaymentsStatusRoute
   '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
   '/api/public/perfil/slots': typeof ApiPublicPerfilSlotsRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
@@ -420,6 +427,7 @@ export interface FileRoutesByTo {
   '/api/public/hooks/notifications-dispatch': typeof ApiPublicHooksNotificationsDispatchRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
+  '/api/public/payments/status': typeof ApiPublicPaymentsStatusRoute
   '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
   '/api/public/perfil/slots': typeof ApiPublicPerfilSlotsRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
@@ -472,6 +480,7 @@ export interface FileRoutesById {
   '/api/public/hooks/notifications-dispatch': typeof ApiPublicHooksNotificationsDispatchRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
+  '/api/public/payments/status': typeof ApiPublicPaymentsStatusRoute
   '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
   '/api/public/perfil/slots': typeof ApiPublicPerfilSlotsRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
@@ -524,6 +533,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/notifications-dispatch'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
+    | '/api/public/payments/status'
     | '/api/public/perfil/book'
     | '/api/public/perfil/slots'
     | '/api/public/whatsapp/webhook'
@@ -573,6 +583,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/notifications-dispatch'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
+    | '/api/public/payments/status'
     | '/api/public/perfil/book'
     | '/api/public/perfil/slots'
     | '/api/public/whatsapp/webhook'
@@ -624,6 +635,7 @@ export interface FileRouteTypes {
     | '/api/public/hooks/notifications-dispatch'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
+    | '/api/public/payments/status'
     | '/api/public/perfil/book'
     | '/api/public/perfil/slots'
     | '/api/public/whatsapp/webhook'
@@ -643,6 +655,7 @@ export interface RootRouteChildren {
   ApiPublicHooksNotificationsDispatchRoute: typeof ApiPublicHooksNotificationsDispatchRoute
   ApiPublicMetaDataDeletionRoute: typeof ApiPublicMetaDataDeletionRoute
   ApiPublicMetaDeauthorizeRoute: typeof ApiPublicMetaDeauthorizeRoute
+  ApiPublicPaymentsStatusRoute: typeof ApiPublicPaymentsStatusRoute
   ApiPublicPerfilBookRoute: typeof ApiPublicPerfilBookRoute
   ApiPublicPerfilSlotsRoute: typeof ApiPublicPerfilSlotsRoute
   ApiPublicWhatsappWebhookRoute: typeof ApiPublicWhatsappWebhookRoute
@@ -960,6 +973,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicMetaDeauthorizeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/payments/status': {
+      id: '/api/public/payments/status'
+      path: '/api/public/payments/status'
+      fullPath: '/api/public/payments/status'
+      preLoaderRoute: typeof ApiPublicPaymentsStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/perfil/book': {
       id: '/api/public/perfil/book'
       path: '/api/public/perfil/book'
@@ -1096,6 +1116,7 @@ const rootRouteChildren: RootRouteChildren = {
     ApiPublicHooksNotificationsDispatchRoute,
   ApiPublicMetaDataDeletionRoute: ApiPublicMetaDataDeletionRoute,
   ApiPublicMetaDeauthorizeRoute: ApiPublicMetaDeauthorizeRoute,
+  ApiPublicPaymentsStatusRoute: ApiPublicPaymentsStatusRoute,
   ApiPublicPerfilBookRoute: ApiPublicPerfilBookRoute,
   ApiPublicPerfilSlotsRoute: ApiPublicPerfilSlotsRoute,
   ApiPublicWhatsappWebhookRoute: ApiPublicWhatsappWebhookRoute,
