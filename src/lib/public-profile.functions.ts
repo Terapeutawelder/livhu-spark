@@ -20,3 +20,14 @@ export const generateStudioPhoto = createServerFn({ method: "POST" })
     const url = await uploadProfileImage(tenantId, b64);
     return { url };
   });
+
+/** Gera URLs assinadas temporárias para o profissional pré-visualizar fotos ainda não publicadas. */
+export const signProfileImages = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) => z.object({ paths: z.array(z.string()).max(30) }).parse(data))
+  .handler(async ({ context, data }): Promise<Record<string, string>> => {
+    const { resolveTenantIdFor, signProfileImagePaths } = await import("./public-profile.server");
+    const tenantId = await resolveTenantIdFor(context.supabase, context.userId);
+    if (!tenantId) return {};
+    return signProfileImagePaths(tenantId, data.paths);
+  });
