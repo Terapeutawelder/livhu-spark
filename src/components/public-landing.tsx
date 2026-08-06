@@ -60,7 +60,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
           borderBottom: `1px solid ${dark ? "rgba(255,255,255,.08)" : "rgba(0,0,0,.06)"}`,
         }}
       >
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-3 py-3 sm:px-5 sm:py-4">
           <span className="text-xl font-semibold tracking-tight" style={h}>
             {content.name}
           </span>
@@ -77,15 +77,15 @@ export function PublicLanding({ template, theme, content, services, slug, intera
 
       {/* Hero */}
       {content.sections.hero && (
-        <section className="mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 py-14 md:grid-cols-2 md:py-20">
+        <section className="mx-auto grid max-w-7xl items-center gap-10 px-3 sm:px-5 lg:px-6 py-14 md:grid-cols-2 md:py-20">
           <div className={template === "bosque" ? "md:order-1" : ""}>
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: theme.accent }}>
               {content.eyebrow}
             </p>
-            <h1 className="text-[2.6rem] leading-[1.08] md:text-6xl" style={h}>
+            <h1 className="text-[clamp(1.9rem,7vw,2.6rem)] leading-[1.1] md:text-6xl" style={h}>
               {content.headline}
             </h1>
-            <p className="mt-5 max-w-xl text-lg leading-relaxed md:text-xl" style={{ color: theme.muted }}>
+            <p className="mt-4 max-w-xl text-base leading-relaxed sm:text-lg md:text-xl" style={{ color: theme.muted }}>
               {content.subheadline}
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -134,12 +134,12 @@ export function PublicLanding({ template, theme, content, services, slug, intera
 
       {/* Tópicos */}
       {content.sections.topics && (
-        <section id="servicos" className="py-14 md:py-20" style={{ background: theme.band, color: theme.bandText }}>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <h2 className="text-4xl md:text-5xl" style={h}>
+        <section id="servicos" className="py-10 sm:py-14 md:py-20" style={{ background: theme.band, color: theme.bandText }}>
+          <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6">
+            <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>
               {content.topicsTitle}
             </h2>
-            <p className="mt-4 max-w-2xl text-base md:text-lg" style={{ opacity: 0.75 }}>
+            <p className="mt-3 max-w-2xl text-[15px] sm:text-base md:text-lg" style={{ opacity: 0.75 }}>
               {content.topicsIntro}
             </p>
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -166,7 +166,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
 
       {/* Sobre */}
       {content.sections.about && (
-        <section id="sobre" className="mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 py-14 md:grid-cols-[0.9fr_1.1fr] md:py-20">
+        <section id="sobre" className="mx-auto grid max-w-7xl items-center gap-10 px-3 sm:px-5 lg:px-6 py-14 md:grid-cols-[0.9fr_1.1fr] md:py-20">
           <div
             className="h-[360px] w-full overflow-hidden md:h-[480px]"
             style={{ borderRadius: theme.radius + 6 }}
@@ -183,10 +183,10 @@ export function PublicLanding({ template, theme, content, services, slug, intera
             />
           </div>
           <div>
-            <h2 className="text-4xl md:text-5xl" style={h}>
+            <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>
               {content.aboutTitle}
             </h2>
-            <p className="mt-5 whitespace-pre-line text-base leading-8 md:text-lg" style={{ color: theme.muted }}>
+            <p className="mt-4 whitespace-pre-line text-[15px] leading-7 sm:text-base sm:leading-8 md:text-lg" style={{ color: theme.muted }}>
               {content.aboutText}
             </p>
             <p className="mt-6 text-sm font-semibold">{content.name}</p>
@@ -199,11 +199,11 @@ export function PublicLanding({ template, theme, content, services, slug, intera
 
       {/* Agendamento */}
       {content.sections.booking && (
-        <section id="agendar" className="mx-auto max-w-7xl px-4 sm:px-6 py-14 md:py-20">
-          <h2 className="text-4xl md:text-5xl" style={h}>
+        <section id="agendar" className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 py-10 sm:py-14 md:py-20">
+          <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>
             {content.bookingTitle}
           </h2>
-          <p className="mt-4 max-w-2xl text-base md:text-lg" style={{ color: theme.muted }}>
+          <p className="mt-3 max-w-2xl text-[15px] sm:text-base md:text-lg" style={{ color: theme.muted }}>
             {content.bookingIntro}
           </p>
           <BookingWidget
@@ -221,8 +221,8 @@ export function PublicLanding({ template, theme, content, services, slug, intera
       {/* Depoimentos */}
       {content.sections.testimonials && content.testimonials.length > 0 && (
         <section className="py-14" style={{ background: theme.band, color: theme.bandText }}>
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <h2 className="text-4xl" style={h}>
+          <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6">
+            <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight" style={h}>
               {content.testimonialsTitle}
             </h2>
             <div className="mt-8 grid gap-4 md:grid-cols-2">
@@ -242,13 +242,13 @@ export function PublicLanding({ template, theme, content, services, slug, intera
       )}
 
       {/* CTA final */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 pb-14">
+      <section className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 pb-14">
         <div
           className="flex flex-col items-center gap-4 px-6 py-10 text-center md:flex-row md:justify-between md:text-left"
           style={card}
         >
           <div>
-            <h3 className="text-3xl" style={{ ...h, color: theme.text }}>
+            <h3 className="text-[clamp(1.4rem,5vw,1.875rem)] leading-tight" style={{ ...h, color: theme.text }}>
               Pronto para dar o primeiro passo?
             </h3>
             <p className="mt-2 text-base" style={{ color: theme.muted }}>
@@ -263,7 +263,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
 
       {/* Footer */}
       <footer className="py-12" style={{ background: theme.band, color: theme.bandText }}>
-        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6">
           <div className="grid gap-8 md:grid-cols-3">
             <div>
               <p className="text-lg font-semibold" style={h}>
