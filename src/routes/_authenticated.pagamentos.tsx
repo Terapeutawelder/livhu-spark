@@ -1,19 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import {
-  CreditCard,
-  Plus,
-  Check,
-  Pencil,
-  Trash2,
-  Video,
-  Users,
-  Heart,
-  Link2,
-  ShieldCheck,
-  Copy,
-  ExternalLink,
-} from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { CreditCard, Check, ShieldCheck, Copy, Video, Loader2, Receipt } from "lucide-react";
+import { toast } from "sonner";
+import { getPaymentSettings, savePaymentSettings, listPaymentOrders } from "@/lib/payments.functions";
 
 export const Route = createFileRoute("/_authenticated/pagamentos")({
   head: () => ({
@@ -22,22 +13,15 @@ export const Route = createFileRoute("/_authenticated/pagamentos")({
       {
         name: "description",
         content:
-          "Configure serviços de terapia, preços e checkout com Stripe e Mercado Pago para receber pagamentos pelo WhatsApp.",
+          "Configure o checkout com Stripe ou Mercado Pago, a sala de vídeo das sessões e acompanhe as cobranças dos pacientes.",
       },
       { property: "og:title", content: "Pagamentos — LivHub" },
       {
         property: "og:description",
-        content:
-          "Configure serviços de terapia, preços e checkout com Stripe e Mercado Pago para receber pagamentos pelo WhatsApp.",
+        content: "Checkout com Stripe ou Mercado Pago e confirmação automática da sessão no WhatsApp.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Pagamentos — LivHub" },
-      {
-        name: "twitter:description",
-        content:
-          "Configure serviços de terapia, preços e checkout com Stripe e Mercado Pago para receber pagamentos pelo WhatsApp.",
-      },
     ],
   }),
   component: PagamentosPage,
@@ -45,153 +29,279 @@ export const Route = createFileRoute("/_authenticated/pagamentos")({
 
 type Provider = "stripe" | "mercadopago";
 
-interface Service {
-  id: string;
-  name: string;
-  description: string;
-  duration: number;
-  price: number;
-  modality: "online" | "presencial" | "ambos";
-  icon: typeof Video;
-  active: boolean;
-}
-
-const initialServices: Service[] = [
-  {
-    id: "s1",
-    name: "Sessão Individual",
-    description: "Psicoterapia individual — 50 minutos",
-    duration: 50,
-    price: 250,
-    modality: "ambos",
-    icon: Video,
-    active: true,
-  },
-  {
-    id: "s2",
-    name: "Terapia de Casal",
-    description: "Atendimento para casais — 80 minutos",
-    duration: 80,
-    price: 380,
-    modality: "presencial",
-    icon: Heart,
-    active: true,
-  },
-  {
-    id: "s3",
-    name: "Pacote Mensal (4 sessões)",
-    description: "4 sessões individuais com desconto",
-    duration: 50,
-    price: 900,
-    modality: "online",
-    icon: Users,
-    active: true,
-  },
-];
-
 function PagamentosPage() {
-  const [provider, setProvider] = useState<Provider>("stripe");
-  const [services, setServices] = useState<Service[]>(initialServices);
-  const [showForm, setShowForm] = useState(false);
+  const load = useServerFn(getPaymentSettings);
+  const save = useServerFn(savePaymentSettings);
+  const loadOrders = useServerFn(listPaymentOrders);
 
-  const toggleActive = (id: string) =>
-    setServices((s) => s.map((x) => (x.id === id ? { ...x, active: !x.active } : x)));
-  const remove = (id: string) => setServices((s) => s.filter((x) => x.id !== id));
+  const settingsQuery = useQuery({ queryKey: ["payment-settings"], queryFn: () => load() });
+  const ordersQuery = useQuery({ queryKey: ["payment-orders"], queryFn: () => loadOrders() });
+
+  const [provider, setProvider] = useState<Provider>("stripe");
+  const [isActive, setIsActive] = useState(false);
+  const [currency, setCurrency] = useState("BRL");
+  const [meetingMode, setMeetingMode] = useState<"virtual" | "fixed" | "none">("virtual");
+  const [fixedMeetingUrl, setFixedMeetingUrl] = useState("");
+  const [mpPublicKey, setMpPublicKey] = useState("");
+  const [mpAccessToken, setMpAccessToken] = useState("");
+  const [stripePublishable, setStripePublishable] = useState("");
+  const [stripeSecret, setStripeSecret] = useState("");
+  const [stripeWebhookSecret, setStripeWebhookSecret] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const s = settingsQuery.data;
+  useEffect(() => {
+    if (!s) return;
+    setProvider(s.provider === "mercadopago" ? "mercadopago" : "stripe");
+    setIsActive(s.isActive);
+    setCurrency(s.currency || "BRL");
+    setMeetingMode(s.meetingMode);
+    setFixedMeetingUrl(s.fixedMeetingUrl || "");
+    setMpPublicKey(s.mpPublicKey || "");
+    setStripePublishable(s.stripePublishable || "");
+  }, [s]);
+
+  const isStripe = provider === "stripe";
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const webhookUrl = `${origin}/api/public/hooks/payments/${provider}`;
+
+  const handleSave = async () => {
+    setSaving(true);
+    const res = await save({
+      data: {
+        provider,
+        isActive,
+        currency,
+        meetingMode,
+        fixedMeetingUrl: fixedMeetingUrl || undefined,
+        mpPublicKey: mpPublicKey || undefined,
+        mpAccessToken: mpAccessToken || undefined,
+        stripePublishable: stripePublishable || undefined,
+        stripeSecret: stripeSecret || undefined,
+        stripeWebhookSecret: stripeWebhookSecret || undefined,
+      },
+    });
+    setSaving(false);
+    if (res.ok) {
+      setMpAccessToken("");
+      setStripeSecret("");
+      setStripeWebhookSecret("");
+      settingsQuery.refetch();
+      toast.success("Configurações de pagamento salvas.");
+    } else {
+      toast.error(res.error ?? "Não foi possível salvar.");
+    }
+  };
 
   return (
     <div className="p-4 sm:p-6 lg:p-8">
-      <div className="mx-auto max-w-6xl space-y-6">
-        {/* Header */}
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h1 className="font-display text-2xl font-bold tracking-tight">Pagamentos</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Configure seus serviços e o gateway de checkout usado nos links enviados pelo WhatsApp.
-            </p>
-          </div>
-          <button
-            onClick={() => setShowForm((v) => !v)}
-            className="inline-flex items-center gap-2 rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-sidebar-active-foreground shadow-sm hover:opacity-90"
-          >
-            <Plus className="h-4 w-4" /> Novo serviço
-          </button>
+      <div className="mx-auto max-w-5xl space-y-6">
+        <div>
+          <h1 className="font-display text-2xl font-bold tracking-tight">Pagamentos</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Ao agendar pela sua landing page, o paciente é enviado direto ao checkout. Confirmado o pagamento, a
+            sessão é confirmada e o link da sala vai automaticamente no WhatsApp.{" "}
+            <Link to="/servicos" className="font-semibold text-gold hover:underline">
+              Gerencie seus serviços e preços
+            </Link>
+            .
+          </p>
         </div>
 
-        {/* Providers */}
         <section className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
-          <div className="mb-4 flex items-center gap-2">
-            <CreditCard className="h-4 w-4 text-gold" />
-            <h2 className="font-display text-lg font-semibold">Gateway de pagamento</h2>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <CreditCard className="h-4 w-4 text-gold" />
+              <h2 className="font-display text-lg font-semibold">Gateway de pagamento</h2>
+            </div>
+            <label className="inline-flex items-center gap-2 text-sm font-medium">
+              <input
+                type="checkbox"
+                checked={isActive}
+                onChange={(e) => setIsActive(e.target.checked)}
+                className="h-4 w-4 accent-[var(--gold)]"
+              />
+              Cobrança ativa no agendamento
+            </label>
           </div>
+
           <div className="grid gap-3 sm:grid-cols-2">
             <ProviderCard
-              id="stripe"
               title="Stripe"
-              subtitle="Cartão internacional, Apple/Google Pay, assinaturas"
+              subtitle="Cartão internacional, Apple/Google Pay"
               accent="#635bff"
-              selected={provider === "stripe"}
+              selected={isStripe}
               onSelect={() => setProvider("stripe")}
             />
             <ProviderCard
-              id="mercadopago"
               title="Mercado Pago"
               subtitle="Pix, boleto e cartão nacional (Brasil)"
               accent="#00b1ea"
-              selected={provider === "mercadopago"}
+              selected={!isStripe}
               onSelect={() => setProvider("mercadopago")}
             />
           </div>
 
-          <ProviderConfig provider={provider} />
-        </section>
+          <div className="mt-5 rounded-xl border border-dashed border-border bg-background p-4">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              <ShieldCheck className="h-3.5 w-3.5 text-gold" />
+              Credenciais {isStripe ? "Stripe" : "Mercado Pago"}
+              {(isStripe ? s?.hasStripeSecret : s?.hasMpToken) && (
+                <span className="rounded-full bg-gold/15 px-2 py-0.5 text-[10px] text-gold">
+                  chave salva {s?.credentialHint}
+                </span>
+              )}
+            </div>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              {isStripe ? (
+                <>
+                  <Field
+                    label="Publishable key"
+                    placeholder="pk_live_..."
+                    value={stripePublishable}
+                    onChange={setStripePublishable}
+                  />
+                  <Field
+                    label="Secret key"
+                    placeholder={s?.hasStripeSecret ? "•••• (deixe vazio para manter)" : "sk_live_..."}
+                    type="password"
+                    value={stripeSecret}
+                    onChange={setStripeSecret}
+                  />
+                  <Field
+                    label="Webhook signing secret (opcional)"
+                    placeholder="whsec_..."
+                    type="password"
+                    value={stripeWebhookSecret}
+                    onChange={setStripeWebhookSecret}
+                  />
+                </>
+              ) : (
+                <>
+                  <Field label="Public Key" placeholder="APP_USR-..." value={mpPublicKey} onChange={setMpPublicKey} />
+                  <Field
+                    label="Access Token"
+                    placeholder={s?.hasMpToken ? "•••• (deixe vazio para manter)" : "APP_USR-..."}
+                    type="password"
+                    value={mpAccessToken}
+                    onChange={setMpAccessToken}
+                  />
+                </>
+              )}
+              <SelectField
+                label="Moeda"
+                value={currency}
+                onChange={setCurrency}
+                options={isStripe ? ["BRL", "USD", "EUR"] : ["BRL", "ARS", "MXN"]}
+              />
+            </div>
 
-        {/* Novo serviço (mock) */}
-        {showForm && (
-          <section className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
-            <h2 className="font-display text-lg font-semibold">Novo serviço</h2>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Cadastre uma modalidade de terapia — o link de checkout é gerado automaticamente.
-            </p>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <Field label="Nome" placeholder="Ex: Sessão Individual" />
-              <Field label="Duração (min)" placeholder="50" />
-              <Field label="Preço (R$)" placeholder="250,00" />
-              <SelectField label="Modalidade" options={["Online", "Presencial", "Ambos"]} />
-              <div className="sm:col-span-2">
-                <Field label="Descrição" placeholder="Descreva o serviço para o paciente" />
+            <div className="mt-4">
+              <label className="text-xs font-medium text-muted-foreground">Webhook URL (cole no painel do gateway)</label>
+              <div className="mt-1 flex items-center gap-2 rounded-lg border border-border bg-surface px-3 py-2">
+                <code className="min-w-0 flex-1 truncate text-xs">{webhookUrl}</code>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(webhookUrl);
+                    toast.success("URL copiada.");
+                  }}
+                  className="text-gold hover:opacity-80"
+                  aria-label="Copiar webhook"
+                >
+                  <Copy className="h-4 w-4" />
+                </button>
               </div>
             </div>
-            <div className="mt-4 flex justify-end gap-2">
-              <button
-                onClick={() => setShowForm(false)}
-                className="rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-muted"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={() => setShowForm(false)}
-                className="rounded-lg bg-foreground px-4 py-2 text-sm font-semibold text-background hover:opacity-90"
-              >
-                Salvar serviço
-              </button>
-            </div>
-          </section>
-        )}
-
-        {/* Services */}
-        <section className="space-y-3">
-          <h2 className="font-display text-lg font-semibold">Serviços de terapia</h2>
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {services.map((svc) => (
-              <ServiceCard
-                key={svc.id}
-                service={svc}
-                provider={provider}
-                onToggle={() => toggleActive(svc.id)}
-                onRemove={() => remove(svc.id)}
-              />
-            ))}
+            <p className="mt-3 text-[11px] text-muted-foreground">
+              As chaves ficam guardadas com criptografia — nunca aparecem no app nem no navegador.
+            </p>
           </div>
+        </section>
+
+        <section className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+          <div className="mb-3 flex items-center gap-2">
+            <Video className="h-4 w-4 text-gold" />
+            <h2 className="font-display text-lg font-semibold">Sala da sessão online</h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <SelectField
+              label="Como gerar o link"
+              value={meetingMode}
+              onChange={(v) => setMeetingMode(v as typeof meetingMode)}
+              options={["virtual", "fixed", "none"]}
+              labels={{ virtual: "Sala gerada automaticamente", fixed: "Sempre o mesmo link", none: "Sem link" }}
+            />
+            {meetingMode === "fixed" && (
+              <Field
+                label="Link fixo (Google Meet, Zoom…)"
+                placeholder="https://meet.google.com/abc-defg-hij"
+                value={fixedMeetingUrl}
+                onChange={setFixedMeetingUrl}
+              />
+            )}
+          </div>
+          <p className="mt-3 text-[11px] text-muted-foreground">
+            O link é enviado ao paciente no WhatsApp junto da confirmação, logo após o pagamento.
+          </p>
+        </section>
+
+        <div className="flex justify-end">
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="inline-flex items-center gap-2 rounded-lg bg-gold px-5 py-2.5 text-sm font-semibold text-sidebar-active-foreground shadow-sm hover:opacity-90 disabled:opacity-60"
+          >
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+            Salvar configurações
+          </button>
+        </div>
+
+        <section className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+          <div className="mb-3 flex items-center gap-2">
+            <Receipt className="h-4 w-4 text-gold" />
+            <h2 className="font-display text-lg font-semibold">Cobranças recentes</h2>
+          </div>
+          {ordersQuery.data?.length ? (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left text-xs uppercase tracking-wide text-muted-foreground">
+                    <th className="py-2">Data</th>
+                    <th className="py-2">Valor</th>
+                    <th className="py-2">Gateway</th>
+                    <th className="py-2">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ordersQuery.data.map((o: any) => (
+                    <tr key={o.id} className="border-t border-border">
+                      <td className="py-2">{new Date(o.created_at).toLocaleString("pt-BR")}</td>
+                      <td className="py-2 font-medium">
+                        {(o.amount_cents / 100).toLocaleString("pt-BR", { style: "currency", currency: o.currency || "BRL" })}
+                      </td>
+                      <td className="py-2 capitalize">{o.provider}</td>
+                      <td className="py-2">
+                        <span
+                          className={
+                            "rounded-full px-2 py-0.5 text-[11px] font-semibold " +
+                            (o.status === "paid"
+                              ? "bg-gold/15 text-gold"
+                              : o.status === "failed"
+                                ? "bg-destructive/10 text-destructive"
+                                : "bg-muted text-muted-foreground")
+                          }
+                        >
+                          {o.status === "paid" ? "Pago" : o.status === "failed" ? "Falhou" : "Aguardando"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">Nenhuma cobrança gerada ainda.</p>
+          )}
         </section>
       </div>
     </div>
@@ -205,7 +315,6 @@ function ProviderCard({
   selected,
   onSelect,
 }: {
-  id: Provider;
   title: string;
   subtitle: string;
   accent: string;
@@ -216,16 +325,11 @@ function ProviderCard({
     <button
       onClick={onSelect}
       className={
-        "group flex items-start gap-3 rounded-xl border p-4 text-left transition-all " +
-        (selected
-          ? "border-gold bg-gold/5 shadow-sm"
-          : "border-border bg-background hover:border-gold/40 hover:bg-muted")
+        "flex items-start gap-3 rounded-xl border p-4 text-left transition-all " +
+        (selected ? "border-gold bg-gold/5 shadow-sm" : "border-border bg-background hover:border-gold/40 hover:bg-muted")
       }
     >
-      <div
-        className="grid h-10 w-10 shrink-0 place-items-center rounded-lg text-white"
-        style={{ backgroundColor: accent }}
-      >
+      <div className="grid h-10 w-10 shrink-0 place-items-center rounded-lg text-white" style={{ backgroundColor: accent }}>
         <CreditCard className="h-5 w-5" />
       </div>
       <div className="min-w-0 flex-1">
@@ -233,7 +337,7 @@ function ProviderCard({
           <p className="font-semibold text-foreground">{title}</p>
           {selected && (
             <span className="inline-flex items-center gap-1 rounded-full bg-gold/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gold">
-              <Check className="h-3 w-3" /> Ativo
+              <Check className="h-3 w-3" /> Selecionado
             </span>
           )}
         </div>
@@ -243,163 +347,58 @@ function ProviderCard({
   );
 }
 
-function ProviderConfig({ provider }: { provider: Provider }) {
-  const isStripe = provider === "stripe";
-  return (
-    <div className="mt-5 rounded-xl border border-dashed border-border bg-background p-4">
-      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-        <ShieldCheck className="h-3.5 w-3.5 text-gold" />
-        Credenciais {isStripe ? "Stripe" : "Mercado Pago"}
-      </div>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2">
-        <Field
-          label={isStripe ? "Publishable key" : "Public Key"}
-          placeholder={isStripe ? "pk_live_..." : "APP_USR-..."}
-        />
-        <Field
-          label={isStripe ? "Secret key" : "Access Token"}
-          placeholder={isStripe ? "sk_live_..." : "APP_USR-..."}
-          type="password"
-        />
-        <Field
-          label="Webhook URL"
-          value={`https://livhub.app/api/webhooks/${provider}`}
-          readOnly
-        />
-        <SelectField
-          label="Moeda"
-          options={isStripe ? ["BRL", "USD", "EUR"] : ["BRL", "ARS", "MXN"]}
-        />
-      </div>
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-muted-foreground">
-        <span>As chaves ficam guardadas com criptografia — nunca aparecem no app.</span>
-        <button className="inline-flex items-center gap-1 font-semibold text-gold hover:underline">
-          Salvar credenciais <ExternalLink className="h-3 w-3" />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-function ServiceCard({
-  service,
-  provider,
-  onToggle,
-  onRemove,
-}: {
-  service: Service;
-  provider: Provider;
-  onToggle: () => void;
-  onRemove: () => void;
-}) {
-  const Icon = service.icon;
-  const link = `https://pay.livhub.app/${provider}/${service.id}`;
-  return (
-    <article className="flex flex-col rounded-2xl border border-border bg-surface p-5 shadow-sm">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="grid h-10 w-10 place-items-center rounded-lg bg-gold/15 text-gold">
-            <Icon className="h-5 w-5" />
-          </div>
-          <div>
-            <p className="font-semibold text-foreground">{service.name}</p>
-            <p className="text-[11px] uppercase tracking-wide text-muted-foreground">
-              {service.duration} min · {service.modality}
-            </p>
-          </div>
-        </div>
-        <label className="inline-flex cursor-pointer items-center gap-2">
-          <input
-            type="checkbox"
-            className="peer sr-only"
-            checked={service.active}
-            onChange={onToggle}
-          />
-          <span className="relative h-5 w-9 rounded-full bg-muted transition-colors peer-checked:bg-gold">
-            <span className="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform peer-checked:translate-x-4" />
-          </span>
-        </label>
-      </div>
-
-      <p className="mt-3 text-sm text-muted-foreground">{service.description}</p>
-
-      <div className="mt-4 flex items-end justify-between">
-        <div>
-          <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Preço</p>
-          <p className="font-display text-2xl font-bold text-foreground">
-            R$ {service.price.toLocaleString("pt-BR")}
-          </p>
-        </div>
-        <span className="rounded-full bg-background px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-          via {provider === "stripe" ? "Stripe" : "Mercado Pago"}
-        </span>
-      </div>
-
-      <div className="mt-4 flex items-center gap-2 rounded-lg border border-dashed border-border bg-background p-2">
-        <Link2 className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-        <span className="flex-1 truncate text-[11px] text-muted-foreground">{link}</span>
-        <button
-          onClick={() => navigator.clipboard?.writeText(link)}
-          className="grid h-7 w-7 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
-          aria-label="Copiar link"
-        >
-          <Copy className="h-3.5 w-3.5" />
-        </button>
-      </div>
-
-      <div className="mt-3 flex justify-end gap-1">
-        <button className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground">
-          <Pencil className="h-4 w-4" />
-        </button>
-        <button
-          onClick={onRemove}
-          className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-red-600"
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
-      </div>
-    </article>
-  );
-}
-
 function Field({
   label,
   placeholder,
-  type = "text",
   value,
-  readOnly,
+  onChange,
+  type = "text",
 }: {
   label: string;
   placeholder?: string;
+  value: string;
+  onChange: (v: string) => void;
   type?: string;
-  value?: string;
-  readOnly?: boolean;
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-        {label}
-      </span>
+      <span className="text-xs font-medium text-muted-foreground">{label}</span>
       <input
         type={type}
+        value={value}
         placeholder={placeholder}
-        defaultValue={value}
-        readOnly={readOnly}
-        className="h-9 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-gold"
       />
     </label>
   );
 }
 
-function SelectField({ label, options }: { label: string; options: string[] }) {
+function SelectField({
+  label,
+  value,
+  onChange,
+  options,
+  labels,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: string[];
+  labels?: Record<string, string>;
+}) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-        {label}
-      </span>
-      <select className="h-9 w-full rounded-lg border border-border bg-background px-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40">
+      <span className="text-xs font-medium text-muted-foreground">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1 w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-gold"
+      >
         {options.map((o) => (
-          <option key={o}>{o}</option>
+          <option key={o} value={o}>
+            {labels?.[o] ?? o}
+          </option>
         ))}
       </select>
     </label>
