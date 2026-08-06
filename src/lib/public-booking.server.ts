@@ -290,16 +290,73 @@ export async function createPublicBooking(
     .single();
   if (apptErr) return { ok: false, error: apptErr.message };
 
-  const links = (tenant.content.checkoutLinks ?? {}) as Record<string, string>;
-  const rawLink =
-    links[`${input.serviceId ?? "service"}:${plan.id}`] ||
-    (input.serviceId ? links[input.serviceId] : "") ||
-    links.default ||
-    "";
-  const checkoutUrl = totalCents > 0 && rawLink ? rawLink : null;
+  // 1) Gateway configurado pelo profissional (Mercado Pago ou Stripe)
+  let checkoutUrl: string | null = null;
+  let orderId: string | null = null;
 
-  // Aviso de pagamento pendente entra na mesma fila de notificações.
+  const { loadPaymentSettings, createCheckout, defaultBaseUrl } = await import("@/lib/payments.server");
+  const settings = await loadPaymentSettings(tenant.tenantId);
+
+  if (totalCents > 0 && settings?.isActive) {
+    const { data: order } = await supabaseAdmin
+      .from("payment_orders")
+      .insert({
+        tenant_id: tenant.tenantId,
+        appointment_id: appt.id,
+        contact_id: contactId,
+        provider: settings.provider,
+        plan_id: plan.id,
+        amount_cents: totalCents,
+        currency: settings.currency,
+        status: "pending",
+      })
+      .select("id")
+      .single();
+
+    if (order) {
+      orderId = order.id;
+      const checkout = await createCheckout({
+        settings,
+        orderId: order.id,
+        title: `${serviceName} — ${plan.name}`,
+        amountCents: totalCents,
+        baseUrl: input.baseUrl || defaultBaseUrl(),
+        payer: { name: input.name, email: input.email || null },
+      });
+      if (checkout.ok) {
+        checkoutUrl = checkout.url;
+        await supabaseAdmin
+          .from("payment_orders")
+          .update({ checkout_url: checkout.url, external_id: checkout.externalId })
+          .eq("id", order.id);
+      } else {
+        await supabaseAdmin
+          .from("payment_orders")
+          .update({ status: "failed", raw: { error: checkout.error } })
+          .eq("id", order.id);
+      }
+    }
+  }
+
+  // 2) Fallback: link de checkout manual cadastrado na landing page
+  if (!checkoutUrl && totalCents > 0) {
+    const links = (tenant.content.checkoutLinks ?? {}) as Record<string, string>;
+    checkoutUrl =
+      links[`${input.serviceId ?? "service"}:${plan.id}`] ||
+      (input.serviceId ? links[input.serviceId] : "") ||
+      links.default ||
+      null;
+  }
+
   if (checkoutUrl) {
+    // A confirmação só sai depois do pagamento — cancela o aviso automático de agendamento.
+    await supabaseAdmin
+      .from("notification_jobs")
+      .update({ status: "canceled" })
+      .eq("appointment_id", appt.id)
+      .eq("event", "appointment_created")
+      .eq("status", "pending");
+
     await supabaseAdmin.from("notification_jobs").insert([
       {
         tenant_id: tenant.tenantId,
@@ -321,5 +378,13 @@ export async function createPublicBooking(
     ]);
   }
 
-  return { ok: true, checkoutUrl, startsAt: start.toISOString(), totalCents, planId: plan.id };
+  return {
+    ok: true,
+    checkoutUrl,
+    startsAt: start.toISOString(),
+    totalCents,
+    planId: plan.id,
+    orderId,
+  };
 }
+
