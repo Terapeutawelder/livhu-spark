@@ -32,7 +32,7 @@ const PLACEHOLDER =
   );
 
 export function PublicLanding({ template, theme, content, services, slug, interactive = true }: Props) {
-  const dark = template === "aurora";
+  const dark = template === "aurora" || template === "oxnard";
   const s: CSSProperties = {
     background: theme.bg,
     color: theme.text,
