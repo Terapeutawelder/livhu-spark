@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Public profile images are readable" ON storage.objects;

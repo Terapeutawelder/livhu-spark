@@ -72,3 +72,21 @@ export async function uploadProfileImage(tenantId: string, b64: string): Promise
   if (error) throw new Error(error.message);
   return `/api/public/perfil/img/${path}`;
 }
+
+/** URLs assinadas (1h) para os arquivos do próprio consultório. */
+export async function signProfileImagePaths(
+  tenantId: string,
+  urls: string[],
+): Promise<Record<string, string>> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const out: Record<string, string> = {};
+  for (const url of urls) {
+    const prefix = "/api/public/perfil/img/";
+    if (!url.startsWith(prefix)) continue;
+    const path = url.slice(prefix.length);
+    if (!path.startsWith(`${tenantId}/`)) continue;
+    const { data } = await supabaseAdmin.storage.from("perfil-publico").createSignedUrl(path, 3600);
+    if (data?.signedUrl) out[url] = data.signedUrl;
+  }
+  return out;
+}

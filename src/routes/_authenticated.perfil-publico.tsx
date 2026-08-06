@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentTenant } from "@/hooks/use-tenant";
-import { generateStudioPhoto } from "@/lib/public-profile.functions";
+import { generateStudioPhoto, signProfileImages } from "@/lib/public-profile.functions";
 import { PublicLanding, type PublicService } from "@/components/public-landing";
 import {
   DEFAULT_SECTIONS,
@@ -117,6 +117,27 @@ function PerfilPublicoPage() {
       return (data ?? []) as PublicService[];
     },
   });
+
+  // Fotos ainda não publicadas só abrem com URL assinada — usada apenas na pré-visualização.
+  const [signed, setSigned] = useState<Record<string, string>>({});
+  useEffect(() => {
+    const paths = [content.heroImage, content.aboutImage].filter(
+      (u) => u && u.startsWith("/api/public/perfil/img/") && !signed[u],
+    ) as string[];
+    if (paths.length === 0) return;
+    signProfileImages({ data: { paths } })
+      .then((map) => setSigned((prev) => ({ ...prev, ...map })))
+      .catch(() => {});
+  }, [content.heroImage, content.aboutImage, signed]);
+
+  const previewContent = useMemo(
+    () => ({
+      ...content,
+      heroImage: signed[content.heroImage] ?? content.heroImage,
+      aboutImage: signed[content.aboutImage] ?? content.aboutImage,
+    }),
+    [content, signed],
+  );
 
   useEffect(() => {
     if (loaded || !tenant) return;
@@ -281,6 +302,14 @@ function PerfilPublicoPage() {
                 aboutImage={content.aboutImage}
                 onHero={(url) => patch({ heroImage: url })}
                 onAbout={(url) => patch({ aboutImage: url })}
+                signedUrls={signed}
+                framing={{
+                  heroZoom: content.heroZoom ?? 100,
+                  heroPosY: content.heroPosY ?? 50,
+                  aboutZoom: content.aboutZoom ?? 100,
+                  aboutPosY: content.aboutPosY ?? 50,
+                }}
+                patchFraming={patch}
               />
             )}
             {tab === "estilo" && <StyleTab theme={theme} setTheme={setTheme} />}
@@ -312,7 +341,7 @@ function PerfilPublicoPage() {
               <PublicLanding
                 template={template}
                 theme={theme}
-                content={content}
+                content={previewContent}
                 services={services}
                 slug={slug}
                 interactive={false}
@@ -502,22 +531,32 @@ function ContentTab({ content, patch }: { content: ProfileContent; patch: (p: Pa
   );
 }
 
+type Framing = { heroZoom: number; heroPosY: number; aboutZoom: number; aboutPosY: number };
+
 function PhotoTab({
   heroImage,
   aboutImage,
   onHero,
   onAbout,
+  signedUrls,
+  framing,
+  patchFraming,
 }: {
   heroImage: string;
   aboutImage: string;
   onHero: (url: string) => void;
   onAbout: (url: string) => void;
+  signedUrls: Record<string, string>;
+  framing: Framing;
+  patchFraming: (p: Partial<ProfileContent>) => void;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [source, setSource] = useState<string | null>(null);
   const [style, setStyle] = useState<string>(STUDIO_STYLES[0].id);
   const [busy, setBusy] = useState(false);
   const [results, setResults] = useState<string[]>([]);
+  const [localSigned, setLocalSigned] = useState<Record<string, string>>({});
+  const pic = (url: string) => localSigned[url] ?? signedUrls[url] ?? url;
 
   async function pick(file: File | undefined) {
     if (!file) return;
@@ -538,6 +577,9 @@ function PhotoTab({
     try {
       const res = await generateStudioPhoto({ data: { image: source, stylePrompt: preset.prompt } });
       setResults((r) => [res.url, ...r]);
+      signProfileImages({ data: { paths: [res.url] } })
+        .then((m) => setLocalSigned((prev) => ({ ...prev, ...m })))
+        .catch(() => {});
       toast.success("Foto de estúdio gerada!");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Não foi possível gerar a foto.");
@@ -590,7 +632,7 @@ function PhotoTab({
               {busy ? (
                 <Loader2 className="h-6 w-6 animate-spin text-gold" />
               ) : latest ? (
-                <img src={latest} alt="Retrato gerado por IA" className="h-full w-full object-cover" />
+                <img src={pic(latest)} alt="Retrato gerado por IA" className="h-full w-full object-cover" />
               ) : (
                 <span className="px-2 text-center">O retrato profissional aparece aqui</span>
               )}
@@ -645,12 +687,85 @@ function PhotoTab({
         {busy ? "Gerando retrato profissional…" : latest ? "Gerar nova imagem" : "Gerar foto de estúdio com IA"}
       </button>
 
+      <Field label="Enquadramento da foto de capa">
+        <div
+          className="mb-3 h-40 w-full overflow-hidden rounded-xl border border-border bg-surface"
+        >
+          {heroImage ? (
+            <img
+              src={pic(heroImage)}
+              alt="Prévia do enquadramento"
+              className="h-full w-full object-cover"
+              style={{
+                objectPosition: `50% ${framing.heroPosY}%`,
+                transform: `scale(${framing.heroZoom / 100})`,
+              }}
+            />
+          ) : (
+            <div className="grid h-full place-items-center text-xs text-muted-foreground">
+              Aplique uma foto na capa para ajustar
+            </div>
+          )}
+        </div>
+        <label className="block text-[11px] font-semibold text-muted-foreground">
+          Zoom — {framing.heroZoom}%
+        </label>
+        <input
+          type="range"
+          min={100}
+          max={200}
+          step={1}
+          value={framing.heroZoom}
+          onChange={(e) => patchFraming({ heroZoom: Number(e.target.value) })}
+          className="mt-1 w-full accent-[var(--gold)]"
+        />
+        <label className="mt-3 block text-[11px] font-semibold text-muted-foreground">
+          Posição vertical — {framing.heroPosY}%
+        </label>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          step={1}
+          value={framing.heroPosY}
+          onChange={(e) => patchFraming({ heroPosY: Number(e.target.value) })}
+          className="mt-1 w-full accent-[var(--gold)]"
+        />
+      </Field>
+
+      <Field label="Enquadramento da foto da seção Sobre">
+        <label className="block text-[11px] font-semibold text-muted-foreground">
+          Zoom — {framing.aboutZoom}%
+        </label>
+        <input
+          type="range"
+          min={100}
+          max={200}
+          step={1}
+          value={framing.aboutZoom}
+          onChange={(e) => patchFraming({ aboutZoom: Number(e.target.value) })}
+          className="mt-1 w-full accent-[var(--gold)]"
+        />
+        <label className="mt-3 block text-[11px] font-semibold text-muted-foreground">
+          Posição vertical — {framing.aboutPosY}%
+        </label>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          step={1}
+          value={framing.aboutPosY}
+          onChange={(e) => patchFraming({ aboutPosY: Number(e.target.value) })}
+          className="mt-1 w-full accent-[var(--gold)]"
+        />
+      </Field>
+
       {(results.length > 0 || heroImage || aboutImage) && (
         <Field label="Suas imagens">
           <div className="grid grid-cols-3 gap-2">
             {[...new Set([...results, heroImage, aboutImage].filter(Boolean))].map((url) => (
               <div key={url} className="group relative overflow-hidden rounded-lg border border-border">
-                <img src={url} alt="Retrato gerado" className="h-28 w-full object-cover" />
+                <img src={pic(url)} alt="Retrato gerado" className="h-28 w-full object-cover" />
                 <div className="absolute inset-x-0 bottom-0 flex opacity-0 transition group-hover:opacity-100">
                   <button
                     onClick={() => onHero(url)}
