@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { WhatsappCloudPanel } from "@/components/whatsapp-cloud-panel";
 import { OmnichannelChannelsPanel } from "@/components/omnichannel-channels-panel";
 import { AlibabaOnboardingPanel } from "@/components/alibaba-onboarding-panel";
+import { ZernioChannelsPanel } from "@/components/zernio-channels-panel";
 import { useEffect, useState } from "react";
 import {
   User, Bell, MessageCircle, Cloud, Palette, Shield, KeyRound, Link2, Building2, Check, Copy, Globe, Loader2, ExternalLink, Radio,
@@ -45,8 +46,9 @@ const tabs = [
   { id: "perfil", label: "Perfil", icon: User },
   { id: "consultorio", label: "Consultório", icon: Building2 },
   { id: "dominio", label: "Meu domínio", icon: Globe },
+  { id: "zernio", label: "Conectar canais", icon: Zap },
   { id: "canais", label: "Canais Omnichannel", icon: Radio },
-  { id: "whatsapp", label: "WhatsApp (Meta)", icon: MessageCircle },
+  { id: "whatsapp", label: "WhatsApp (Meta) — avançado", icon: MessageCircle },
   { id: "alibaba", label: "WhatsApp fácil (Alibaba)", icon: Cloud },
   { id: "notificacoes", label: "Notificações", icon: Bell },
   { id: "marca", label: "Marca", icon: Palette },
@@ -94,6 +96,7 @@ function ConfiguracoesPage() {
           {tab === "perfil" && <PerfilPanel />}
           {tab === "consultorio" && <ConsultorioPanel />}
           {tab === "dominio" && <DominioPanel />}
+          {tab === "zernio" && <ZernioChannelsPanel />}
           {tab === "canais" && <OmnichannelChannelsPanel onOpenWhatsapp={() => setTab("whatsapp")} />}
           {tab === "whatsapp" && <WhatsappPanel />}
           {tab === "alibaba" && <AlibabaOnboardingPanel />}
