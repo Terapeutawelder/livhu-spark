@@ -38,6 +38,7 @@ import { Route as AuthenticatedRemarketingRouteImport } from './routes/_authenti
 import { Route as AuthenticatedServicosRouteImport } from './routes/_authenticated.servicos'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
+import { Route as PagamentoRetornoRouteImport } from './routes/pagamento.retorno'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
 import { Route as AuthenticatedAdminCalendarioRouteImport } from './routes/_authenticated.admin.calendario'
 import { Route as AuthenticatedAdminConfiguracaoRouteImport } from './routes/_authenticated.admin.configuracao'
@@ -211,6 +212,11 @@ const PSlugRoute = PSlugRouteImport.update({
   path: '/p/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PagamentoRetornoRoute = PagamentoRetornoRouteImport.update({
+  id: '/pagamento/retorno',
+  path: '/pagamento/retorno',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -362,6 +368,7 @@ export interface FileRoutesByFullPath {
   '/servicos': typeof AuthenticatedServicosRoute
   '/admin/login': typeof AdminLoginRoute
   '/p/$slug': typeof PSlugRoute
+  '/pagamento/retorno': typeof PagamentoRetornoRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
   '/admin/creditos': typeof AuthenticatedAdminCreditosRoute
@@ -411,6 +418,7 @@ export interface FileRoutesByTo {
   '/servicos': typeof AuthenticatedServicosRoute
   '/admin/login': typeof AdminLoginRoute
   '/p/$slug': typeof PSlugRoute
+  '/pagamento/retorno': typeof PagamentoRetornoRoute
   '/': typeof AuthenticatedIndexRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
@@ -464,6 +472,7 @@ export interface FileRoutesById {
   '/_authenticated/servicos': typeof AuthenticatedServicosRoute
   '/admin/login': typeof AdminLoginRoute
   '/p/$slug': typeof PSlugRoute
+  '/pagamento/retorno': typeof PagamentoRetornoRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/_authenticated/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
@@ -518,6 +527,7 @@ export interface FileRouteTypes {
     | '/servicos'
     | '/admin/login'
     | '/p/$slug'
+    | '/pagamento/retorno'
     | '/admin/calendario'
     | '/admin/configuracao'
     | '/admin/creditos'
@@ -567,6 +577,7 @@ export interface FileRouteTypes {
     | '/servicos'
     | '/admin/login'
     | '/p/$slug'
+    | '/pagamento/retorno'
     | '/'
     | '/admin/calendario'
     | '/admin/configuracao'
@@ -619,6 +630,7 @@ export interface FileRouteTypes {
     | '/_authenticated/servicos'
     | '/admin/login'
     | '/p/$slug'
+    | '/pagamento/retorno'
     | '/_authenticated/'
     | '/_authenticated/admin/calendario'
     | '/_authenticated/admin/configuracao'
@@ -652,6 +664,7 @@ export interface RootRouteChildren {
   TermosRoute: typeof TermosRoute
   AdminLoginRoute: typeof AdminLoginRoute
   PSlugRoute: typeof PSlugRoute
+  PagamentoRetornoRoute: typeof PagamentoRetornoRoute
   ApiPublicHooksNotificationsDispatchRoute: typeof ApiPublicHooksNotificationsDispatchRoute
   ApiPublicMetaDataDeletionRoute: typeof ApiPublicMetaDataDeletionRoute
   ApiPublicMetaDeauthorizeRoute: typeof ApiPublicMetaDeauthorizeRoute
@@ -866,6 +879,13 @@ declare module '@tanstack/react-router' {
       path: '/p/$slug'
       fullPath: '/p/$slug'
       preLoaderRoute: typeof PSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pagamento/retorno': {
+      id: '/pagamento/retorno'
+      path: '/pagamento/retorno'
+      fullPath: '/pagamento/retorno'
+      preLoaderRoute: typeof PagamentoRetornoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -1112,6 +1132,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermosRoute: TermosRoute,
   AdminLoginRoute: AdminLoginRoute,
   PSlugRoute: PSlugRoute,
+  PagamentoRetornoRoute: PagamentoRetornoRoute,
   ApiPublicHooksNotificationsDispatchRoute:
     ApiPublicHooksNotificationsDispatchRoute,
   ApiPublicMetaDataDeletionRoute: ApiPublicMetaDataDeletionRoute,
