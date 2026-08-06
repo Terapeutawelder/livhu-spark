@@ -87,10 +87,11 @@ export const DEFAULT_TEMPLATES: Record<NotificationEvent, Defaults> = {
     body: "{{paciente}}, sua sessão começa em 15 minutos. Já pode se preparar. 💛\n\n{{link}}",
   },
   payment_received: {
-    subject: "Pagamento confirmado",
+    subject: "Pagamento confirmado — sua sessão está agendada",
     body:
-      "Olá, {{paciente}}! Recebemos seu pagamento de {{valor}} referente a {{servico}}. Obrigado(a)!",
+      "Olá, {{paciente}}! Recebemos seu pagamento de {{valor}} referente a {{servico}}. ✅\n\nSua sessão está confirmada para {{data}} às {{hora}}.\n\n{{link}}",
   },
+
   payment_pending: {
     subject: "Pagamento pendente da sua sessão",
     body:
