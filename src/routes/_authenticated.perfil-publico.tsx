@@ -172,7 +172,7 @@ function PerfilPublicoPage() {
   }
 
   async function save(nextPublished = published) {
-    if (!tenant) return;
+    if (!tenant || !loaded) return;
     const clean = slugify(slug);
     if (clean.length < 3) {
       toast.error("Defina um endereço (slug) com pelo menos 3 caracteres.");
