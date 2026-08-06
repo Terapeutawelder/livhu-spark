@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentTenant } from "@/hooks/use-tenant";
-import { generateStudioPhoto } from "@/lib/public-profile.functions";
+import { generateStudioPhoto, signProfileImages } from "@/lib/public-profile.functions";
 import { PublicLanding, type PublicService } from "@/components/public-landing";
 import {
   DEFAULT_SECTIONS,
@@ -117,6 +117,27 @@ function PerfilPublicoPage() {
       return (data ?? []) as PublicService[];
     },
   });
+
+  // Fotos ainda não publicadas só abrem com URL assinada — usada apenas na pré-visualização.
+  const [signed, setSigned] = useState<Record<string, string>>({});
+  useEffect(() => {
+    const paths = [content.heroImage, content.aboutImage].filter(
+      (u) => u && u.startsWith("/api/public/perfil/img/") && !signed[u],
+    ) as string[];
+    if (paths.length === 0) return;
+    signProfileImages({ data: { paths } })
+      .then((map) => setSigned((prev) => ({ ...prev, ...map })))
+      .catch(() => {});
+  }, [content.heroImage, content.aboutImage, signed]);
+
+  const previewContent = useMemo(
+    () => ({
+      ...content,
+      heroImage: signed[content.heroImage] ?? content.heroImage,
+      aboutImage: signed[content.aboutImage] ?? content.aboutImage,
+    }),
+    [content, signed],
+  );
 
   useEffect(() => {
     if (loaded || !tenant) return;
@@ -281,6 +302,7 @@ function PerfilPublicoPage() {
                 aboutImage={content.aboutImage}
                 onHero={(url) => patch({ heroImage: url })}
                 onAbout={(url) => patch({ aboutImage: url })}
+                signedUrls={signed}
                 framing={{
                   heroZoom: content.heroZoom ?? 100,
                   heroPosY: content.heroPosY ?? 50,
@@ -319,7 +341,7 @@ function PerfilPublicoPage() {
               <PublicLanding
                 template={template}
                 theme={theme}
-                content={content}
+                content={previewContent}
                 services={services}
                 slug={slug}
                 interactive={false}
@@ -516,6 +538,7 @@ function PhotoTab({
   aboutImage,
   onHero,
   onAbout,
+  signedUrls,
   framing,
   patchFraming,
 }: {
@@ -523,6 +546,7 @@ function PhotoTab({
   aboutImage: string;
   onHero: (url: string) => void;
   onAbout: (url: string) => void;
+  signedUrls: Record<string, string>;
   framing: Framing;
   patchFraming: (p: Partial<ProfileContent>) => void;
 }) {
@@ -664,7 +688,7 @@ function PhotoTab({
         >
           {heroImage ? (
             <img
-              src={heroImage}
+              src={signedUrls[heroImage] ?? heroImage}
               alt="Prévia do enquadramento"
               className="h-full w-full object-cover"
               style={{
@@ -736,7 +760,7 @@ function PhotoTab({
           <div className="grid grid-cols-3 gap-2">
             {[...new Set([...results, heroImage, aboutImage].filter(Boolean))].map((url) => (
               <div key={url} className="group relative overflow-hidden rounded-lg border border-border">
-                <img src={url} alt="Retrato gerado" className="h-28 w-full object-cover" />
+                <img src={signedUrls[url] ?? url} alt="Retrato gerado" className="h-28 w-full object-cover" />
                 <div className="absolute inset-x-0 bottom-0 flex opacity-0 transition group-hover:opacity-100">
                   <button
                     onClick={() => onHero(url)}
