@@ -1114,6 +1114,141 @@ export type Database = {
           },
         ]
       }
+      payment_orders: {
+        Row: {
+          amount_cents: number
+          appointment_id: string | null
+          checkout_url: string | null
+          contact_id: string | null
+          created_at: string
+          currency: string
+          external_id: string | null
+          id: string
+          paid_at: string | null
+          plan_id: string | null
+          provider: string
+          raw: Json
+          status: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents?: number
+          appointment_id?: string | null
+          checkout_url?: string | null
+          contact_id?: string | null
+          created_at?: string
+          currency?: string
+          external_id?: string | null
+          id?: string
+          paid_at?: string | null
+          plan_id?: string | null
+          provider: string
+          raw?: Json
+          status?: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          appointment_id?: string | null
+          checkout_url?: string | null
+          contact_id?: string | null
+          created_at?: string
+          currency?: string
+          external_id?: string | null
+          id?: string
+          paid_at?: string | null
+          plan_id?: string | null
+          provider?: string
+          raw?: Json
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_orders_appointment_id_fkey"
+            columns: ["appointment_id"]
+            isOneToOne: false
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_orders_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_orders_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_settings: {
+        Row: {
+          created_at: string
+          credential_hint: string
+          currency: string
+          fixed_meeting_url: string | null
+          is_active: boolean
+          meeting_mode: string
+          mp_access_token_enc: string | null
+          mp_public_key: string | null
+          provider: string
+          stripe_publishable: string | null
+          stripe_secret_enc: string | null
+          stripe_webhook_secret_enc: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          credential_hint?: string
+          currency?: string
+          fixed_meeting_url?: string | null
+          is_active?: boolean
+          meeting_mode?: string
+          mp_access_token_enc?: string | null
+          mp_public_key?: string | null
+          provider?: string
+          stripe_publishable?: string | null
+          stripe_secret_enc?: string | null
+          stripe_webhook_secret_enc?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          credential_hint?: string
+          currency?: string
+          fixed_meeting_url?: string | null
+          is_active?: boolean
+          meeting_mode?: string
+          mp_access_token_enc?: string | null
+          mp_public_key?: string | null
+          provider?: string
+          stripe_publishable?: string | null
+          stripe_secret_enc?: string | null
+          stripe_webhook_secret_enc?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_settings_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_settings: {
         Row: {
           allow_signups: boolean
