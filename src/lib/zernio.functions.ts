@@ -105,7 +105,7 @@ export const syncZernioAccounts = createServerFn({ method: "POST" })
       profile_url: a.profileUrl ?? null,
       status: a.needsReconnection ? "needs_reconnection" : a.isActive === false ? "inactive" : "connected",
       needs_reconnection: !!a.needsReconnection,
-      metadata: (a.metadata ?? {}) as Record<string, unknown>,
+      metadata: (a.metadata ?? {}) as any,
     }));
 
     if (rows.length) {
