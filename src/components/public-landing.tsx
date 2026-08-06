@@ -77,7 +77,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
 
       {/* Hero */}
       {content.sections.hero && (
-        <section className="mx-auto grid max-w-7xl items-center gap-10 px-3 sm:px-5 lg:px-6 py-14 md:grid-cols-2 md:py-20">
+        <section className="mx-auto grid max-w-7xl items-center gap-8 px-3 sm:px-5 lg:px-6 py-10 sm:py-14 md:grid-cols-2 md:py-20">
           <div className={template === "bosque" ? "md:order-1" : ""}>
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: theme.accent }}>
               {content.eyebrow}
@@ -166,7 +166,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
 
       {/* Sobre */}
       {content.sections.about && (
-        <section id="sobre" className="mx-auto grid max-w-7xl items-center gap-10 px-3 sm:px-5 lg:px-6 py-14 md:grid-cols-[0.9fr_1.1fr] md:py-20">
+        <section id="sobre" className="mx-auto grid max-w-7xl items-center gap-8 px-3 sm:px-5 lg:px-6 py-10 sm:py-14 md:grid-cols-[0.9fr_1.1fr] md:py-20">
           <div
             className="h-[360px] w-full overflow-hidden md:h-[480px]"
             style={{ borderRadius: theme.radius + 6 }}
@@ -220,7 +220,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
 
       {/* Depoimentos */}
       {content.sections.testimonials && content.testimonials.length > 0 && (
-        <section className="py-14" style={{ background: theme.band, color: theme.bandText }}>
+        <section className="py-10 sm:py-14" style={{ background: theme.band, color: theme.bandText }}>
           <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6">
             <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight" style={h}>
               {content.testimonialsTitle}
@@ -242,7 +242,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
       )}
 
       {/* CTA final */}
-      <section className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 pb-14">
+      <section className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 pb-10 sm:pb-14">
         <div
           className="flex flex-col items-center gap-4 px-6 py-10 text-center md:flex-row md:justify-between md:text-left"
           style={card}
