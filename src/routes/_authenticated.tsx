@@ -1,10 +1,28 @@
 import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { provisionZernioProfile } from "@/lib/zernio.functions";
 import { AppSidebar, SidebarProvider, useSidebar, MobileMenuButton } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TrialBanner } from "@/components/trial-banner";
 import { NotificationBell } from "@/components/notification-bell";
 import { Search } from "lucide-react";
+
+/** Garante o cadastro do consultório na Zernio (POST /v1/profiles) uma vez por sessão. */
+function useZernioProvisioning(enabled: boolean) {
+  const provision = useServerFn(provisionZernioProfile);
+  useEffect(() => {
+    if (!enabled || typeof window === "undefined") return;
+    if (sessionStorage.getItem("zernio-provisioned") === "1") return;
+    provision()
+      .then((r: any) => {
+        if (r?.profileId) sessionStorage.setItem("zernio-provisioned", "1");
+      })
+      .catch(() => { /* silencioso: integração opcional */ });
+  }, [enabled, provision]);
+}
+
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -26,6 +44,8 @@ export const Route = createFileRoute("/_authenticated")({
 function AuthenticatedShell() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isAdmin = pathname.startsWith("/admin");
+  useZernioProvisioning(!isAdmin);
+
 
   if (isAdmin) {
     return (
