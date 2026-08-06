@@ -281,6 +281,13 @@ function PerfilPublicoPage() {
                 aboutImage={content.aboutImage}
                 onHero={(url) => patch({ heroImage: url })}
                 onAbout={(url) => patch({ aboutImage: url })}
+                framing={{
+                  heroZoom: content.heroZoom ?? 100,
+                  heroPosY: content.heroPosY ?? 50,
+                  aboutZoom: content.aboutZoom ?? 100,
+                  aboutPosY: content.aboutPosY ?? 50,
+                }}
+                patchFraming={patch}
               />
             )}
             {tab === "estilo" && <StyleTab theme={theme} setTheme={setTheme} />}
@@ -502,16 +509,22 @@ function ContentTab({ content, patch }: { content: ProfileContent; patch: (p: Pa
   );
 }
 
+type Framing = { heroZoom: number; heroPosY: number; aboutZoom: number; aboutPosY: number };
+
 function PhotoTab({
   heroImage,
   aboutImage,
   onHero,
   onAbout,
+  framing,
+  patchFraming,
 }: {
   heroImage: string;
   aboutImage: string;
   onHero: (url: string) => void;
   onAbout: (url: string) => void;
+  framing: Framing;
+  patchFraming: (p: Partial<ProfileContent>) => void;
 }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [source, setSource] = useState<string | null>(null);
@@ -644,6 +657,79 @@ function PhotoTab({
         {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
         {busy ? "Gerando retrato profissional…" : latest ? "Gerar nova imagem" : "Gerar foto de estúdio com IA"}
       </button>
+
+      <Field label="Enquadramento da foto de capa">
+        <div
+          className="mb-3 h-40 w-full overflow-hidden rounded-xl border border-border bg-surface"
+        >
+          {heroImage ? (
+            <img
+              src={heroImage}
+              alt="Prévia do enquadramento"
+              className="h-full w-full object-cover"
+              style={{
+                objectPosition: `50% ${framing.heroPosY}%`,
+                transform: `scale(${framing.heroZoom / 100})`,
+              }}
+            />
+          ) : (
+            <div className="grid h-full place-items-center text-xs text-muted-foreground">
+              Aplique uma foto na capa para ajustar
+            </div>
+          )}
+        </div>
+        <label className="block text-[11px] font-semibold text-muted-foreground">
+          Zoom — {framing.heroZoom}%
+        </label>
+        <input
+          type="range"
+          min={100}
+          max={200}
+          step={1}
+          value={framing.heroZoom}
+          onChange={(e) => patchFraming({ heroZoom: Number(e.target.value) })}
+          className="mt-1 w-full accent-[var(--gold)]"
+        />
+        <label className="mt-3 block text-[11px] font-semibold text-muted-foreground">
+          Posição vertical — {framing.heroPosY}%
+        </label>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          step={1}
+          value={framing.heroPosY}
+          onChange={(e) => patchFraming({ heroPosY: Number(e.target.value) })}
+          className="mt-1 w-full accent-[var(--gold)]"
+        />
+      </Field>
+
+      <Field label="Enquadramento da foto da seção Sobre">
+        <label className="block text-[11px] font-semibold text-muted-foreground">
+          Zoom — {framing.aboutZoom}%
+        </label>
+        <input
+          type="range"
+          min={100}
+          max={200}
+          step={1}
+          value={framing.aboutZoom}
+          onChange={(e) => patchFraming({ aboutZoom: Number(e.target.value) })}
+          className="mt-1 w-full accent-[var(--gold)]"
+        />
+        <label className="mt-3 block text-[11px] font-semibold text-muted-foreground">
+          Posição vertical — {framing.aboutPosY}%
+        </label>
+        <input
+          type="range"
+          min={0}
+          max={100}
+          step={1}
+          value={framing.aboutPosY}
+          onChange={(e) => patchFraming({ aboutPosY: Number(e.target.value) })}
+          className="mt-1 w-full accent-[var(--gold)]"
+        />
+      </Field>
 
       {(results.length > 0 || heroImage || aboutImage) && (
         <Field label="Suas imagens">
