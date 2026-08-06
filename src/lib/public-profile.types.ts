@@ -178,10 +178,14 @@ export function defaultContent(name = "Seu Nome"): ProfileContent {
       "Atendimento psicológico online e presencial para ajudar você a viver com mais leveza, equilíbrio e bem-estar.",
     ctaLabel: "Agendar minha consulta",
     heroImage: "",
+    heroZoom: 100,
+    heroPosY: 50,
     aboutTitle: "Sobre mim",
     aboutText:
       "Sou psicoterapeuta e acredito que todo processo de mudança começa com uma escolha: olhar para dentro. Meu trabalho une escuta acolhedora e técnicas baseadas em evidências para transformar sofrimento em movimento.",
     aboutImage: "",
+    aboutZoom: 100,
+    aboutPosY: 50,
     topicsTitle: "Como eu posso te ajudar",
     topicsIntro: "Áreas em que atuo com atendimento individual, online ou presencial.",
     topics: [
