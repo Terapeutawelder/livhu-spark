@@ -2172,6 +2172,91 @@ export type Database = {
           },
         ]
       }
+      zernio_accounts: {
+        Row: {
+          account_id: string
+          connected_at: string
+          display_name: string | null
+          id: string
+          metadata: Json
+          needs_reconnection: boolean
+          platform: string
+          profile_picture: string | null
+          profile_url: string | null
+          status: string
+          tenant_id: string
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          account_id: string
+          connected_at?: string
+          display_name?: string | null
+          id?: string
+          metadata?: Json
+          needs_reconnection?: boolean
+          platform: string
+          profile_picture?: string | null
+          profile_url?: string | null
+          status?: string
+          tenant_id: string
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          account_id?: string
+          connected_at?: string
+          display_name?: string | null
+          id?: string
+          metadata?: Json
+          needs_reconnection?: boolean
+          platform?: string
+          profile_picture?: string | null
+          profile_url?: string | null
+          status?: string
+          tenant_id?: string
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zernio_accounts_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      zernio_profiles: {
+        Row: {
+          created_at: string
+          profile_id: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          profile_id: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          profile_id?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "zernio_profiles_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
