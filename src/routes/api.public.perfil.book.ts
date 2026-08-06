@@ -36,7 +36,9 @@ export const Route = createFileRoute("/api/public/perfil/book")({
           phone: parsed.data.phone,
           email: parsed.data.email || undefined,
           notes: parsed.data.notes,
+          baseUrl: new URL(request.url).origin,
         });
+
         return Response.json(result, { status: result.ok ? 200 : 400 });
       },
     },
