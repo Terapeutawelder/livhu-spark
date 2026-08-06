@@ -5,7 +5,7 @@ import { AlibabaOnboardingPanel } from "@/components/alibaba-onboarding-panel";
 import { ZernioChannelsPanel } from "@/components/zernio-channels-panel";
 import { useEffect, useState } from "react";
 import {
-  User, Bell, MessageCircle, Cloud, Palette, Shield, KeyRound, Link2, Building2, Check, Copy, Globe, Loader2, ExternalLink, Radio,
+  User, Bell, MessageCircle, Cloud, Palette, Shield, KeyRound, Link2, Building2, Check, Copy, Globe, Loader2, ExternalLink, Radio, Zap,
 } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
