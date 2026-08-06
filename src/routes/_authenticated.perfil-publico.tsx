@@ -140,7 +140,9 @@ function PerfilPublicoPage() {
   );
 
   useEffect(() => {
-    if (loaded || !tenant) return;
+    // Só inicializa depois que a consulta do perfil terminou — senão o
+    // conteúdo salvo seria substituído pelos valores padrão.
+    if (loaded || !tenant || !profileFetched) return;
     if (profile) {
       const tpl = templateById(profile.template);
       setTemplate(profile.template);
@@ -153,7 +155,7 @@ function PerfilPublicoPage() {
       setSlug(slugify(tenant.slug || tenant.name));
     }
     setLoaded(true);
-  }, [profile, tenant, loaded]);
+  }, [profile, profileFetched, tenant, loaded]);
 
   const publicUrl = useMemo(() => {
     if (typeof window === "undefined") return `/p/${slug}`;
