@@ -32,9 +32,15 @@ export type ProfileContent = {
   subheadline: string;
   ctaLabel: string;
   heroImage: string;
+  /** Zoom da foto de capa em % (100 = original). */
+  heroZoom: number;
+  /** Posição vertical do recorte da foto de capa em % (0 = topo). */
+  heroPosY: number;
   aboutTitle: string;
   aboutText: string;
   aboutImage: string;
+  aboutZoom: number;
+  aboutPosY: number;
   topicsTitle: string;
   topicsIntro: string;
   topics: ProfileTopic[];
