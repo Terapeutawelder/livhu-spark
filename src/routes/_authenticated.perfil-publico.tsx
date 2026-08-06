@@ -555,6 +555,8 @@ function PhotoTab({
   const [style, setStyle] = useState<string>(STUDIO_STYLES[0].id);
   const [busy, setBusy] = useState(false);
   const [results, setResults] = useState<string[]>([]);
+  const [localSigned, setLocalSigned] = useState<Record<string, string>>({});
+  const pic = (url: string) => localSigned[url] ?? signedUrls[url] ?? url;
 
   async function pick(file: File | undefined) {
     if (!file) return;
@@ -575,6 +577,9 @@ function PhotoTab({
     try {
       const res = await generateStudioPhoto({ data: { image: source, stylePrompt: preset.prompt } });
       setResults((r) => [res.url, ...r]);
+      signProfileImages({ data: { paths: [res.url] } })
+        .then((m) => setLocalSigned((prev) => ({ ...prev, ...m })))
+        .catch(() => {});
       toast.success("Foto de estúdio gerada!");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Não foi possível gerar a foto.");
@@ -627,7 +632,7 @@ function PhotoTab({
               {busy ? (
                 <Loader2 className="h-6 w-6 animate-spin text-gold" />
               ) : latest ? (
-                <img src={latest} alt="Retrato gerado por IA" className="h-full w-full object-cover" />
+                <img src={pic(latest)} alt="Retrato gerado por IA" className="h-full w-full object-cover" />
               ) : (
                 <span className="px-2 text-center">O retrato profissional aparece aqui</span>
               )}
@@ -688,7 +693,7 @@ function PhotoTab({
         >
           {heroImage ? (
             <img
-              src={signedUrls[heroImage] ?? heroImage}
+              src={pic(heroImage)}
               alt="Prévia do enquadramento"
               className="h-full w-full object-cover"
               style={{
@@ -760,7 +765,7 @@ function PhotoTab({
           <div className="grid grid-cols-3 gap-2">
             {[...new Set([...results, heroImage, aboutImage].filter(Boolean))].map((url) => (
               <div key={url} className="group relative overflow-hidden rounded-lg border border-border">
-                <img src={signedUrls[url] ?? url} alt="Retrato gerado" className="h-28 w-full object-cover" />
+                <img src={pic(url)} alt="Retrato gerado" className="h-28 w-full object-cover" />
                 <div className="absolute inset-x-0 bottom-0 flex opacity-0 transition group-hover:opacity-100">
                   <button
                     onClick={() => onHero(url)}
