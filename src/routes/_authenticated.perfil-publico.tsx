@@ -90,7 +90,7 @@ function PerfilPublicoPage() {
   const [saving, setSaving] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  const { data: profile } = useQuery({
+  const { data: profile, isFetched: profileFetched } = useQuery({
     enabled: !!tenant?.id,
     queryKey: ["public-profile-editor", tenant?.id],
     queryFn: async () => {
@@ -140,7 +140,9 @@ function PerfilPublicoPage() {
   );
 
   useEffect(() => {
-    if (loaded || !tenant) return;
+    // Só inicializa depois que a consulta do perfil terminou — senão o
+    // conteúdo salvo seria substituído pelos valores padrão.
+    if (loaded || !tenant || !profileFetched) return;
     if (profile) {
       const tpl = templateById(profile.template);
       setTemplate(profile.template);
@@ -153,7 +155,7 @@ function PerfilPublicoPage() {
       setSlug(slugify(tenant.slug || tenant.name));
     }
     setLoaded(true);
-  }, [profile, tenant, loaded]);
+  }, [profile, profileFetched, tenant, loaded]);
 
   const publicUrl = useMemo(() => {
     if (typeof window === "undefined") return `/p/${slug}`;
@@ -170,7 +172,7 @@ function PerfilPublicoPage() {
   }
 
   async function save(nextPublished = published) {
-    if (!tenant) return;
+    if (!tenant || !loaded) return;
     const clean = slugify(slug);
     if (clean.length < 3) {
       toast.error("Defina um endereço (slug) com pelo menos 3 caracteres.");
