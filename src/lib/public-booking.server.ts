@@ -189,7 +189,9 @@ export type BookingInput = {
   phone: string;
   email?: string;
   notes?: string;
+  baseUrl?: string;
 };
+
 
 export async function createPublicBooking(
   input: BookingInput,
