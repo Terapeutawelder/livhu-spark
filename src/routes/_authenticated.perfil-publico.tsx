@@ -546,9 +546,11 @@ function PhotoTab({
     }
   }
 
+  const latest = results[0] ?? null;
+
   return (
     <>
-      <Field label="Sua foto original">
+      <Field label="Sua foto original e o resultado da IA">
         <input
           ref={fileRef}
           type="file"
@@ -556,17 +558,65 @@ function PhotoTab({
           className="hidden"
           onChange={(e) => pick(e.target.files?.[0])}
         />
-        <button
-          onClick={() => fileRef.current?.click()}
-          className="flex w-full flex-col items-center gap-2 rounded-xl border border-dashed border-border py-6 text-xs text-muted-foreground hover:border-gold hover:text-foreground"
-        >
-          {source ? (
-            <img src={source} alt="Foto enviada" className="h-32 w-32 rounded-lg object-cover" />
-          ) : (
-            <Upload className="h-6 w-6" />
-          )}
-          {source ? "Trocar foto" : "Enviar foto (JPG/PNG, máx. 8MB)"}
-        </button>
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Original</p>
+            <button
+              onClick={() => fileRef.current?.click()}
+              className="flex aspect-[4/5] w-full flex-col items-center justify-center gap-2 overflow-hidden rounded-xl border border-dashed border-border text-xs text-muted-foreground hover:border-gold hover:text-foreground"
+            >
+              {source ? (
+                <img src={source} alt="Foto enviada" className="h-full w-full object-cover" />
+              ) : (
+                <>
+                  <Upload className="h-6 w-6" />
+                  <span className="px-2 text-center">Enviar foto (JPG/PNG, máx. 8MB)</span>
+                </>
+              )}
+            </button>
+            {source && (
+              <button
+                onClick={() => fileRef.current?.click()}
+                className="mt-1 w-full text-[11px] text-muted-foreground hover:text-foreground"
+              >
+                Trocar foto
+              </button>
+            )}
+          </div>
+
+          <div>
+            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Gerada por IA</p>
+            <div className="flex aspect-[4/5] w-full items-center justify-center overflow-hidden rounded-xl border border-border bg-surface text-xs text-muted-foreground">
+              {busy ? (
+                <Loader2 className="h-6 w-6 animate-spin text-gold" />
+              ) : latest ? (
+                <img src={latest} alt="Retrato gerado por IA" className="h-full w-full object-cover" />
+              ) : (
+                <span className="px-2 text-center">O retrato profissional aparece aqui</span>
+              )}
+            </div>
+            {latest && !busy && (
+              <div className="mt-1 grid grid-cols-2 gap-1">
+                <button
+                  onClick={() => {
+                    onHero(latest);
+                    onAbout(latest);
+                    toast.success("Foto aprovada e aplicada na landing page.");
+                  }}
+                  className="rounded-md bg-gold px-2 py-1 text-[11px] font-semibold text-black hover:opacity-90"
+                >
+                  Aprovar
+                </button>
+                <button
+                  onClick={generate}
+                  className="rounded-md border border-border px-2 py-1 text-[11px] font-medium text-muted-foreground hover:text-foreground"
+                >
+                  Gerar nova
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </Field>
 
       <Field label="Estilo do estúdio">
@@ -592,7 +642,7 @@ function PhotoTab({
         className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gold px-4 py-2.5 text-sm font-semibold text-black hover:opacity-90 disabled:opacity-60"
       >
         {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-        {busy ? "Gerando retrato profissional…" : "Gerar foto de estúdio com IA"}
+        {busy ? "Gerando retrato profissional…" : latest ? "Gerar nova imagem" : "Gerar foto de estúdio com IA"}
       </button>
 
       {(results.length > 0 || heroImage || aboutImage) && (
@@ -626,6 +676,7 @@ function PhotoTab({
     </>
   );
 }
+
 
 const COLOR_FIELDS: { key: keyof ProfileTheme; label: string }[] = [
   { key: "bg", label: "Fundo" },
