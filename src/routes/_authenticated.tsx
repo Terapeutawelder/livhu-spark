@@ -44,6 +44,8 @@ export const Route = createFileRoute("/_authenticated")({
 function AuthenticatedShell() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isAdmin = pathname.startsWith("/admin");
+  useZernioProvisioning(!isAdmin);
+
 
   if (isAdmin) {
     return (
