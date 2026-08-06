@@ -56,6 +56,7 @@ import { Route as ApiPublicMetaDeauthorizeRouteImport } from './routes/api.publi
 import { Route as ApiPublicPerfilBookRouteImport } from './routes/api.public.perfil.book'
 import { Route as ApiPublicPerfilSlotsRouteImport } from './routes/api.public.perfil.slots'
 import { Route as ApiPublicWhatsappWebhookRouteImport } from './routes/api.public.whatsapp.webhook'
+import { Route as ApiPublicHooksPaymentsProviderRouteImport } from './routes/api.public.hooks.payments.$provider'
 import { Route as ApiPublicPerfilImgSplatRouteImport } from './routes/api.public.perfil.img.$'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
@@ -314,6 +315,12 @@ const ApiPublicWhatsappWebhookRoute =
     path: '/api/public/whatsapp/webhook',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksPaymentsProviderRoute =
+  ApiPublicHooksPaymentsProviderRouteImport.update({
+    id: '/api/public/hooks/payments/$provider',
+    path: '/api/public/hooks/payments/$provider',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicPerfilImgSplatRoute = ApiPublicPerfilImgSplatRouteImport.update({
   id: '/api/public/perfil/img/$',
   path: '/api/public/perfil/img/$',
@@ -367,6 +374,7 @@ export interface FileRoutesByFullPath {
   '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
   '/api/public/perfil/slots': typeof ApiPublicPerfilSlotsRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
+  '/api/public/hooks/payments/$provider': typeof ApiPublicHooksPaymentsProviderRoute
   '/api/public/perfil/img/$': typeof ApiPublicPerfilImgSplatRoute
 }
 export interface FileRoutesByTo {
@@ -415,6 +423,7 @@ export interface FileRoutesByTo {
   '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
   '/api/public/perfil/slots': typeof ApiPublicPerfilSlotsRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
+  '/api/public/hooks/payments/$provider': typeof ApiPublicHooksPaymentsProviderRoute
   '/api/public/perfil/img/$': typeof ApiPublicPerfilImgSplatRoute
 }
 export interface FileRoutesById {
@@ -466,6 +475,7 @@ export interface FileRoutesById {
   '/api/public/perfil/book': typeof ApiPublicPerfilBookRoute
   '/api/public/perfil/slots': typeof ApiPublicPerfilSlotsRoute
   '/api/public/whatsapp/webhook': typeof ApiPublicWhatsappWebhookRoute
+  '/api/public/hooks/payments/$provider': typeof ApiPublicHooksPaymentsProviderRoute
   '/api/public/perfil/img/$': typeof ApiPublicPerfilImgSplatRoute
 }
 export interface FileRouteTypes {
@@ -517,6 +527,7 @@ export interface FileRouteTypes {
     | '/api/public/perfil/book'
     | '/api/public/perfil/slots'
     | '/api/public/whatsapp/webhook'
+    | '/api/public/hooks/payments/$provider'
     | '/api/public/perfil/img/$'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -565,6 +576,7 @@ export interface FileRouteTypes {
     | '/api/public/perfil/book'
     | '/api/public/perfil/slots'
     | '/api/public/whatsapp/webhook'
+    | '/api/public/hooks/payments/$provider'
     | '/api/public/perfil/img/$'
   id:
     | '__root__'
@@ -615,6 +627,7 @@ export interface FileRouteTypes {
     | '/api/public/perfil/book'
     | '/api/public/perfil/slots'
     | '/api/public/whatsapp/webhook'
+    | '/api/public/hooks/payments/$provider'
     | '/api/public/perfil/img/$'
   fileRoutesById: FileRoutesById
 }
@@ -633,6 +646,7 @@ export interface RootRouteChildren {
   ApiPublicPerfilBookRoute: typeof ApiPublicPerfilBookRoute
   ApiPublicPerfilSlotsRoute: typeof ApiPublicPerfilSlotsRoute
   ApiPublicWhatsappWebhookRoute: typeof ApiPublicWhatsappWebhookRoute
+  ApiPublicHooksPaymentsProviderRoute: typeof ApiPublicHooksPaymentsProviderRoute
   ApiPublicPerfilImgSplatRoute: typeof ApiPublicPerfilImgSplatRoute
 }
 
@@ -967,6 +981,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWhatsappWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/payments/$provider': {
+      id: '/api/public/hooks/payments/$provider'
+      path: '/api/public/hooks/payments/$provider'
+      fullPath: '/api/public/hooks/payments/$provider'
+      preLoaderRoute: typeof ApiPublicHooksPaymentsProviderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/perfil/img/$': {
       id: '/api/public/perfil/img/$'
       path: '/api/public/perfil/img/$'
@@ -1078,18 +1099,9 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicPerfilBookRoute: ApiPublicPerfilBookRoute,
   ApiPublicPerfilSlotsRoute: ApiPublicPerfilSlotsRoute,
   ApiPublicWhatsappWebhookRoute: ApiPublicWhatsappWebhookRoute,
+  ApiPublicHooksPaymentsProviderRoute: ApiPublicHooksPaymentsProviderRoute,
   ApiPublicPerfilImgSplatRoute: ApiPublicPerfilImgSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
