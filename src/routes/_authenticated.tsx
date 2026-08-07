@@ -95,7 +95,7 @@ function AppHeader({ tenantName }: { tenantName: string | null }) {
           <div className="hidden lg:flex items-center gap-2 border-r border-border pr-4 h-8">
             <span className="text-xs font-bold text-gold uppercase tracking-widest truncate max-w-[150px]">
               {tenantName}
-            </div>
+            </span>
           </div>
         )}
         <div className="relative hidden max-w-md flex-1 sm:block">
