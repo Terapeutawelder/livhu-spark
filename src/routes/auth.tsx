@@ -105,13 +105,13 @@ function AuthPage() {
     <div className="dark flex min-h-svh items-center justify-center bg-background p-4 text-foreground sm:p-6 lg:p-8">
       <div className="grid w-full max-w-5xl overflow-hidden rounded-2xl border border-border bg-surface shadow-2xl lg:grid-cols-[1.5fr_1fr]">
         {/* Image panel — banner on mobile, taller sidebar on desktop */}
-        <div className="relative flex min-h-[220px] overflow-hidden bg-sidebar sm:min-h-[280px] lg:min-h-[560px]">
+        <div className="relative flex aspect-[4/5] max-h-[46svh] w-full overflow-hidden bg-sidebar sm:aspect-[16/10] sm:max-h-[40svh] lg:aspect-auto lg:max-h-none lg:min-h-[560px]">
           <img
             src={therapistImg}
             alt="Psicoterapeuta usando o LivHub"
             width={1280}
             height={1600}
-            className="absolute inset-0 h-full w-full object-cover object-center"
+            className="absolute inset-0 h-full w-full object-cover object-[center_18%] lg:object-center"
           />
           {/* Subtle edge gradients for polish; no text overlay so the photo stays fully visible */}
           <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/25 to-transparent" />
