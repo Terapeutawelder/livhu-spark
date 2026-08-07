@@ -366,6 +366,18 @@ function Dashboard() {
           </ul>
         </section>
 
+        <section className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-primary">Próximas novidades</h3>
+          <ul className="mt-2 space-y-2">
+            <li className="text-[11px] text-muted-foreground">
+              <span className="font-semibold text-foreground">Relatórios Avançados:</span> Exportação de dados para convênios.
+            </li>
+            <li className="text-[11px] text-muted-foreground">
+              <span className="font-semibold text-foreground">App Mobile:</span> Acesso rápido e notificações nativas.
+            </li>
+          </ul>
+        </section>
+
       </aside>
     </div>
   );
