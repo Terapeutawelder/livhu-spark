@@ -11,7 +11,7 @@ import {
   KanbanSquare,
   CalendarDays,
   CalendarClock,
-  HeartHandshake,
+  Building2,
   Bell,
   Workflow,
   Megaphone,
