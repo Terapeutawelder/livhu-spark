@@ -192,13 +192,15 @@ function AuthPage() {
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-medium text-foreground">Senha</label>
                     {mode === "login" && (
-                      <button
-                        type="button"
-                        onClick={() => setMode("forgot")}
-                        className="text-xs font-medium text-primary hover:underline"
-                      >
-                        Esqueci a senha
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => setMode("forgot")}
+                          className="text-xs font-medium text-primary hover:underline"
+                        >
+                          Esqueci a senha
+                        </button>
+                      </div>
                     )}
                   </div>
                   <input
@@ -209,6 +211,9 @@ function AuthPage() {
                     minLength={6}
                     className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
                   />
+                  <p className="mt-1 text-[10px] text-muted-foreground">
+                    Mas não estou conseguindo entrar com esse email e senha, onde verifico a minha senha?
+                  </p>
                 </div>
               )}
               <button
