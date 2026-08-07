@@ -157,11 +157,19 @@ export function ZernioChannelsPanel() {
                         key={p.id}
                         className="flex items-center justify-between gap-2 rounded-lg border bg-card/60 px-3 py-2"
                       >
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-medium">{p.label}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {isConnected ? "Conectado" : "Não conectado"}
-                          </p>
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div 
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white"
+                            style={{ backgroundColor: p.color }}
+                          >
+                            <span className="text-[10px] font-bold uppercase">{p.id.slice(0, 2)}</span>
+                          </div>
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-medium">{p.label}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {isConnected ? "Conectado" : "Não conectado"}
+                            </p>
+                          </div>
                         </div>
                         <Button
                           size="sm"
@@ -202,7 +210,12 @@ export function ZernioChannelsPanel() {
                   {a.profile_picture ? (
                     <img src={a.profile_picture} alt={a.display_name ?? a.platform} className="h-9 w-9 rounded-full object-cover" />
                   ) : (
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
+                    <div 
+                      className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold text-white"
+                      style={{ 
+                        backgroundColor: ZERNIO_PLATFORMS.find(p => p.id === a.platform)?.color ?? 'var(--primary)' 
+                      }}
+                    >
                       {(ZERNIO_PLATFORM_LABEL[a.platform] ?? a.platform).slice(0, 2).toUpperCase()}
                     </div>
                   )}
