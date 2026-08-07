@@ -43,7 +43,7 @@ const emptyPlan: Omit<Plan, "id"> = {
   currency: "BRL",
   contacts_limit: 100,
   messages_limit: 500,
-  users_limit: 1,
+  users_limit: 5,
   ai_agents_limit: 1,
   features: [],
   is_active: true,
@@ -199,7 +199,7 @@ function PlansPage() {
                 {[
                   ["Contatos", p.contacts_limit],
                   ["Mensagens/mês", p.messages_limit],
-                  ["Usuários", p.users_limit],
+                  ["Usuários Equipe", p.users_limit],
                   ["Agentes IA", p.ai_agents_limit],
                 ].map(([k, v]) => (
                   <div key={k as string} className="rounded-md border border-border bg-background p-2">
@@ -318,18 +318,23 @@ function PlanEditor({
           {[
             ["contacts_limit", "Contatos"],
             ["messages_limit", "Mensagens/mês"],
-            ["users_limit", "Usuários"],
+            ["users_limit", "Usuários Equipe (Clínica)"],
             ["ai_agents_limit", "Agentes IA"],
           ].map(([k, label]) => (
-            <label key={k} className="grid gap-1.5 text-sm">
-              <span className="font-medium text-foreground">{label}</span>
+            <div key={k} className="grid gap-1.5 text-sm">
+              <label className="font-medium text-foreground">{label}</label>
               <input
                 type="number"
                 value={(value as any)[k] ?? 0}
                 onChange={(e) => up(k as keyof Plan, Number(e.target.value) as never)}
                 className="h-9 rounded-lg border border-border bg-background px-3 text-sm"
               />
-            </label>
+              {k === 'users_limit' && (
+                <p className="text-[10px] text-muted-foreground leading-tight">
+                  Define o número de profissionais incluídos no plano base da clínica.
+                </p>
+              )}
+            </div>
           ))}
           <label className="grid gap-1.5 text-sm sm:col-span-2">
             <span className="font-medium text-foreground">Recursos (um por linha)</span>
