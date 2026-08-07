@@ -118,9 +118,26 @@ export function ZernioChannelsPanel() {
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 className="flex items-center gap-2 text-lg font-semibold">
-              <Zap className="h-5 w-5 text-primary" /> Conexão de canais (1 clique)
+              <Zap className="h-5 w-5 text-primary" /> Conexão de canais
             </h2>
-            <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+            <div className="mt-1.5 flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-1.5 rounded-full bg-muted/60 px-2.5 py-1 border border-primary/20">
+                <div className="h-4 w-12 flex items-center justify-center">
+                  <span className="text-[10px] font-black tracking-tighter text-foreground/80">ZERNIO</span>
+                </div>
+                <Separator orientation="vertical" className="h-3 mx-0.5" />
+                <Badge variant="secondary" className="h-4 px-1.5 text-[9px] font-bold uppercase bg-primary/10 text-primary border-0">
+                  Partner
+                </Badge>
+                <div className="flex -space-x-1 items-center ml-0.5 opacity-70">
+                  <div className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-white ring-1 ring-border shadow-sm p-0.5">
+                    <img src="https://cdn.simpleicons.org/meta" alt="Meta" className="h-full w-full object-contain" />
+                  </div>
+                </div>
+              </div>
+              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Parceira oficial LivHub & Meta</p>
+            </div>
+            <p className="max-w-2xl text-sm text-muted-foreground">
               Conecte WhatsApp, Instagram, Messenger, Google Meu Negócio e outros canais autorizando sua conta
               diretamente — sem criar app na Meta e sem tokens manuais. As mensagens chegam no seu Inbox do LivHub.
             </p>
