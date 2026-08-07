@@ -159,10 +159,18 @@ export function ZernioChannelsPanel() {
                       >
                         <div className="flex items-center gap-2 min-w-0">
                           <div 
-                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white"
-                            style={{ backgroundColor: p.color }}
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white p-1.5 shadow-sm"
                           >
-                            <span className="text-[10px] font-bold uppercase">{p.id.slice(0, 2)}</span>
+                            <img 
+                              src={`https://cdn.simpleicons.org/${p.icon}`} 
+                              alt={p.label}
+                              className="h-full w-full object-contain"
+                              onError={(e) => {
+                                // Fallback se o ícone não carregar
+                                e.currentTarget.style.display = 'none';
+                                e.currentTarget.parentElement!.innerHTML = `<span class="text-[10px] font-bold uppercase text-black">${p.id.slice(0, 2)}</span>`;
+                              }}
+                            />
                           </div>
                           <div className="min-w-0">
                             <p className="truncate text-sm font-medium">{p.label}</p>
@@ -211,12 +219,17 @@ export function ZernioChannelsPanel() {
                     <img src={a.profile_picture} alt={a.display_name ?? a.platform} className="h-9 w-9 rounded-full object-cover" />
                   ) : (
                     <div 
-                      className="flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold text-white"
-                      style={{ 
-                        backgroundColor: ZERNIO_PLATFORMS.find(p => p.id === a.platform)?.color ?? 'var(--primary)' 
-                      }}
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white p-2 shadow-sm"
                     >
-                      {(ZERNIO_PLATFORM_LABEL[a.platform] ?? a.platform).slice(0, 2).toUpperCase()}
+                      <img 
+                        src={`https://cdn.simpleicons.org/${ZERNIO_PLATFORMS.find(p => p.id === a.platform)?.icon ?? a.platform}`} 
+                        alt={a.platform}
+                        className="h-full w-full object-contain"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          e.currentTarget.parentElement!.innerHTML = `<span class="text-xs font-semibold text-black">${(ZERNIO_PLATFORM_LABEL[a.platform] ?? a.platform).slice(0, 2).toUpperCase()}</span>`;
+                        }}
+                      />
                     </div>
                   )}
                   <div>
