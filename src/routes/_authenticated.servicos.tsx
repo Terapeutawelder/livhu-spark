@@ -68,7 +68,7 @@ function ClinicaPage() {
     enabled: !!tenant?.id,
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("tenant_members")
+        .from("tenant_members" as any)
         .select(`
           id,
           user_id,
@@ -98,7 +98,7 @@ function ClinicaPage() {
     enabled: !!tenant?.id,
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("tenant_invitations")
+        .from("tenant_invitations" as any)
         .select("*")
         .eq("tenant_id", tenant!.id)
         .eq("status", "pending");
@@ -115,13 +115,13 @@ function ClinicaPage() {
       const { data: user } = await supabase.auth.getUser();
       if (!user.user) return;
 
-      const { error } = await supabase.from("tenant_invitations").insert({
+      const { error } = await supabase.from("tenant_invitations" as any).insert({
         tenant_id: tenant.id,
         email: inviteEmail.trim().toLowerCase(),
         role: inviteRole,
         token: crypto.randomUUID(),
         invited_by: user.user.id
-      });
+      } as any);
 
       if (error) throw error;
 
