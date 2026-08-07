@@ -321,15 +321,20 @@ function PlanEditor({
             ["users_limit", "Usuários Equipe (Clínica)"],
             ["ai_agents_limit", "Agentes IA"],
           ].map(([k, label]) => (
-            <label key={k} className="grid gap-1.5 text-sm">
-              <span className="font-medium text-foreground">{label}</span>
+            <div key={k} className="grid gap-1.5 text-sm">
+              <label className="font-medium text-foreground">{label}</label>
               <input
                 type="number"
                 value={(value as any)[k] ?? 0}
                 onChange={(e) => up(k as keyof Plan, Number(e.target.value) as never)}
                 className="h-9 rounded-lg border border-border bg-background px-3 text-sm"
               />
-            </label>
+              {k === 'users_limit' && (
+                <p className="text-[10px] text-muted-foreground leading-tight">
+                  Define o número de profissionais incluídos no plano base da clínica.
+                </p>
+              )}
+            </div>
           ))}
           <label className="grid gap-1.5 text-sm sm:col-span-2">
             <span className="font-medium text-foreground">Recursos (um por linha)</span>
