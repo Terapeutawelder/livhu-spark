@@ -202,7 +202,7 @@ function ClinicaPage() {
                           </td>
                         </tr>
                       ))}
-                      {invitations.map((inv) => (
+                      {invitations.map((inv: any) => (
                         <tr key={inv.id} className="hover:bg-muted/30 transition-colors opacity-70">
                           <td className="px-4 py-4">
                             <div className="font-semibold italic">Convite Pendente</div>
