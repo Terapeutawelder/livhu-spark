@@ -43,7 +43,7 @@ const emptyPlan: Omit<Plan, "id"> = {
   currency: "BRL",
   contacts_limit: 100,
   messages_limit: 500,
-  users_limit: 1,
+  users_limit: 5,
   ai_agents_limit: 1,
   features: [],
   is_active: true,
@@ -199,7 +199,7 @@ function PlansPage() {
                 {[
                   ["Contatos", p.contacts_limit],
                   ["Mensagens/mês", p.messages_limit],
-                  ["Usuários", p.users_limit],
+                  ["Usuários Equipe", p.users_limit],
                   ["Agentes IA", p.ai_agents_limit],
                 ].map(([k, v]) => (
                   <div key={k as string} className="rounded-md border border-border bg-background p-2">
@@ -318,7 +318,7 @@ function PlanEditor({
           {[
             ["contacts_limit", "Contatos"],
             ["messages_limit", "Mensagens/mês"],
-            ["users_limit", "Usuários"],
+            ["users_limit", "Usuários Equipe (Clínica)"],
             ["ai_agents_limit", "Agentes IA"],
           ].map(([k, label]) => (
             <label key={k} className="grid gap-1.5 text-sm">
