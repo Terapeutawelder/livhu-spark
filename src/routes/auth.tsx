@@ -211,9 +211,6 @@ function AuthPage() {
                     minLength={6}
                     className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
                   />
-                  <p className="mt-1 text-[10px] text-muted-foreground">
-                    Qual mensagem?
-                  </p>
                 </div>
               )}
               <button
