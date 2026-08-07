@@ -63,16 +63,75 @@ function ClinicaPage() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState<"admin" | "therapist">("therapist");
 
-  // Mock de membros enquanto a migração não é executada
-  const members = [
-    { id: "1", user_id: "u1", email: "titular@exemplo.com", role: "owner", status: "active", name: "Dra. Helena (Você)" },
-  ];
+  const { data: members = [], isLoading: loadingMembers } = useQuery({
+    queryKey: ["tenant-members", tenant?.id],
+    enabled: !!tenant?.id,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tenant_members")
+        .select(`
+          id,
+          user_id,
+          role,
+          status,
+          profiles:user_id (
+            full_name,
+            email
+          )
+        `)
+        .eq("tenant_id", tenant!.id);
+      
+      if (error) throw error;
+      return (data || []).map((m: any) => ({
+        id: m.id,
+        user_id: m.user_id,
+        role: m.role,
+        status: m.status,
+        name: m.profiles?.full_name || "Membro da Equipe",
+        email: m.profiles?.email || ""
+      }));
+    }
+  });
+
+  const { data: invitations = [] } = useQuery({
+    queryKey: ["tenant-invitations", tenant?.id],
+    enabled: !!tenant?.id,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("tenant_invitations")
+        .select("*")
+        .eq("tenant_id", tenant!.id)
+        .eq("status", "pending");
+      
+      if (error) throw error;
+      return data || [];
+    }
+  });
 
   const handleInvite = async () => {
-    if (!inviteEmail) return;
-    toast.info(`Funcionalidade de convite para ${inviteEmail} em desenvolvimento.`);
-    setInviteOpen(false);
-    setInviteEmail("");
+    if (!inviteEmail || !tenant) return;
+    
+    try {
+      const { data: user } = await supabase.auth.getUser();
+      if (!user.user) return;
+
+      const { error } = await supabase.from("tenant_invitations").insert({
+        tenant_id: tenant.id,
+        email: inviteEmail.trim().toLowerCase(),
+        role: inviteRole,
+        token: crypto.randomUUID(),
+        invited_by: user.user.id
+      });
+
+      if (error) throw error;
+
+      toast.success(`Convite enviado para ${inviteEmail}!`);
+      qc.invalidateQueries({ queryKey: ["tenant-invitations"] });
+      setInviteOpen(false);
+      setInviteEmail("");
+    } catch (error: any) {
+      toast.error(`Erro ao enviar convite: ${error.message}`);
+    }
   };
 
   return (
@@ -116,29 +175,58 @@ function ClinicaPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
-                  {members.map((m) => (
-                    <tr key={m.id} className="hover:bg-muted/30 transition-colors">
-                      <td className="px-4 py-4">
-                        <div className="font-semibold">{m.name}</div>
-                        <div className="text-xs text-muted-foreground">{m.email}</div>
-                      </td>
-                      <td className="px-4 py-4">
-                        <Badge variant="outline" className="capitalize">
-                          {m.role === 'owner' ? 'Proprietário' : m.role}
-                        </Badge>
-                      </td>
-                      <td className="px-4 py-4">
-                        <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">
-                          {m.status === 'active' ? 'Ativo' : m.status}
-                        </Badge>
-                      </td>
-                      <td className="px-4 py-4 text-right">
-                        <Button variant="ghost" size="icon" disabled={m.role === 'owner'}>
-                          <Settings className="h-4 w-4" />
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
+                  {loadingMembers ? (
+                    <tr><td colSpan={4} className="px-4 py-8 text-center text-muted-foreground">Carregando membros...</td></tr>
+                  ) : (
+                    <>
+                      {members.map((m) => (
+                        <tr key={m.id} className="hover:bg-muted/30 transition-colors">
+                          <td className="px-4 py-4">
+                            <div className="font-semibold">{m.name}</div>
+                            <div className="text-xs text-muted-foreground">{m.email}</div>
+                          </td>
+                          <td className="px-4 py-4">
+                            <Badge variant="outline" className="capitalize">
+                              {m.role === 'owner' ? 'Proprietário' : m.role === 'admin' ? 'Administrador' : 'Psicoterapeuta'}
+                            </Badge>
+                          </td>
+                          <td className="px-4 py-4">
+                            <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">
+                              {m.status === 'active' ? 'Ativo' : m.status}
+                            </Badge>
+                          </td>
+                          <td className="px-4 py-4 text-right">
+                            <Button variant="ghost" size="icon" disabled={m.role === 'owner'}>
+                              <Settings className="h-4 w-4" />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                      {invitations.map((inv) => (
+                        <tr key={inv.id} className="hover:bg-muted/30 transition-colors opacity-70">
+                          <td className="px-4 py-4">
+                            <div className="font-semibold italic">Convite Pendente</div>
+                            <div className="text-xs text-muted-foreground">{inv.email}</div>
+                          </td>
+                          <td className="px-4 py-4">
+                            <Badge variant="secondary" className="capitalize">
+                              {inv.role === 'admin' ? 'Administrador' : 'Psicoterapeuta'}
+                            </Badge>
+                          </td>
+                          <td className="px-4 py-4">
+                            <Badge variant="outline" className="animate-pulse">
+                              Aguardando
+                            </Badge>
+                          </td>
+                          <td className="px-4 py-4 text-right">
+                            <Button variant="ghost" size="icon" className="text-destructive">
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  )}
                 </tbody>
               </table>
             </div>
