@@ -156,6 +156,53 @@ function SystemPage() {
             </li>
           </ul>
         </div>
+      <div className="mt-6 grid gap-6 lg:grid-cols-2">
+        <div className="rounded-2xl border border-border bg-surface p-5">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-gold" />
+            <h3 className="font-display text-lg font-semibold text-foreground">Roadmap & Próximos Passos</h3>
+          </div>
+          <div className="mt-4 space-y-4">
+            {[
+              { t: "Custom Domains SSL (Fase B)", d: "Automação via Cloudflare para domínios próprios dos terapeutas.", s: "in_progress" },
+              { t: "SaaS Marketing Site", d: "Página inicial pública do LivHub para captação de novos profissionais.", s: "planned" },
+              { t: "Analytics Consolidado", d: "Dashboard global de faturamento e volume de mensagens cross-tenant.", s: "planned" },
+              { t: "Suporte a Clínicas", d: "Permissões de multi-usuário para equipes de terapeutas no mesmo tenant.", s: "planned" },
+              { t: "App Mobile (PWA+)", d: "Experiência otimizada com notificações push nativas em iOS/Android.", s: "planned" },
+            ].map((i) => (
+              <div key={i.t} className="flex gap-3">
+                <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-gold" />
+                <div>
+                  <p className="text-sm font-semibold text-foreground">{i.t}</p>
+                  <p className="text-xs text-muted-foreground">{i.d}</p>
+                  <span className={`mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${
+                    i.s === 'in_progress' ? 'bg-amber-500/10 text-amber-500' : 'bg-muted text-muted-foreground'
+                  }`}>
+                    {i.s === 'in_progress' ? 'Em progresso' : 'Planejado'}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-surface p-5">
+          <div className="flex items-center gap-2">
+            <Database className="h-4 w-4 text-gold" />
+            <h3 className="font-display text-lg font-semibold text-foreground">Manutenção & Backups</h3>
+          </div>
+          <div className="mt-4 space-y-3">
+            <div className="rounded-lg border border-border bg-background p-3">
+              <p className="text-xs font-medium text-muted-foreground">Último backup completo</p>
+              <p className="text-sm font-semibold text-foreground">Hoje · 04:12 (Diário)</p>
+            </div>
+            <div className="rounded-lg border border-border bg-background p-3">
+              <p className="text-xs font-medium text-muted-foreground">Logs de erro (24h)</p>
+              <p className="text-sm font-semibold text-emerald-500">0 erros críticos</p>
+            </div>
+            <Button variant="outline" size="sm" className="w-full">Exportar logs operacionais</Button>
+          </div>
+        </div>
       </div>
 
       <div className="mt-6 rounded-2xl border border-border bg-surface">
