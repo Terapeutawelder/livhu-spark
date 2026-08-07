@@ -4,6 +4,7 @@ import { AdminShell } from "@/components/admin-shell";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Activity, Database, Cpu, CheckCircle2, Flag, Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 export const Route = createFileRoute("/_authenticated/admin/sistema")({
@@ -156,6 +157,8 @@ function SystemPage() {
             </li>
           </ul>
         </div>
+      </div>
+
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <div className="rounded-2xl border border-border bg-surface p-5">
           <div className="flex items-center gap-2">
