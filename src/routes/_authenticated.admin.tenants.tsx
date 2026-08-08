@@ -123,7 +123,7 @@ function TenantsPage() {
     <AdminShell
       title="Clientes"
       description="Todos os consultórios e clínicas que operam na plataforma."
-      className="w-full max-w-7xl mx-auto"
+      className="w-full"
     >
       <div className="rounded-2xl border border-border bg-surface">
         <div className="flex flex-wrap items-center gap-2 border-b border-border p-4">
