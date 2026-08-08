@@ -105,7 +105,7 @@ function AdminLayout() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 lg:pl-64">
+      <div className="flex-1 lg:pl-64 flex flex-col min-h-screen">
         <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-border bg-background/80 px-8 backdrop-blur-md">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span>Super Admin</span>
@@ -119,10 +119,12 @@ function AdminLayout() {
             <div className="h-8 w-8 rounded-full bg-gold/20 flex items-center justify-center text-xs font-bold text-gold">SA</div>
           </div>
         </header>
-        <div className="p-4 md:p-8">
-          <Outlet />
-        </div>
-      </main>
+        <main className="flex-1 flex flex-col items-center p-4 md:p-8 overflow-auto">
+          <div className="w-full max-w-7xl mx-auto">
+            <Outlet />
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
