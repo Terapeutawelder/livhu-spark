@@ -12,6 +12,7 @@ import {
   LifeBuoy,
   Search,
   Bell,
+  User,
   CalendarDays,
   Settings,
   LogOut,
@@ -21,6 +22,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
+import { NotificationBell } from "./notification-bell";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -165,17 +167,15 @@ export function AdminShell({
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <button
-              aria-label="Notificações"
-              className="relative grid h-9 w-9 place-items-center rounded-full border border-border bg-surface text-foreground hover:bg-muted"
-            >
-              <Bell className="h-4 w-4" />
-              <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-gold" />
-            </button>
-            <div className="ml-1 hidden items-center gap-2 rounded-full border border-border bg-surface pl-1 pr-2 sm:flex">
-              <div className="grid h-8 w-8 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground">
+            <NotificationBell />
+            <div className="ml-1 hidden items-center gap-2 rounded-full border border-border bg-surface pl-1 pr-1 sm:flex">
+              <Link
+                to="/admin/configuracao"
+                title="Meu Perfil"
+                className="grid h-8 w-8 place-items-center rounded-full bg-gold text-xs font-bold text-sidebar-active-foreground transition-transform hover:scale-105"
+              >
                 SA
-              </div>
+              </Link>
               <button
                 onClick={handleSignOut}
                 aria-label="Sair"
