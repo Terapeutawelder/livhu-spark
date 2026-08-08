@@ -79,6 +79,7 @@ function DominiosAdminPage() {
     <AdminShell
       title="Domínios"
       description="Ative subdomínios e provisione domínios próprios (Cloudflare for SaaS)."
+      className="w-full max-w-7xl mx-auto"
     >
       {isLoading ? (
         <div className="grid place-items-center py-16 text-muted-foreground">

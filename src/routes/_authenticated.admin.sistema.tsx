@@ -96,7 +96,7 @@ function SystemPage() {
   ];
 
   return (
-    <AdminShell title="Sistema" description="Observabilidade e configuração operacional da plataforma.">
+    <AdminShell title="Sistema" description="Observabilidade e configuração operacional da plataforma." className="w-full max-w-7xl mx-auto">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {[
           { k: "Clientes", v: platformStats.data?.tenants ?? 0 },

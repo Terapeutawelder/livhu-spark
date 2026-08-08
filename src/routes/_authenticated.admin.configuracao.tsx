@@ -146,6 +146,7 @@ function ConfigPage() {
     <AdminShell
       title="Configuração da plataforma"
       description="Ajustes globais que valem para todos os clientes do LivHub."
+      className="w-full max-w-7xl mx-auto"
       actions={
         <button
           onClick={() => save.mutate(settings)}

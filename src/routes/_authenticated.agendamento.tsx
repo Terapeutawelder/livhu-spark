@@ -267,7 +267,7 @@ function AgendamentoPage() {
   const blockCount = useMemo(() => appointments.filter((a) => a.kind === "block").length, [appointments]);
 
   return (
-    <div className="p-4 md:p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-6 max-w-7xl mx-auto w-full">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl md:text-3xl font-semibold tracking-tight">Agendamento</h1>

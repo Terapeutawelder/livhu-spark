@@ -112,7 +112,7 @@ const weekGoals = [
 
 function Dashboard() {
   return (
-    <div className="grid gap-6 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-8 lg:p-8">
+    <div className="grid gap-6 p-4 sm:p-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-8 lg:p-8 max-w-7xl mx-auto w-full">
       {/* MAIN COLUMN */}
       <div className="min-w-0 space-y-6">
         {/* Welcome card (dourado) */}
