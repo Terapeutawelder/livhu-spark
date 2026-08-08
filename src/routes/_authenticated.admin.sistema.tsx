@@ -170,7 +170,7 @@ function SystemPage() {
               { t: "Custom Domains SSL (Fase B)", d: "Automação via Cloudflare para domínios próprios dos terapeutas.", s: "in_progress" },
               { t: "SaaS Marketing Site", d: "Página inicial pública do LivHub para captação de novos profissionais.", s: "planned" },
               { t: "Analytics Consolidado", d: "Dashboard global de faturamento e volume de mensagens cross-tenant.", s: "planned" },
-              { t: "Suporte a Clínicas", d: "Implementar uma seção de FAQ para suporte a clientes(Profissionais)  e Clínicas, com busca e artigos por categoria. (Profissional apenas um usuário e clínica á patir de 5 profissionais).\nCrie também um menu tutorial.", s: "in_progress" },
+              { t: "Suporte a Clínicas", d: "O que está faltando para concluirmos a etapa das clínicas?", s: "in_progress" },
               { t: "App Mobile (PWA+)", d: "Experiência otimizada com notificações push nativas em iOS/Android.", s: "planned" },
             ].map((i) => (
               <div key={i.t} className="flex gap-3">
