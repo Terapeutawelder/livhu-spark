@@ -125,7 +125,7 @@ function PlanosPage() {
                     </span>
                   </p>
 
-                  <ul className="mt-4 space-y-2 text-sm">
+                  <ul className="mt-4 space-y-2 text-sm text-left">
                     <li className="flex items-center gap-2">
                       <Check className="h-4 w-4 text-gold" /> {fmtLimit(plan.contacts_limit)} contatos
                     </li>
