@@ -65,8 +65,8 @@ function ConfiguracoesPage() {
   const [tab, setTab] = useState(initialTab);
 
   return (
-    <div className="flex flex-col gap-4 p-4 lg:p-6">
-      <div>
+    <div className="flex flex-col gap-4 p-4 lg:p-6 items-center">
+      <div className="text-center">
         <h1 className="text-2xl font-semibold tracking-tight">Configurações</h1>
         <p className="text-sm text-muted-foreground">Ajuste seu consultório, marca, integrações e segurança.</p>
       </div>
