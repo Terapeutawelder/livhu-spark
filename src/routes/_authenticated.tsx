@@ -1,13 +1,13 @@
-import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { provisionZernioProfile } from "@/lib/zernio.functions";
 import { AppSidebar, SidebarProvider, useSidebar, MobileMenuButton } from "@/components/app-sidebar";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { TrialBanner } from "@/components/trial-banner";
 import { NotificationBell } from "@/components/notification-bell";
 import { Search } from "lucide-react";
+import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { provisionZernioProfile } from "@/lib/zernio.functions";
 
 /** Garante o cadastro do consultório na Zernio (POST /v1/profiles) uma vez por sessão. */
 function useZernioProvisioning(enabled: boolean) {
@@ -64,11 +64,19 @@ function AuthenticatedShell() {
 
 function TherapistShell() {
   const { collapsed } = useSidebar();
+  const [tenantName, setTenantName] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.from('tenants').select('name').single().then(({ data }) => {
+      if (data?.name) setTenantName(data.name);
+    });
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AppSidebar />
       <div className={"transition-[padding] duration-200 " + (collapsed ? "lg:pl-16" : "lg:pl-60")}>
-        <AppHeader />
+        <AppHeader tenantName={tenantName} />
         <TrialBanner />
         <main className="min-h-[calc(100vh-4rem)]">
           <Outlet />
@@ -78,11 +86,18 @@ function TherapistShell() {
   );
 }
 
-function AppHeader() {
+function AppHeader({ tenantName }: { tenantName: string | null }) {
   return (
     <header className="sticky top-0 z-20 flex h-16 items-center gap-2 border-b border-border bg-background/85 px-3 backdrop-blur-md sm:gap-3 sm:px-6 lg:px-8">
       <MobileMenuButton />
-      <div className="flex flex-1 items-center gap-2 min-w-0">
+      <div className="flex flex-1 items-center gap-4 min-w-0">
+        {tenantName && (
+          <div className="hidden lg:flex items-center gap-2 border-r border-border pr-4 h-8">
+            <span className="text-xs font-bold text-gold uppercase tracking-widest truncate max-w-[150px]">
+              {tenantName}
+            </span>
+          </div>
+        )}
         <div className="relative hidden max-w-md flex-1 sm:block">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <input
