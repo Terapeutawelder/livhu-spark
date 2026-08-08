@@ -119,8 +119,10 @@ function AdminLayout() {
             <div className="h-8 w-8 rounded-full bg-gold/20 flex items-center justify-center text-xs font-bold text-gold">SA</div>
           </div>
         </header>
-        <div className="p-8">
-          <Outlet />
+        <div className="flex-1 overflow-auto p-4 md:p-8 flex flex-col items-center">
+          <div className="w-full max-w-7xl">
+            <Outlet />
+          </div>
         </div>
       </main>
     </div>
