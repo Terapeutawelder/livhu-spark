@@ -138,7 +138,7 @@ function PlansPage() {
     <AdminShell
       title="Planos de assinatura"
       description="Preços, limites e recursos disponíveis por plano."
-      className="w-full"
+      className="w-full flex flex-col items-center"
       actions={
         <button
           onClick={() => setEditing(emptyPlan)}
