@@ -138,7 +138,7 @@ function PlansPage() {
     <AdminShell
       title="Planos de assinatura"
       description="Preços, limites e recursos disponíveis por plano."
-      className="w-full max-w-7xl mx-auto"
+      className="w-full"
       actions={
         <button
           onClick={() => setEditing(emptyPlan)}

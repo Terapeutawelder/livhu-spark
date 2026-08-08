@@ -136,7 +136,7 @@ function SupportPage() {
     <AdminShell
       title="Suporte"
       description="Central de tickets e conversas com os clientes."
-      className="w-full max-w-7xl mx-auto"
+      className="w-full"
       actions={
         <button
           onClick={() => setCreating(true)}

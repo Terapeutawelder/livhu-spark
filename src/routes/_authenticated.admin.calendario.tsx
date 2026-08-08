@@ -116,7 +116,7 @@ function AdminCalendar() {
     <AdminShell
       title="Calendário da operação"
       description="Renovações de assinatura, fim de trials e ativações de novos clientes."
-      className="w-full max-w-7xl mx-auto"
+      className="w-full"
       actions={
         <div className="flex items-center gap-2">
           <button
