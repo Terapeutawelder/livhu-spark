@@ -33,6 +33,8 @@ type Plan = {
   is_active: boolean;
   is_highlighted: boolean;
   sort_order: number;
+  additional_user_price_cents?: number;
+  additional_channel_price_cents?: number;
 };
 
 const emptyPlan: Omit<Plan, "id"> = {
@@ -49,6 +51,8 @@ const emptyPlan: Omit<Plan, "id"> = {
   is_active: true,
   is_highlighted: false,
   sort_order: 99,
+  additional_user_price_cents: 0,
+  additional_channel_price_cents: 0,
 };
 
 function PlansPage() {
@@ -83,7 +87,7 @@ function PlansPage() {
 
   const upsert = useMutation({
     mutationFn: async (p: Partial<Plan>) => {
-      const payload = {
+      const payload: any = {
         slug: p.slug!.trim().toLowerCase(),
         name: p.name!.trim(),
         description: p.description ?? "",
@@ -97,6 +101,8 @@ function PlansPage() {
         is_active: p.is_active ?? true,
         is_highlighted: p.is_highlighted ?? false,
         sort_order: Number(p.sort_order) || 0,
+        additional_user_price_cents: Number(p.additional_user_price_cents) || 0,
+        additional_channel_price_cents: Number(p.additional_channel_price_cents) || 0,
       };
       if (p.id) {
         const { error } = await supabase.from("subscription_plans").update(payload).eq("id", p.id);
@@ -209,6 +215,20 @@ function PlansPage() {
                     </p>
                   </div>
                 ))}
+                <div className="col-span-2 mt-1 border-t border-border pt-2 space-y-1">
+                  <div className="flex justify-between text-[10px] text-muted-foreground">
+                    <span>Adicional Usuário</span>
+                    <span className="font-medium text-foreground">
+                      R$ {((p.additional_user_price_cents || 0) / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-[10px] text-muted-foreground">
+                    <span>Adicional Canal</span>
+                    <span className="font-medium text-foreground">
+                      R$ {((p.additional_channel_price_cents || 0) / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+                    </span>
+                  </div>
+                </div>
               </div>
               <ul className="mt-4 space-y-1.5 text-sm">
                 {p.features.map((f) => (
@@ -336,6 +356,28 @@ function PlanEditor({
               )}
             </div>
           ))}
+          <div className="grid gap-1.5 text-sm">
+            <label className="font-medium text-foreground">Valor Adicional por Usuário (centavos)</label>
+            <input
+              type="number"
+              value={value.additional_user_price_cents ?? 0}
+              onChange={(e) => up("additional_user_price_cents", Number(e.target.value))}
+              className="h-9 rounded-lg border border-border bg-background px-3 text-sm"
+              placeholder="0.00"
+            />
+            <p className="text-[10px] text-muted-foreground">Custo extra por cada usuário além do limite.</p>
+          </div>
+          <div className="grid gap-1.5 text-sm">
+            <label className="font-medium text-foreground">Valor Adicional por Canal (centavos)</label>
+            <input
+              type="number"
+              value={value.additional_channel_price_cents ?? 0}
+              onChange={(e) => up("additional_channel_price_cents", Number(e.target.value))}
+              className="h-9 rounded-lg border border-border bg-background px-3 text-sm"
+              placeholder="0.00"
+            />
+            <p className="text-[10px] text-muted-foreground">Custo extra por cada canal além do limite.</p>
+          </div>
           <label className="grid gap-1.5 text-sm sm:col-span-2">
             <span className="font-medium text-foreground">Recursos (um por linha)</span>
             <textarea
