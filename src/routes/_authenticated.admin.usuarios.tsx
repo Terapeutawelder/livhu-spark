@@ -102,7 +102,7 @@ function UsersPage() {
     <AdminShell
       title="Usuários & Papéis"
       description="Todos os usuários registrados na plataforma."
-      className="w-full"
+      className="w-full flex flex-col items-center"
     >
       <div className="grid gap-4 sm:grid-cols-4">
         {[
