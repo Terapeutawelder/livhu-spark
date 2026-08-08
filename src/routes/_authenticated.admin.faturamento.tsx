@@ -144,7 +144,7 @@ function BillingPage() {
     <AdminShell
       title="Faturamento"
       description="Receita, cobranças e inadimplência da plataforma."
-      className="w-full"
+      className="w-full max-w-7xl mx-auto"
       actions={
         <div className="flex gap-2">
           <button
