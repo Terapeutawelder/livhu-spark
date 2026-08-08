@@ -150,7 +150,7 @@ function PlansPage() {
       {plansQuery.isLoading ? (
         <p className="text-sm text-muted-foreground">Carregando planos…</p>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4 justify-center">
           {plans.map((p) => (
             <div
               key={p.id}
