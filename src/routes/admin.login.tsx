@@ -93,34 +93,40 @@ function AdminLoginPage() {
           pela página principal.
         </p>
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-6 space-y-4" aria-labelledby="admin-login-title">
+          <h1 id="admin-login-title" className="sr-only">Acesso restrito - Super Admin</h1>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-sidebar-muted">E-mail administrativo</label>
+            <label htmlFor="admin-email" className="text-xs font-medium text-sidebar-muted">E-mail administrativo</label>
             <input
+              id="admin-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
               className="h-10 w-full rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-white placeholder:text-sidebar-muted focus:border-gold/40 focus:outline-none focus:ring-2 focus:ring-gold/30"
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-sidebar-muted">Senha</label>
+            <label htmlFor="admin-password" className="text-xs font-medium text-sidebar-muted">Senha</label>
             <input
+              id="admin-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={6}
+              autoComplete="current-password"
               className="h-10 w-full rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-white focus:border-gold/40 focus:outline-none focus:ring-2 focus:ring-gold/30"
             />
           </div>
           <button
             type="submit"
             disabled={loading}
+            aria-busy={loading}
             className="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-gold text-sm font-semibold text-sidebar-active-foreground transition hover:opacity-90 disabled:opacity-60"
           >
-            <Lock className="h-4 w-4" />
+            <Lock className="h-4 w-4" aria-hidden="true" />
             {loading ? "Verificando…" : "Entrar no console"}
           </button>
         </form>

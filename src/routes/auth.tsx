@@ -121,10 +121,10 @@ function AuthPage() {
         {/* Content panel — logo, value prop and auth form */}
         <div className="flex items-center justify-center px-5 py-6 sm:px-8 lg:px-10 lg:py-8">
           <div className="w-full max-w-sm space-y-4">
-            <Link to="/auth" className="inline-flex items-center">
+            <Link to="/auth" className="inline-flex items-center" aria-label="Voltar para o início">
               <img
                 src={livhubLogo.url}
-                alt="LivHub"
+                alt="Logo LivHub"
                 width={1280}
                 height={640}
                 className="h-20 w-auto sm:h-24"
@@ -164,33 +164,38 @@ function AuthPage() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3" aria-labelledby="auth-form-title">
+              <h1 id="auth-form-title" className="sr-only">{titles[mode]}</h1>
               {mode === "signup" && (
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-foreground">Nome completo</label>
+                  <label htmlFor="fullName" className="text-xs font-medium text-foreground">Nome completo</label>
                   <input
+                    id="fullName"
                     type="text"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     required
+                    autoComplete="name"
                     className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
                   />
                 </div>
               )}
               <div className="space-y-1">
-                <label className="text-xs font-medium text-foreground">E-mail</label>
+                <label htmlFor="email" className="text-xs font-medium text-foreground">E-mail</label>
                 <input
+                  id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
+                  autoComplete="email"
                   className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
                 />
               </div>
               {mode !== "forgot" && (
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-medium text-foreground">Senha</label>
+                    <label htmlFor="password" className="text-xs font-medium text-foreground">Senha</label>
                     {mode === "login" && (
                       <div className="flex gap-2">
                         <button
@@ -204,11 +209,13 @@ function AuthPage() {
                     )}
                   </div>
                   <input
+                    id="password"
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     minLength={6}
+                    autoComplete={mode === "signup" ? "new-password" : "current-password"}
                     className="h-10 w-full rounded-lg border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring/40"
                   />
                 </div>
@@ -216,6 +223,7 @@ function AuthPage() {
               <button
                 type="submit"
                 disabled={loading}
+                aria-busy={loading}
                 className="h-10 w-full rounded-lg bg-primary text-sm font-semibold text-primary-foreground transition hover:opacity-90 disabled:opacity-60"
               >
                 {loading
