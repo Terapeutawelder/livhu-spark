@@ -434,17 +434,23 @@ function IntegracoesPanel() {
 }
 
 function SegurancaPanel() {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [twoFactor, setTwoFactor] = useState(false);
+  const [autoLogout, setAutoLogout] = useState(false);
+  const [auditLog, setAuditLog] = useState(false);
+
   return (
     <Card className="p-6">
       <PanelHeader title="Segurança" desc="Senha, 2FA e sessões ativas." />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Senha atual" type="password" defaultValue="********" />
-        <Field label="Nova senha" type="password" defaultValue="" />
+        <Field label="Senha atual" type="password" value={currentPassword} onChange={setCurrentPassword} />
+        <Field label="Nova senha" type="password" value={newPassword} onChange={setNewPassword} />
       </div>
       <Separator className="my-4" />
-      <ToggleRow title="Autenticação de dois fatores (2FA)" desc="Recomendado para dados clínicos." defaultChecked />
-      <ToggleRow title="Encerrar sessões automaticamente após 30 min inativo" desc="Compliance LGPD." defaultChecked />
-      <ToggleRow title="Log de auditoria completo" desc="Registra acesso a prontuários." defaultChecked />
+      <ToggleRow title="Autenticação de dois fatores (2FA)" desc="Recomendado para dados clínicos." checked={twoFactor} onCheckedChange={setTwoFactor} />
+      <ToggleRow title="Encerrar sessões automaticamente após 30 min inativo" desc="Compliance LGPD." checked={autoLogout} onCheckedChange={setAutoLogout} />
+      <ToggleRow title="Log de auditoria completo" desc="Registra acesso a prontuários." checked={auditLog} onCheckedChange={setAuditLog} />
       <SaveBar />
     </Card>
   );
