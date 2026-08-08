@@ -47,6 +47,8 @@ const emptyPlan: Omit<Plan, "id"> = {
   messages_limit: 500,
   users_limit: 5,
   ai_agents_limit: 1,
+  additional_user_price_cents: 0,
+  additional_channel_price_cents: 0,
   features: [],
   is_active: true,
   is_highlighted: false,
