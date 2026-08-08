@@ -473,32 +473,65 @@ function ApiPanel() {
   );
 }
 
-function Field({ label, defaultValue, type = "text" }: { label: string; defaultValue: string; type?: string }) {
+function Field({
+  label,
+  value,
+  type = "text",
+  disabled,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  type?: string;
+  disabled?: boolean;
+  onChange?: (v: string) => void;
+}) {
   return (
     <div>
       <Label className="mb-1.5 block text-xs">{label}</Label>
-      <Input type={type} defaultValue={defaultValue} />
+      <Input
+        type={type}
+        value={value}
+        disabled={disabled}
+        onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+        className={disabled ? "bg-muted/50" : undefined}
+      />
     </div>
   );
 }
 
-function ToggleRow({ title, desc, defaultChecked }: { title: string; desc: string; defaultChecked?: boolean }) {
+function ToggleRow({
+  title,
+  desc,
+  checked,
+  onCheckedChange,
+}: {
+  title: string;
+  desc: string;
+  checked: boolean;
+  onCheckedChange: (v: boolean) => void;
+}) {
   return (
     <div className="flex items-center justify-between rounded-lg border p-3">
       <div className="min-w-0 pr-3">
         <p className="text-sm font-medium">{title}</p>
         <p className="text-xs text-muted-foreground">{desc}</p>
       </div>
-      <Switch defaultChecked={defaultChecked} />
+      <Switch checked={checked} onCheckedChange={onCheckedChange} />
     </div>
   );
 }
 
-function SaveBar() {
+function SaveBar({ loading, disabled }: { loading?: boolean; disabled?: boolean }) {
   return (
     <div className="mt-6 flex items-center justify-end gap-2 border-t pt-4">
-      <Button variant="outline" size="sm">Cancelar</Button>
-      <Button size="sm">Salvar alterações</Button>
+      <Button type="submit" variant="outline" size="sm" disabled={loading || disabled}>
+        Cancelar
+      </Button>
+      <Button type="submit" size="sm" disabled={loading || disabled}>
+        {loading && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
+        Salvar alterações
+      </Button>
     </div>
   );
 }
