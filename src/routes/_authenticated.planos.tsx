@@ -64,11 +64,11 @@ function PlanosPage() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 flex flex-col items-center">
-      <div className="mx-auto max-w-6xl space-y-6">
+      <div className="mx-auto max-w-6xl space-y-6 text-center">
         <div>
           <Link
             to="/"
-            className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground"
+            className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground mb-4"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Voltar ao dashboard
           </Link>
