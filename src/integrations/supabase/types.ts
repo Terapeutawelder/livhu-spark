@@ -1681,6 +1681,41 @@ export type Database = {
           },
         ]
       }
+      tenant_settings: {
+        Row: {
+          branding: Json
+          clinic: Json
+          notifications: Json
+          profile: Json
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          branding?: Json
+          clinic?: Json
+          notifications?: Json
+          profile?: Json
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          branding?: Json
+          clinic?: Json
+          notifications?: Json
+          profile?: Json
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tenant_settings_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: true
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenants: {
         Row: {
           contacts_limit: number
