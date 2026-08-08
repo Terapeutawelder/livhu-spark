@@ -12,7 +12,6 @@ import {
   LifeBuoy,
   Search,
   Bell,
-  User,
   CalendarDays,
   Settings,
   User,
