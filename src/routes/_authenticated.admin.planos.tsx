@@ -29,6 +29,8 @@ type Plan = {
   messages_limit: number;
   users_limit: number;
   ai_agents_limit: number;
+  additional_user_price_cents: number | null;
+  additional_channel_price_cents: number | null;
   features: string[];
   is_active: boolean;
   is_highlighted: boolean;
