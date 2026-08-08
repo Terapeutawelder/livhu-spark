@@ -1,6 +1,6 @@
-import { createFileRoute, useNavigate, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useRouterState, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ShieldCheck, Lock } from "lucide-react";
+import { ShieldCheck, Lock, ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { translateAuthError } from "@/lib/auth-errors";
@@ -27,6 +27,8 @@ async function isSuperAdmin(userId: string) {
   return !!data;
 }
 
+type Mode = "login" | "forgot";
+
 function AdminLoginPage() {
   const navigate = useNavigate();
   const search = useRouterState({ select: (s) => s.location.search }) as { redirect?: string };
@@ -35,6 +37,7 @@ function AdminLoginPage() {
       ? search.redirect
       : "/admin";
 
+  const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -53,12 +56,24 @@ function AdminLoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
+      if (mode === "forgot") {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/admin/reset-password`,
+        });
+        if (error) throw error;
+        toast.success("Link de recuperação enviado para o e-mail administrativo.");
+        setMode("login");
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       const uid = data.user?.id;
       if (!uid || !(await isSuperAdmin(uid))) {
         await supabase.auth.signOut();
         toast.error("Esta conta não tem permissão de Super Admin.");
+        setLoading(false);
         return;
       }
       toast.success("Acesso concedido.");
@@ -86,15 +101,18 @@ function AdminLoginPage() {
         </div>
 
         <h1 className="font-display text-2xl font-bold tracking-tight text-white">
-          Acesso restrito
+          {mode === "login" ? "Acesso restrito" : "Recuperar senha"}
         </h1>
         <p className="mt-1 text-sm text-sidebar-muted">
-          Este console é exclusivo para administradores da plataforma. Psicoterapeutas devem entrar
-          pela página principal.
+          {mode === "login"
+            ? "Este console é exclusivo para administradores da plataforma. Psicoterapeutas devem entrar pela página principal."
+            : "Informe o e-mail administrativo. Você receberá um link seguro para redefinir a senha."}
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4" aria-labelledby="admin-login-title">
-          <h1 id="admin-login-title" className="sr-only">Acesso restrito - Super Admin</h1>
+          <h1 id="admin-login-title" className="sr-only">
+            {mode === "login" ? "Acesso restrito - Super Admin" : "Recuperar senha de Super Admin"}
+          </h1>
           <div className="space-y-1">
             <label htmlFor="admin-email" className="text-xs font-medium text-sidebar-muted">E-mail administrativo</label>
             <input
@@ -107,19 +125,21 @@ function AdminLoginPage() {
               className="h-10 w-full rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-white placeholder:text-sidebar-muted focus:border-gold/40 focus:outline-none focus:ring-2 focus:ring-gold/30"
             />
           </div>
-          <div className="space-y-1">
-            <label htmlFor="admin-password" className="text-xs font-medium text-sidebar-muted">Senha</label>
-            <input
-              id="admin-password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={6}
-              autoComplete="current-password"
-              className="h-10 w-full rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-white focus:border-gold/40 focus:outline-none focus:ring-2 focus:ring-gold/30"
-            />
-          </div>
+          {mode === "login" && (
+            <div className="space-y-1">
+              <label htmlFor="admin-password" className="text-xs font-medium text-sidebar-muted">Senha</label>
+              <input
+                id="admin-password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                autoComplete="current-password"
+                className="h-10 w-full rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-white focus:border-gold/40 focus:outline-none focus:ring-2 focus:ring-gold/30"
+              />
+            </div>
+          )}
           <button
             type="submit"
             disabled={loading}
@@ -127,14 +147,37 @@ function AdminLoginPage() {
             className="flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-gold text-sm font-semibold text-sidebar-active-foreground transition hover:opacity-90 disabled:opacity-60"
           >
             <Lock className="h-4 w-4" aria-hidden="true" />
-            {loading ? "Verificando…" : "Entrar no console"}
+            {loading
+              ? "Aguarde…"
+              : mode === "login"
+                ? "Entrar no console"
+                : "Enviar link de recuperação"}
           </button>
         </form>
 
-        <div className="mt-6 flex items-center justify-between text-xs text-sidebar-muted">
-          <a href="/auth" className="hover:text-white">
-            ← Login de psicoterapeuta
-          </a>
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-2 text-xs text-sidebar-muted">
+          {mode === "login" ? (
+            <>
+              <Link to="/auth" className="hover:text-white">
+                ← Login de psicoterapeuta
+              </Link>
+              <button
+                type="button"
+                onClick={() => setMode("forgot")}
+                className="font-medium text-gold hover:text-white"
+              >
+                Esqueci a senha
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setMode("login")}
+              className="inline-flex items-center gap-1 hover:text-white"
+            >
+              <ArrowLeft className="h-3 w-3" /> Voltar ao login
+            </button>
+          )}
           <span>© {new Date().getFullYear()} LivHub</span>
         </div>
       </div>

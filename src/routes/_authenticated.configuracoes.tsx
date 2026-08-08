@@ -3,7 +3,7 @@ import { WhatsappCloudPanel } from "@/components/whatsapp-cloud-panel";
 import { OmnichannelChannelsPanel } from "@/components/omnichannel-channels-panel";
 
 import { ZernioChannelsPanel } from "@/components/zernio-channels-panel";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   User, Bell, MessageCircle, Cloud, Palette, Shield, KeyRound, Link2, Building2, Check, Copy, Globe, Loader2, ExternalLink, Radio, Zap,
 } from "lucide-react";
@@ -19,6 +19,13 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import {
+  getSettings,
+  saveProfileSettings,
+  saveClinicSettings,
+  saveBrandingSettings,
+  saveNotificationSettings,
+} from "@/lib/settings.functions";
 import {
   getMyTenantDomain,
   updateMyTenantSlug,
@@ -120,55 +127,159 @@ function PanelHeader({ title, desc }: { title: string; desc: string }) {
   );
 }
 
+function useSettings() {
+  const fetchSettings = useServerFn(getSettings);
+  return useQuery({
+    queryKey: ["tenant-settings"],
+    queryFn: () => fetchSettings(),
+    staleTime: 30 * 1000,
+  });
+}
+
 function PerfilPanel() {
+  const qc = useQueryClient();
+  const { data, isLoading } = useSettings();
+  const save = useServerFn(saveProfileSettings);
+  const mutation = useMutation({
+    mutationFn: save,
+    onSuccess: () => {
+      toast.success("Perfil salvo!");
+      qc.invalidateQueries({ queryKey: ["tenant-settings"] });
+    },
+    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : "Erro ao salvar"),
+  });
+
+  const [fullName, setFullName] = useState("");
+  const [title, setTitle] = useState("");
+  const [crp, setCrp] = useState("");
+  const [phone, setPhone] = useState("");
+  const [bio, setBio] = useState("");
+
+  useEffect(() => {
+    if (!data) return;
+    setFullName(data.profile?.full_name ?? "");
+    setTitle(String(data.settings?.profile?.title ?? ""));
+    setCrp(String(data.settings?.profile?.crp ?? ""));
+    setPhone(String(data.settings?.profile?.phone ?? ""));
+    setBio(String(data.settings?.profile?.bio ?? ""));
+  }, [data]);
+
+  const initials = (fullName || "PS")
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    mutation.mutate({ data: { full_name: fullName, title, crp, phone, bio } });
+  }
+
   return (
     <Card className="p-6">
       <PanelHeader title="Perfil" desc="Suas informações pessoais e profissionais." />
-      <div className="mb-6 flex items-center gap-4">
-        <Avatar className="h-16 w-16">
-          <AvatarFallback className="bg-primary/10 text-primary text-lg font-semibold">DL</AvatarFallback>
-        </Avatar>
-        <div>
-          <Button variant="outline" size="sm">Alterar foto</Button>
-          <p className="mt-1 text-xs text-muted-foreground">JPG ou PNG, até 2MB.</p>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-6 flex items-center gap-4">
+          <Avatar className="h-16 w-16">
+            <AvatarFallback className="bg-primary/10 text-primary text-lg font-semibold">{initials}</AvatarFallback>
+          </Avatar>
+          <div>
+            <Button type="button" variant="outline" size="sm" disabled>
+              Alterar foto
+            </Button>
+            <p className="mt-1 text-xs text-muted-foreground">JPG ou PNG, até 2MB. (em breve)</p>
+          </div>
         </div>
-      </div>
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Nome completo" defaultValue="Dra. Liv Rocha" />
-        <Field label="Título profissional" defaultValue="Psicoterapeuta" />
-        <Field label="CRP" defaultValue="06/123456" />
-        <Field label="E-mail" defaultValue="liv@livhub.app" />
-        <Field label="Telefone" defaultValue="+55 11 98765-0000" />
-        <Field label="Fuso horário" defaultValue="America/Sao_Paulo" />
-      </div>
-      <div>
-        <Label className="mb-1.5 mt-4 block text-xs">Bio pública</Label>
-        <Textarea rows={3} defaultValue="Psicoterapeuta com atuação em TCC, especialista em ansiedade e burnout." />
-      </div>
-      <SaveBar />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Nome completo" value={fullName} onChange={setFullName} />
+          <Field label="Título profissional" value={title} onChange={setTitle} />
+          <Field label="CRP" value={crp} onChange={setCrp} />
+          <Field label="E-mail" value={data?.profile?.email ?? ""} disabled />
+          <Field label="Telefone" value={phone} onChange={setPhone} />
+          <Field label="Fuso horário" value={data?.tenant?.timezone ?? "America/Sao_Paulo"} disabled />
+        </div>
+        <div>
+          <Label className="mb-1.5 mt-4 block text-xs">Bio pública</Label>
+          <Textarea rows={3} value={bio} onChange={(e) => setBio(e.target.value)} />
+        </div>
+        <SaveBar loading={mutation.isPending || isLoading} disabled={isLoading} />
+      </form>
     </Card>
   );
 }
 
 function ConsultorioPanel() {
+  const qc = useQueryClient();
+  const { data, isLoading } = useSettings();
+  const save = useServerFn(saveClinicSettings);
+  const mutation = useMutation({
+    mutationFn: save,
+    onSuccess: () => {
+      toast.success("Consultório salvo!");
+      qc.invalidateQueries({ queryKey: ["tenant-settings"] });
+    },
+    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : "Erro ao salvar"),
+  });
+
+  const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [duration, setDuration] = useState(50);
+  const [price, setPrice] = useState(0);
+  const [minHours, setMinHours] = useState(24);
+  const [online, setOnline] = useState(true);
+  const [inPerson, setInPerson] = useState(true);
+  const [insurance, setInsurance] = useState(false);
+
+  useEffect(() => {
+    if (!data) return;
+    setName(data.tenant?.name ?? "");
+    const clinic = data.settings?.clinic ?? {};
+    setAddress(String(clinic.address ?? ""));
+    setDuration(Number(clinic.session_duration_minutes ?? 50));
+    setPrice(Number(clinic.session_price_cents ?? 0));
+    setMinHours(Number(clinic.min_booking_hours ?? 24));
+    setOnline(Boolean(clinic.accepts_online ?? true));
+    setInPerson(Boolean(clinic.accepts_in_person ?? true));
+    setInsurance(Boolean(clinic.accepts_insurance ?? false));
+  }, [data]);
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    mutation.mutate({
+      data: {
+        name,
+        address,
+        session_duration_minutes: duration,
+        session_price_cents: price,
+        min_booking_hours: minHours,
+        accepts_online: online,
+        accepts_in_person: inPerson,
+        accepts_insurance: insurance,
+      },
+    });
+  }
+
   return (
     <Card className="p-6">
       <PanelHeader title="Consultório" desc="Endereço, modalidades e políticas de atendimento." />
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Nome do consultório" defaultValue="LivHub — Consultório Liv Rocha" />
-        <Field label="CNPJ (opcional)" defaultValue="" />
-        <Field label="Endereço" defaultValue="Rua das Palmeiras, 123 — Vila Madalena, SP" />
-        <Field label="Duração padrão da sessão" defaultValue="50 min" />
-        <Field label="Valor padrão" defaultValue="R$ 300,00" />
-        <Field label="Antecedência mínima" defaultValue="24h" />
-      </div>
-      <Separator className="my-4" />
-      <div className="space-y-3">
-        <ToggleRow title="Aceita atendimento online" desc="Sessões via link seguro." defaultChecked />
-        <ToggleRow title="Aceita atendimento presencial" desc="No endereço cadastrado." defaultChecked />
-        <ToggleRow title="Convênios" desc="Exibe convênios aceitos no perfil público." />
-      </div>
-      <SaveBar />
+      <form onSubmit={handleSubmit}>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Nome do consultório" value={name} onChange={setName} />
+          <Field label="CNPJ (opcional)" value="" disabled />
+          <Field label="Endereço" value={address} onChange={setAddress} />
+          <Field label="Duração padrão da sessão (min)" value={String(duration)} onChange={(v) => setDuration(Number(v.replace(/\D/g, "")) || 0)} />
+          <Field label="Valor padrão (centavos)" value={String(price)} onChange={(v) => setPrice(Number(v.replace(/\D/g, "")) || 0)} />
+          <Field label="Antecedência mínima (horas)" value={String(minHours)} onChange={(v) => setMinHours(Number(v.replace(/\D/g, "")) || 0)} />
+        </div>
+        <Separator className="my-4" />
+        <div className="space-y-3">
+          <ToggleRow title="Aceita atendimento online" desc="Sessões via link seguro." checked={online} onCheckedChange={setOnline} />
+          <ToggleRow title="Aceita atendimento presencial" desc="No endereço cadastrado." checked={inPerson} onCheckedChange={setInPerson} />
+          <ToggleRow title="Convênios" desc="Exibe convênios aceitos no perfil público." checked={insurance} onCheckedChange={setInsurance} />
+        </div>
+        <SaveBar loading={mutation.isPending || isLoading} disabled={isLoading} />
+      </form>
     </Card>
   );
 }
@@ -178,41 +289,114 @@ function WhatsappPanel() {
 }
 
 function NotificacoesPanel() {
+  const qc = useQueryClient();
+  const { data, isLoading } = useSettings();
+  const save = useServerFn(saveNotificationSettings);
+  const mutation = useMutation({
+    mutationFn: save,
+    onSuccess: () => {
+      toast.success("Preferências salvas!");
+      qc.invalidateQueries({ queryKey: ["tenant-settings"] });
+    },
+    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : "Erro ao salvar"),
+  });
+
+  const [newConversation, setNewConversation] = useState(true);
+  const [sessionScheduled, setSessionScheduled] = useState(true);
+  const [handoff, setHandoff] = useState(true);
+  const [paymentReceived, setPaymentReceived] = useState(true);
+  const [weeklySummary, setWeeklySummary] = useState(false);
+
+  useEffect(() => {
+    if (!data) return;
+    const n = data.settings?.notifications ?? {};
+    setNewConversation(Boolean(n.new_conversation ?? true));
+    setSessionScheduled(Boolean(n.session_scheduled ?? true));
+    setHandoff(Boolean(n.handoff ?? true));
+    setPaymentReceived(Boolean(n.payment_received ?? true));
+    setWeeklySummary(Boolean(n.weekly_summary ?? false));
+  }, [data]);
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    mutation.mutate({
+      data: {
+        new_conversation: newConversation,
+        session_scheduled: sessionScheduled,
+        handoff: handoff,
+        payment_received: paymentReceived,
+        weekly_summary: weeklySummary,
+      },
+    });
+  }
+
   return (
     <Card className="p-6">
       <PanelHeader title="Notificações" desc="Escolha quando e como quer ser avisada." />
-      <div className="space-y-3">
-        <ToggleRow title="Nova conversa" desc="Push + e-mail." defaultChecked />
-        <ToggleRow title="Sessão agendada" desc="Push imediato." defaultChecked />
-        <ToggleRow title="Handoff pedido pelo paciente" desc="Prioridade máxima." defaultChecked />
-        <ToggleRow title="Pagamento recebido" desc="Push + resumo diário." defaultChecked />
-        <ToggleRow title="Resumo semanal por e-mail" desc="Todo domingo à noite." />
-      </div>
-      <SaveBar />
+      <form onSubmit={handleSubmit}>
+        <div className="space-y-3">
+          <ToggleRow title="Nova conversa" desc="Push + e-mail." checked={newConversation} onCheckedChange={setNewConversation} />
+          <ToggleRow title="Sessão agendada" desc="Push imediato." checked={sessionScheduled} onCheckedChange={setSessionScheduled} />
+          <ToggleRow title="Handoff pedido pelo paciente" desc="Prioridade máxima." checked={handoff} onCheckedChange={setHandoff} />
+          <ToggleRow title="Pagamento recebido" desc="Push + resumo diário." checked={paymentReceived} onCheckedChange={setPaymentReceived} />
+          <ToggleRow title="Resumo semanal por e-mail" desc="Todo domingo à noite." checked={weeklySummary} onCheckedChange={setWeeklySummary} />
+        </div>
+        <SaveBar loading={mutation.isPending || isLoading} disabled={isLoading} />
+      </form>
     </Card>
   );
 }
 
 function MarcaPanel() {
+  const qc = useQueryClient();
+  const { data, isLoading } = useSettings();
+  const save = useServerFn(saveBrandingSettings);
+  const mutation = useMutation({
+    mutationFn: save,
+    onSuccess: () => {
+      toast.success("Marca salva!");
+      qc.invalidateQueries({ queryKey: ["tenant-settings"] });
+    },
+    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : "Erro ao salvar"),
+  });
+
+  const [publicName, setPublicName] = useState("");
+  const [primaryColor, setPrimaryColor] = useState("");
+
+  useEffect(() => {
+    if (!data) return;
+    setPublicName(String(data.settings?.branding?.public_name ?? ""));
+    setPrimaryColor(data.tenant?.primary_color ?? "#c9a24a");
+  }, [data]);
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    mutation.mutate({ data: { public_name: publicName, primary_color: primaryColor } });
+  }
+
   return (
     <Card className="p-6">
       <PanelHeader title="Marca (White-label)" desc="Personalize cores, logo e domínio do seu portal." />
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Nome público" defaultValue="Liv — Psicoterapia" />
-        <Field label="Domínio personalizado" defaultValue="dr-liv.livhub.app" />
-        <div>
-          <Label className="mb-1.5 block text-xs">Cor primária</Label>
-          <div className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded border bg-primary" />
-            <Input defaultValue="#c9a24a" className="w-32" />
+      <form onSubmit={handleSubmit}>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="Nome público" value={publicName} onChange={setPublicName} />
+          <Field label="Domínio personalizado" value={data?.tenant?.slug ? `${data.tenant.slug}.psi.livhub.cloud` : ""} disabled />
+          <div>
+            <Label className="mb-1.5 block text-xs">Cor primária</Label>
+            <div className="flex items-center gap-2">
+              <div className="h-9 w-9 rounded border" style={{ background: primaryColor }} />
+              <Input value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="w-32" />
+            </div>
+          </div>
+          <div>
+            <Label className="mb-1.5 block text-xs">Logo</Label>
+            <Button type="button" variant="outline" size="sm" disabled>
+              Fazer upload
+            </Button>
           </div>
         </div>
-        <div>
-          <Label className="mb-1.5 block text-xs">Logo</Label>
-          <Button variant="outline" size="sm">Fazer upload</Button>
-        </div>
-      </div>
-      <SaveBar />
+        <SaveBar loading={mutation.isPending || isLoading} disabled={isLoading} />
+      </form>
     </Card>
   );
 }
@@ -250,17 +434,23 @@ function IntegracoesPanel() {
 }
 
 function SegurancaPanel() {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [twoFactor, setTwoFactor] = useState(false);
+  const [autoLogout, setAutoLogout] = useState(false);
+  const [auditLog, setAuditLog] = useState(false);
+
   return (
     <Card className="p-6">
       <PanelHeader title="Segurança" desc="Senha, 2FA e sessões ativas." />
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Senha atual" type="password" defaultValue="********" />
-        <Field label="Nova senha" type="password" defaultValue="" />
+        <Field label="Senha atual" type="password" value={currentPassword} onChange={setCurrentPassword} />
+        <Field label="Nova senha" type="password" value={newPassword} onChange={setNewPassword} />
       </div>
       <Separator className="my-4" />
-      <ToggleRow title="Autenticação de dois fatores (2FA)" desc="Recomendado para dados clínicos." defaultChecked />
-      <ToggleRow title="Encerrar sessões automaticamente após 30 min inativo" desc="Compliance LGPD." defaultChecked />
-      <ToggleRow title="Log de auditoria completo" desc="Registra acesso a prontuários." defaultChecked />
+      <ToggleRow title="Autenticação de dois fatores (2FA)" desc="Recomendado para dados clínicos." checked={twoFactor} onCheckedChange={setTwoFactor} />
+      <ToggleRow title="Encerrar sessões automaticamente após 30 min inativo" desc="Compliance LGPD." checked={autoLogout} onCheckedChange={setAutoLogout} />
+      <ToggleRow title="Log de auditoria completo" desc="Registra acesso a prontuários." checked={auditLog} onCheckedChange={setAuditLog} />
       <SaveBar />
     </Card>
   );
@@ -289,32 +479,65 @@ function ApiPanel() {
   );
 }
 
-function Field({ label, defaultValue, type = "text" }: { label: string; defaultValue: string; type?: string }) {
+function Field({
+  label,
+  value,
+  type = "text",
+  disabled,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  type?: string;
+  disabled?: boolean;
+  onChange?: (v: string) => void;
+}) {
   return (
     <div>
       <Label className="mb-1.5 block text-xs">{label}</Label>
-      <Input type={type} defaultValue={defaultValue} />
+      <Input
+        type={type}
+        value={value}
+        disabled={disabled}
+        onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+        className={disabled ? "bg-muted/50" : undefined}
+      />
     </div>
   );
 }
 
-function ToggleRow({ title, desc, defaultChecked }: { title: string; desc: string; defaultChecked?: boolean }) {
+function ToggleRow({
+  title,
+  desc,
+  checked,
+  onCheckedChange,
+}: {
+  title: string;
+  desc: string;
+  checked: boolean;
+  onCheckedChange: (v: boolean) => void;
+}) {
   return (
     <div className="flex items-center justify-between rounded-lg border p-3">
       <div className="min-w-0 pr-3">
         <p className="text-sm font-medium">{title}</p>
         <p className="text-xs text-muted-foreground">{desc}</p>
       </div>
-      <Switch defaultChecked={defaultChecked} />
+      <Switch checked={checked} onCheckedChange={onCheckedChange} />
     </div>
   );
 }
 
-function SaveBar() {
+function SaveBar({ loading, disabled }: { loading?: boolean; disabled?: boolean }) {
   return (
     <div className="mt-6 flex items-center justify-end gap-2 border-t pt-4">
-      <Button variant="outline" size="sm">Cancelar</Button>
-      <Button size="sm">Salvar alterações</Button>
+      <Button type="submit" variant="outline" size="sm" disabled={loading || disabled}>
+        Cancelar
+      </Button>
+      <Button type="submit" size="sm" disabled={loading || disabled}>
+        {loading && <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />}
+        Salvar alterações
+      </Button>
     </div>
   );
 }
