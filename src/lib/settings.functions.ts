@@ -28,7 +28,7 @@ export const getSettings = createServerFn({ method: "GET" })
 
     const [{ data: profile }, { data: tenant }, { data: settings }] = await Promise.all([
       supabase.from("profiles").select("id, full_name, email, avatar_url").eq("id", context.userId).maybeSingle(),
-      supabase.from("tenants").select("id, name, timezone, primary_color, logo_url").eq("id", tenantId).maybeSingle(),
+      supabase.from("tenants").select("id, name, slug, timezone, primary_color, logo_url").eq("id", tenantId).maybeSingle(),
       supabase.from("tenant_settings").select("*").eq("tenant_id", tenantId).maybeSingle(),
     ]);
 
