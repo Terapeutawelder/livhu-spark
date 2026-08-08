@@ -20,7 +20,7 @@ import {
   GraduationCap,
   Globe,
   CreditCard,
-  Coins,
+  
   Settings,
   LogOut,
   PanelLeftClose,

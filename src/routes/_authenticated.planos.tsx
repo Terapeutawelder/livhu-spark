@@ -63,7 +63,7 @@ function PlanosPage() {
   });
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8">
+    <div className="p-4 sm:p-6 lg:p-8 flex flex-col items-center">
       <div className="mx-auto max-w-6xl space-y-6">
         <div>
           <Link
