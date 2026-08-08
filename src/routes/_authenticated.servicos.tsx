@@ -252,7 +252,7 @@ function ClinicaPage() {
                 </div>
               </div>
               <p className="text-xs text-muted-foreground">
-                Seu plano atual permite até 5 profissionais. Você pode adicionar mais membros com um custo adicional por vaga.
+                Você gerencia e configura sua equipe aqui mesmo. Novos profissionais podem ser convidados pelo botão acima, e cada um terá seu próprio painel individual.
               </p>
             </CardContent>
           </Card>
