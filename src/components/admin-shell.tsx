@@ -190,7 +190,7 @@ export function AdminShell({
           </div>
         </header>
 
-        <main className={`flex flex-col items-center px-4 py-6 sm:px-6 lg:px-8 ${className || ""}`}>
+        <main className={`flex flex-col items-center px-4 py-6 sm:px-6 lg:px-8 w-full ${className || ""}`}>
           <div className="w-full max-w-7xl">
           <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
