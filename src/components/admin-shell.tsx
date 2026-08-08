@@ -190,7 +190,8 @@ export function AdminShell({
           </div>
         </header>
 
-        <main className={`px-4 py-6 sm:px-6 lg:px-8 ${className || ""}`}>
+        <main className={`flex flex-col items-center px-4 py-6 sm:px-6 lg:px-8 ${className || ""}`}>
+          <div className="w-full max-w-7xl">
           <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
               <h1 className="font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl">
@@ -203,6 +204,7 @@ export function AdminShell({
             {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
           </div>
           {children}
+          </div>
         </main>
       </div>
     </div>
