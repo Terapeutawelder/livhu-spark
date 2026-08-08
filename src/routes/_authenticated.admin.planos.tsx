@@ -207,11 +207,15 @@ function PlansPage() {
                   ["Mensagens/mês", p.messages_limit],
                   ["Usuários Equipe", p.users_limit],
                   ["Agentes IA", p.ai_agents_limit],
+                  ["+ Usuário", p.additional_user_price_cents ? `R$ ${(p.additional_user_price_cents / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : "N/A"],
+                  ["+ Canal", p.additional_channel_price_cents ? `R$ ${(p.additional_channel_price_cents / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : "N/A"],
                 ].map(([k, v]) => (
                   <div key={k as string} className="rounded-md border border-border bg-background p-2">
                     <p className="text-muted-foreground">{k}</p>
                     <p className="font-semibold text-foreground">
-                      {v === 999 || v === 999999 || (v as number) >= 100000 ? "∞" : (v as number).toLocaleString("pt-BR")}
+                      {typeof v === 'number' ? (
+                        v === 999 || v === 999999 || v >= 100000 ? "∞" : v.toLocaleString("pt-BR")
+                      ) : v}
                     </p>
                   </div>
                 ))}
