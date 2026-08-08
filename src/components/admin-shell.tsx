@@ -15,6 +15,7 @@ import {
   User,
   CalendarDays,
   Settings,
+  User,
   LogOut,
   Globe,
   Menu,
