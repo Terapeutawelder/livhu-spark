@@ -1,6 +1,22 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+type JsonValue = string | number | boolean | null;
+type SettingsGroup = Record<string, JsonValue>;
+
+function asSettingsGroup(value: unknown): SettingsGroup {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    const obj: SettingsGroup = {};
+    for (const [k, v] of Object.entries(value)) {
+      if (v === null || typeof v === "string" || typeof v === "number" || typeof v === "boolean") {
+        obj[k] = v;
+      }
+    }
+    return obj;
+  }
+  return {};
+}
+
 export const getSettings = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -20,10 +36,10 @@ export const getSettings = createServerFn({ method: "GET" })
       profile,
       tenant,
       settings: {
-        profile: (settings?.profile as Record<string, unknown>) ?? {},
-        clinic: (settings?.clinic as Record<string, unknown>) ?? {},
-        branding: (settings?.branding as Record<string, unknown>) ?? {},
-        notifications: (settings?.notifications as Record<string, unknown>) ?? {},
+        profile: asSettingsGroup(settings?.profile),
+        clinic: asSettingsGroup(settings?.clinic),
+        branding: asSettingsGroup(settings?.branding),
+        notifications: asSettingsGroup(settings?.notifications),
       },
     };
   });
