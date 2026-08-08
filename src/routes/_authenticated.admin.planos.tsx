@@ -97,6 +97,8 @@ function PlansPage() {
         messages_limit: Number(p.messages_limit) || 0,
         users_limit: Number(p.users_limit) || 1,
         ai_agents_limit: Number(p.ai_agents_limit) || 0,
+        additional_user_price_cents: Number(p.additional_user_price_cents) || 0,
+        additional_channel_price_cents: Number(p.additional_channel_price_cents) || 0,
         features: p.features ?? [],
         is_active: p.is_active ?? true,
         is_highlighted: p.is_highlighted ?? false,
