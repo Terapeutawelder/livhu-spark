@@ -96,7 +96,7 @@ function SystemPage() {
   ];
 
   return (
-    <AdminShell title="Sistema" description="Observabilidade e configuração operacional da plataforma." className="w-full">
+    <AdminShell title="Sistema" description="Observabilidade e configuração operacional da plataforma.">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {[
           { k: "Clientes", v: platformStats.data?.tenants ?? 0 },
@@ -170,7 +170,7 @@ function SystemPage() {
               { t: "Custom Domains SSL (Fase B)", d: "Automação via Cloudflare para domínios próprios dos terapeutas.", s: "in_progress" },
               { t: "SaaS Marketing Site", d: "Página inicial pública do LivHub para captação de novos profissionais.", s: "planned" },
               { t: "Analytics Consolidado", d: "Dashboard global de faturamento e volume de mensagens cross-tenant.", s: "planned" },
-              { t: "Suporte a Clínicas", d: "Preciso que implente essas funcionalidades do plano para clínicas", s: "in_progress" },
+              { t: "Suporte a Clínicas", d: "Permissões de multi-usuário para equipes de terapeutas no mesmo tenant.", s: "planned" },
               { t: "App Mobile (PWA+)", d: "Experiência otimizada com notificações push nativas em iOS/Android.", s: "planned" },
             ].map((i) => (
               <div key={i.t} className="flex gap-3">

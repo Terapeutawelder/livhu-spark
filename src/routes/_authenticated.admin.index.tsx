@@ -163,8 +163,7 @@ function AdminOverview() {
   return (
     <AdminShell
       title="Administração de contas"
-      description="Gerencie tenants (consultórios e clínicas), donos, membros e papéis da plataforma LivHub."
-      className="w-full"
+      description="Gerencie tenants (consultórios), donos, membros e papéis da plataforma LivHub."
     >
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <KpiCard icon={Building2} label="Tenants" value={tenants.length} hint={`${activeCount} ativos`} />

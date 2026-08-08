@@ -1429,8 +1429,6 @@ export type Database = {
       }
       subscription_plans: {
         Row: {
-          additional_channel_price_cents: number | null
-          additional_user_price_cents: number | null
           ai_agents_limit: number
           billing_period: string
           contacts_limit: number
@@ -1450,8 +1448,6 @@ export type Database = {
           users_limit: number
         }
         Insert: {
-          additional_channel_price_cents?: number | null
-          additional_user_price_cents?: number | null
           ai_agents_limit?: number
           billing_period?: string
           contacts_limit?: number
@@ -1471,8 +1467,6 @@ export type Database = {
           users_limit?: number
         }
         Update: {
-          additional_channel_price_cents?: number | null
-          additional_user_price_cents?: number | null
           ai_agents_limit?: number
           billing_period?: string
           contacts_limit?: number

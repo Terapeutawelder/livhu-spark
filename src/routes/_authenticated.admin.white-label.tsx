@@ -97,7 +97,6 @@ function WhiteLabelPage() {
     <AdminShell
       title="White-label"
       description="Personalize marca, domínios e comunicação padrão da plataforma."
-      className="w-full"
       actions={
         <button
           onClick={() => form && save.mutate(form)}

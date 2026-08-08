@@ -11,7 +11,7 @@ import {
   KanbanSquare,
   CalendarDays,
   CalendarClock,
-  Building2,
+  HeartHandshake,
   Bell,
   Workflow,
   Megaphone,
@@ -20,7 +20,7 @@ import {
   GraduationCap,
   Globe,
   CreditCard,
-  
+  Coins,
   Settings,
   LogOut,
   PanelLeftClose,
@@ -43,7 +43,7 @@ const items: NavItem[] = [
   { to: "/pacientes", label: "Pacientes", icon: HeartPulse },
   { to: "/kanban", label: "Kanban", icon: KanbanSquare },
   { to: "/agendamento", label: "Agendamento", icon: CalendarDays },
-  { to: "/servicos", label: "Clínica & Equipe", icon: Building2 },
+  { to: "/servicos", label: "Serviços", icon: HeartHandshake },
   { to: "/calendario", label: "Calendário", icon: CalendarClock },
   { to: "/notificacoes", label: "Notificações", icon: Bell },
   { to: "/fluxos", label: "Fluxos", icon: Workflow },
@@ -53,6 +53,7 @@ const items: NavItem[] = [
   { to: "/perfil-publico", label: "Perfil Público", icon: Globe },
   { to: "/cursos", label: "Cursos", icon: GraduationCap },
   { to: "/pagamentos", label: "Pagamentos", icon: CreditCard },
+  { to: "/creditos", label: "Créditos", icon: Coins },
   { to: "/configuracoes", label: "Configurações", icon: Settings },
 ];
 
