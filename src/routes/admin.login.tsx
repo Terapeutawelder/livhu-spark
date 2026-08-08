@@ -158,9 +158,9 @@ function AdminLoginPage() {
         <div className="mt-6 flex flex-wrap items-center justify-between gap-2 text-xs text-sidebar-muted">
           {mode === "login" ? (
             <>
-              <a href="/auth" className="hover:text-white">
+              <Link to="/auth" className="hover:text-white">
                 ← Login de psicoterapeuta
-              </a>
+              </Link>
               <button
                 type="button"
                 onClick={() => setMode("forgot")}

@@ -36,6 +36,7 @@ import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedRemarketingRouteImport } from './routes/_authenticated.remarketing'
 import { Route as AuthenticatedServicosRouteImport } from './routes/_authenticated.servicos'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminResetPasswordRouteImport } from './routes/admin.reset-password'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as PagamentoRetornoRouteImport } from './routes/pagamento.retorno'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
@@ -200,6 +201,11 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
+  id: '/admin/reset-password',
+  path: '/admin/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PSlugRoute = PSlugRouteImport.update({
   id: '/p/$slug',
   path: '/p/$slug',
@@ -353,6 +359,7 @@ export interface FileRoutesByFullPath {
   '/remarketing': typeof AuthenticatedRemarketingRoute
   '/servicos': typeof AuthenticatedServicosRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/reset-password': typeof AdminResetPasswordRoute
   '/p/$slug': typeof PSlugRoute
   '/pagamento/retorno': typeof PagamentoRetornoRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
@@ -401,6 +408,7 @@ export interface FileRoutesByTo {
   '/remarketing': typeof AuthenticatedRemarketingRoute
   '/servicos': typeof AuthenticatedServicosRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/reset-password': typeof AdminResetPasswordRoute
   '/p/$slug': typeof PSlugRoute
   '/pagamento/retorno': typeof PagamentoRetornoRoute
   '/': typeof AuthenticatedIndexRoute
@@ -453,6 +461,7 @@ export interface FileRoutesById {
   '/_authenticated/remarketing': typeof AuthenticatedRemarketingRoute
   '/_authenticated/servicos': typeof AuthenticatedServicosRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/reset-password': typeof AdminResetPasswordRoute
   '/p/$slug': typeof PSlugRoute
   '/pagamento/retorno': typeof PagamentoRetornoRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
@@ -506,6 +515,7 @@ export interface FileRouteTypes {
     | '/remarketing'
     | '/servicos'
     | '/admin/login'
+    | '/admin/reset-password'
     | '/p/$slug'
     | '/pagamento/retorno'
     | '/admin/calendario'
@@ -554,6 +564,7 @@ export interface FileRouteTypes {
     | '/remarketing'
     | '/servicos'
     | '/admin/login'
+    | '/admin/reset-password'
     | '/p/$slug'
     | '/pagamento/retorno'
     | '/'
@@ -605,6 +616,7 @@ export interface FileRouteTypes {
     | '/_authenticated/remarketing'
     | '/_authenticated/servicos'
     | '/admin/login'
+    | '/admin/reset-password'
     | '/p/$slug'
     | '/pagamento/retorno'
     | '/_authenticated/'
@@ -638,6 +650,7 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermosRoute: typeof TermosRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminResetPasswordRoute: typeof AdminResetPasswordRoute
   PSlugRoute: typeof PSlugRoute
   PagamentoRetornoRoute: typeof PagamentoRetornoRoute
   ApiPublicHooksNotificationsDispatchRoute: typeof ApiPublicHooksNotificationsDispatchRoute
@@ -840,6 +853,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/login'
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/reset-password': {
+      id: '/admin/reset-password'
+      path: '/admin/reset-password'
+      fullPath: '/admin/reset-password'
+      preLoaderRoute: typeof AdminResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/p/$slug': {
@@ -1088,6 +1108,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   TermosRoute: TermosRoute,
   AdminLoginRoute: AdminLoginRoute,
+  AdminResetPasswordRoute: AdminResetPasswordRoute,
   PSlugRoute: PSlugRoute,
   PagamentoRetornoRoute: PagamentoRetornoRoute,
   ApiPublicHooksNotificationsDispatchRoute:
