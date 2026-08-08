@@ -29,6 +29,8 @@ type Plan = {
   messages_limit: number;
   users_limit: number;
   ai_agents_limit: number;
+  additional_user_price_cents: number | null;
+  additional_channel_price_cents: number | null;
   features: string[];
   is_active: boolean;
   is_highlighted: boolean;
@@ -45,6 +47,8 @@ const emptyPlan: Omit<Plan, "id"> = {
   messages_limit: 500,
   users_limit: 5,
   ai_agents_limit: 1,
+  additional_user_price_cents: 0,
+  additional_channel_price_cents: 0,
   features: [],
   is_active: true,
   is_highlighted: false,
@@ -93,6 +97,8 @@ function PlansPage() {
         messages_limit: Number(p.messages_limit) || 0,
         users_limit: Number(p.users_limit) || 1,
         ai_agents_limit: Number(p.ai_agents_limit) || 0,
+        additional_user_price_cents: Number(p.additional_user_price_cents) || 0,
+        additional_channel_price_cents: Number(p.additional_channel_price_cents) || 0,
         features: p.features ?? [],
         is_active: p.is_active ?? true,
         is_highlighted: p.is_highlighted ?? false,
@@ -201,11 +207,15 @@ function PlansPage() {
                   ["Mensagens/mês", p.messages_limit],
                   ["Usuários Equipe", p.users_limit],
                   ["Agentes IA", p.ai_agents_limit],
+                  ["+ Usuário", p.additional_user_price_cents ? `R$ ${(p.additional_user_price_cents / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : "N/A"],
+                  ["+ Canal", p.additional_channel_price_cents ? `R$ ${(p.additional_channel_price_cents / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` : "N/A"],
                 ].map(([k, v]) => (
                   <div key={k as string} className="rounded-md border border-border bg-background p-2">
                     <p className="text-muted-foreground">{k}</p>
                     <p className="font-semibold text-foreground">
-                      {v === 999 || v === 999999 || (v as number) >= 100000 ? "∞" : (v as number).toLocaleString("pt-BR")}
+                      {typeof v === 'number' ? (
+                        v === 999 || v === 999999 || v >= 100000 ? "∞" : v.toLocaleString("pt-BR")
+                      ) : v}
                     </p>
                   </div>
                 ))}
@@ -320,6 +330,8 @@ function PlanEditor({
             ["messages_limit", "Mensagens/mês"],
             ["users_limit", "Usuários Equipe (Clínica)"],
             ["ai_agents_limit", "Agentes IA"],
+            ["additional_user_price_cents", "Valor + Usuário (centavos)"],
+            ["additional_channel_price_cents", "Valor + Canal (centavos)"],
           ].map(([k, label]) => (
             <div key={k} className="grid gap-1.5 text-sm">
               <label className="font-medium text-foreground">{label}</label>
@@ -332,6 +344,11 @@ function PlanEditor({
               {k === 'users_limit' && (
                 <p className="text-[10px] text-muted-foreground leading-tight">
                   Define o número de profissionais incluídos no plano base da clínica.
+                </p>
+              )}
+              {(k === 'additional_user_price_cents' || k === 'additional_channel_price_cents') && (
+                <p className="text-[10px] text-muted-foreground leading-tight">
+                  Preço adicional por unidade excedente.
                 </p>
               )}
             </div>
