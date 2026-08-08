@@ -120,7 +120,7 @@ function AdminLayout() {
           </div>
         </header>
         <main className="flex-1 flex flex-col items-center w-full p-4 md:p-8 overflow-auto">
-          <div className="w-full max-w-[1400px] mx-auto">
+          <div className="w-full max-w-[1400px] mx-auto flex flex-col items-center">
             <Outlet />
           </div>
         </main>

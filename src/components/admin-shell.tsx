@@ -191,8 +191,8 @@ export function AdminShell({
         </header>
 
         <main className={`flex flex-col items-center px-4 py-6 sm:px-6 lg:px-8 w-full min-w-0 ${className || ""}`}>
-          <div className="w-full max-w-[1400px] mx-auto">
-          <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
+          <div className="w-full max-w-[1400px] mx-auto flex flex-col items-center">
+          <div className="mb-6 flex w-full flex-wrap items-start justify-between gap-3 px-1">
             <div className="min-w-0">
               <h1 className="font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl">
                 {title}
