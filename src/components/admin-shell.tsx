@@ -147,7 +147,7 @@ export function AdminShell({
       </aside>
 
       <div className="lg:pl-64">
-        <header className="sticky top-0 z-20 flex h-16 items-center gap-2 border-b border-border bg-background/85 px-3 backdrop-blur-md sm:gap-3 sm:px-6 lg:px-8">
+        <header className="sticky top-0 z-20 flex h-16 items-center gap-2 border-b border-border bg-background/85 px-4 backdrop-blur-md sm:gap-3 lg:px-8">
           <button
             onClick={() => setMobileOpen(true)}
             aria-label="Abrir menu"
@@ -190,20 +190,20 @@ export function AdminShell({
           </div>
         </header>
 
-        <main className={`flex flex-col items-center px-4 py-6 sm:px-6 lg:px-8 w-full min-w-0 flex-1 ${className || ""}`}>
-          <div className="w-full max-w-[1400px] flex-1 flex flex-col items-center">
-          <div className="mb-6 flex w-full flex-wrap items-start justify-between gap-3 px-1">
-            <div className="min-w-0">
-              <h1 className="font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-                {title}
-              </h1>
-              {description && (
-                <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-              )}
+        <main className={`flex flex-col px-4 py-6 sm:px-6 lg:px-8 w-full min-w-0 flex-1 items-center ${className || ""}`}>
+          <div className="w-full max-w-[1400px] mx-auto flex-1">
+            <div className="mb-6 flex w-full flex-wrap items-start justify-between gap-3 px-1">
+              <div className="min-w-0">
+                <h1 className="font-display text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                  {title}
+                </h1>
+                {description && (
+                  <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+                )}
+              </div>
+              {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
             </div>
-            {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
-          </div>
-          {children}
+            {children}
           </div>
         </main>
       </div>

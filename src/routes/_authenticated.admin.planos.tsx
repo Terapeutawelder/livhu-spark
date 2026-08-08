@@ -138,7 +138,7 @@ function PlansPage() {
     <AdminShell
       title="Planos de assinatura"
       description="Preços, limites e recursos disponíveis por plano."
-      className="w-full flex flex-col items-center"
+      className="w-full"
       actions={
         <button
           onClick={() => setEditing(emptyPlan)}
@@ -151,7 +151,7 @@ function PlansPage() {
       {plansQuery.isLoading ? (
         <p className="text-sm text-muted-foreground">Carregando planos…</p>
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 justify-center">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {plans.map((p) => (
             <div
               key={p.id}
