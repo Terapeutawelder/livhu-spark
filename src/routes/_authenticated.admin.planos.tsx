@@ -330,6 +330,8 @@ function PlanEditor({
             ["messages_limit", "Mensagens/mês"],
             ["users_limit", "Usuários Equipe (Clínica)"],
             ["ai_agents_limit", "Agentes IA"],
+            ["additional_user_price_cents", "Valor + Usuário (centavos)"],
+            ["additional_channel_price_cents", "Valor + Canal (centavos)"],
           ].map(([k, label]) => (
             <div key={k} className="grid gap-1.5 text-sm">
               <label className="font-medium text-foreground">{label}</label>
@@ -342,6 +344,11 @@ function PlanEditor({
               {k === 'users_limit' && (
                 <p className="text-[10px] text-muted-foreground leading-tight">
                   Define o número de profissionais incluídos no plano base da clínica.
+                </p>
+              )}
+              {(k === 'additional_user_price_cents' || k === 'additional_channel_price_cents') && (
+                <p className="text-[10px] text-muted-foreground leading-tight">
+                  Preço adicional por unidade excedente.
                 </p>
               )}
             </div>
