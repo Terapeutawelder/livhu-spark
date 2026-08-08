@@ -217,7 +217,7 @@ function ContatosPage() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-4rem)]">
+    <div className="flex h-[calc(100vh-4rem)] max-w-7xl mx-auto w-full">
       {/* Lista */}
       <div className="flex w-96 shrink-0 flex-col border-r">
         <div className="border-b p-4">
