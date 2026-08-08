@@ -65,13 +65,13 @@ function ConfiguracoesPage() {
   const [tab, setTab] = useState(initialTab);
 
   return (
-    <div className="flex flex-col gap-4 p-4 lg:p-6 items-center">
-      <div className="text-center">
+    <div className="flex flex-col gap-4 p-4 lg:p-6 items-center w-full">
+      <div className="text-center w-full max-w-6xl">
         <h1 className="text-2xl font-semibold tracking-tight">Configurações</h1>
         <p className="text-sm text-muted-foreground">Ajuste seu consultório, marca, integrações e segurança.</p>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[240px_1fr]">
+      <div className="grid gap-4 lg:grid-cols-[240px_1fr] w-full max-w-6xl">
         <Card className="p-2">
           <nav className="flex flex-col">
             {tabs.map((t) => {
