@@ -3,7 +3,7 @@ import { WhatsappCloudPanel } from "@/components/whatsapp-cloud-panel";
 import { OmnichannelChannelsPanel } from "@/components/omnichannel-channels-panel";
 
 import { ZernioChannelsPanel } from "@/components/zernio-channels-panel";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   User, Bell, MessageCircle, Cloud, Palette, Shield, KeyRound, Link2, Building2, Check, Copy, Globe, Loader2, ExternalLink, Radio, Zap,
 } from "lucide-react";
@@ -19,6 +19,13 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import {
+  getSettings,
+  saveProfileSettings,
+  saveClinicSettings,
+  saveBrandingSettings,
+  saveNotificationSettings,
+} from "@/lib/settings.functions";
 import {
   getMyTenantDomain,
   updateMyTenantSlug,
