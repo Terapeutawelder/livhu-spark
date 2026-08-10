@@ -230,12 +230,13 @@ export const sendConversationMessage = createServerFn({ method: "POST" })
     if (cErr || !conv) throw new Error("Conversa não encontrada.");
     
     // 1. Tentar EvolutionGo primeiro se o canal não estiver vinculado ou se houver instância evolution
-    const { data: evolutionInstance } = await context.supabase
-      .from("whatsapp_evolution_instances" as any)
+    const { data: evolutionInstance } = await (context.supabase as any)
+      .from("whatsapp_evolution_instances")
       .select("instance_name, apikey, status")
       .eq("user_id", context.userId)
       .eq("status", "connected")
       .maybeSingle();
+
 
     if (evolutionInstance) {
       const { sendEvolutionText } = await import("./evolution.server");
@@ -251,7 +252,7 @@ export const sendConversationMessage = createServerFn({ method: "POST" })
         );
         
         const waId = waResp?.key?.id || null;
-        await context.supabase.from("whatsapp_messages").insert({
+        await (context.supabase as any).from("whatsapp_messages").insert({
           tenant_id: tenantId,
           conversation_id: conv.id,
           wa_message_id: waId,
@@ -262,11 +263,12 @@ export const sendConversationMessage = createServerFn({ method: "POST" })
           status: "sent",
         });
 
-        await context.supabase.from("whatsapp_conversations").update({
+        await (context.supabase as any).from("whatsapp_conversations").update({
           last_message_at: new Date().toISOString(),
           last_message_preview: data.body,
           last_message_direction: "outbound",
         }).eq("id", conv.id);
+
 
         return { ok: true, wa_message_id: waId };
       } catch (err: any) {
