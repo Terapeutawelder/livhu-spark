@@ -95,18 +95,24 @@ export function EvolutionWhatsappPanel() {
             <div className="max-w-xs mx-auto">
               <h3 className="font-medium text-base">Pronto para conectar?</h3>
               <p className="text-sm text-muted-foreground mt-1">
-                Ao clicar em conectar, geraremos uma instância exclusiva para você escanear o QR Code.
+                Ao clicar em conectar, uma instância exclusiva será criada no servidor para o seu usuário.
               </p>
             </div>
-            <Button 
-              onClick={() => connect.mutate()} 
-              disabled={connect.isPending}
-              className="bg-gold hover:bg-gold/90 text-black font-semibold"
-            >
-              {connect.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Zap className="mr-2 h-4 w-4" />}
-              Conectar WhatsApp
-            </Button>
+            <div className="flex flex-col gap-2 w-full max-w-xs mx-auto">
+              <Button 
+                onClick={() => connect.mutate()} 
+                disabled={connect.isPending}
+                className="bg-gold hover:bg-gold/90 text-black font-semibold w-full"
+              >
+                {connect.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Zap className="mr-2 h-4 w-4" />}
+                Criar Nova Instância
+              </Button>
+              <p className="text-[10px] text-muted-foreground italic">
+                * Uma nova conexão segura e isolada será provisionada agora.
+              </p>
+            </div>
           </div>
+
         ) : (
           <div className="space-y-6">
             <div className="flex items-center justify-between p-4 bg-muted/40 rounded-lg border">
