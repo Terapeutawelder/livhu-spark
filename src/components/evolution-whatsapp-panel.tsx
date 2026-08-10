@@ -109,7 +109,10 @@ export function EvolutionWhatsappPanel() {
               </Button>
               <p className="text-[10px] text-muted-foreground italic">
                 * Uma nova conexão segura e isolada será provisionada agora.
+              </p>
+            </div>
           </div>
+
         ) : (
           <div className="space-y-6">
             <div className="flex items-center justify-between p-4 bg-muted/40 rounded-lg border">
