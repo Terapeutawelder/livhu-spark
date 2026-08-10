@@ -19,7 +19,10 @@ export const connectEvolution = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const globalApikey = process.env.EVOLUTION_API_KEY;
-    if (!globalApikey) throw new Error("EVOLUTION_API_KEY não configurada no servidor (Solicite ao Admin).");
+    if (!globalApikey) {
+      console.warn("EVOLUTION_API_KEY não encontrada no process.env");
+      throw new Error("Conexão Mental: EVOLUTION_API_KEY não configurada no servidor (Solicite ao Admin).");
+    }
 
     const { data: existing } = await (context.supabase as any)
       .from("whatsapp_evolution_instances")
