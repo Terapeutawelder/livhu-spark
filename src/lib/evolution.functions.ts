@@ -30,7 +30,8 @@ export const connectEvolution = createServerFn({ method: "POST" })
       .eq("user_id", context.userId)
       .maybeSingle();
 
-    const instanceName = (existing as any)?.instance_name || `user_${context.userId.split("-")[0]}_${Math.random().toString(36).substring(2, 6)}`;
+    // Cada clique em "Conectar" sem uma instância prévia no banco criará uma nova instância única para o usuário.
+    const instanceName = (existing as any)?.instance_name || `livhub_${context.userId.split("-")[0]}_${Math.random().toString(36).substring(2, 7)}`;
 
     const { createInstance, getConnectState, getQrCode } = await import("./evolution.server");
 
