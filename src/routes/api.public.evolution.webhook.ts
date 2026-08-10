@@ -64,10 +64,11 @@ export const Route = createFileRoute("/api/public/evolution/webhook")({
                 last_message_direction: "inbound",
                 last_message_preview: body.slice(0, 140) || "[Mídia]",
               },
-              { onConflict: "tenant_id,wa_contact_id" }
+              { onConflict: "wa_contact_id" }
             )
             .select("id, unread_count")
             .maybeSingle();
+
 
           if (conv) {
             await admin
