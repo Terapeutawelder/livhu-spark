@@ -240,7 +240,7 @@ export const sendConversationMessage = createServerFn({ method: "POST" })
 
     if (evolutionInstance) {
       const { sendEvolutionText } = await import("./evolution.server");
-      const globalApikey = process.env.EVOLUTION_API_KEY!;
+      const globalApikey = process.env['EVOLUTION_API_KEY']!;
       const apikey = (evolutionInstance as any).apikey || globalApikey;
       
       try {
