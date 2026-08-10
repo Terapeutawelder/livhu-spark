@@ -223,14 +223,63 @@ export const sendConversationMessage = createServerFn({ method: "POST" })
     const tenantId = await getTenantId(context);
     const { data: conv, error: cErr } = await context.supabase
       .from("whatsapp_conversations")
-      .select("id, tenant_id, channel_id, phone")
+      .select("id, tenant_id, channel_id, wa_contact_id, phone")
       .eq("id", data.conversationId)
       .eq("tenant_id", tenantId)
       .maybeSingle();
     if (cErr || !conv) throw new Error("Conversa não encontrada.");
+    
+    // 1. Tentar EvolutionGo primeiro se o canal não estiver vinculado ou se houver instância evolution
+    const { data: evolutionInstance } = await context.supabase
+      .from("whatsapp_evolution_instances" as any)
+      .select("instance_name, apikey, status")
+      .eq("user_id", context.userId)
+      .eq("status", "connected")
+      .maybeSingle();
+
+    if (evolutionInstance) {
+      const { sendEvolutionText } = await import("./evolution.server");
+      const globalApikey = process.env.EVOLUTION_API_KEY!;
+      const apikey = (evolutionInstance as any).apikey || globalApikey;
+      
+      try {
+        const waResp = await sendEvolutionText(
+          (evolutionInstance as any).instance_name,
+          apikey,
+          conv.phone!,
+          data.body!
+        );
+        
+        const waId = waResp?.key?.id || null;
+        await context.supabase.from("whatsapp_messages").insert({
+          tenant_id: tenantId,
+          conversation_id: conv.id,
+          wa_message_id: waId,
+          direction: "outbound",
+          type: "text",
+          body: data.body,
+          sender_user_id: context.userId,
+          status: "sent",
+        });
+
+        await context.supabase.from("whatsapp_conversations").update({
+          last_message_at: new Date().toISOString(),
+          last_message_preview: data.body,
+          last_message_direction: "outbound",
+        }).eq("id", conv.id);
+
+        return { ok: true, wa_message_id: waId };
+      } catch (err: any) {
+        console.error("Evolution send error:", err);
+        // Fallback to Meta if possible, or throw
+        if (!conv.channel_id) throw err;
+      }
+    }
+
     if (!conv.channel_id) throw new Error("Conversa sem canal WhatsApp vinculado.");
 
     const { data: channel, error: chErr } = await context.supabase
+
       .from("whatsapp_channels")
       .select("id, phone_number_id, access_token, waba_id, status")
       .eq("id", conv.channel_id)
