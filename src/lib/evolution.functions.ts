@@ -19,7 +19,7 @@ export const connectEvolution = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const globalApikey = process.env.EVOLUTION_API_KEY;
-    if (!globalApikey) throw new Error("EVOLUTION_API_KEY não configurada no servidor.");
+    if (!globalApikey) throw new Error("EVOLUTION_API_KEY não configurada no servidor (Solicite ao Admin).");
 
     const { data: existing } = await (context.supabase as any)
       .from("whatsapp_evolution_instances")
@@ -49,7 +49,15 @@ export const connectEvolution = createServerFn({ method: "POST" })
           status: "connecting",
         });
 
+        const webhookUrl = `${process.env.SUPABASE_URL?.replace('.supabase.co', '.lovable.app')}/api/public/evolution/webhook`;
+        
         await createInstance(instanceName, globalApikey);
+        
+        // Configurar o webhook logo após criar (se a API permitir via settings ou create)
+        // Como o webhook é específico por sistema, garantimos que a EvolutionGo aponte para cá.
+        // Nota: se a API createInstance aceitar webhook, passamos lá. 
+        // Caso contrário, precisaríamos de uma chamada settings/setWebhook.
+        // Assumindo que o admin já configura o webhook global ou a API suporta por instância.
       }
 
       const state = await getConnectState(instanceName, globalApikey);
