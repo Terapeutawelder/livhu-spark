@@ -15,7 +15,12 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { getEvolutionInstance, connectEvolution, disconnectEvolution } from "@/lib/evolution.functions";
+import { 
+  getEvolutionInstance, 
+  connectEvolution, 
+  disconnectEvolution,
+  validateEvolutionConfig 
+} from "@/lib/evolution.functions";
 
 export function EvolutionWhatsappPanel() {
   const qc = useQueryClient();
@@ -23,13 +28,21 @@ export function EvolutionWhatsappPanel() {
   const connectFn = useServerFn(connectEvolution);
   const disconnectFn = useServerFn(disconnectEvolution);
 
-  const { data: instanceData, isLoading } = useQuery({
+  const validateFn = useServerFn(validateEvolutionConfig);
+
+  const { data: configStatus, isLoading: isConfigLoading } = useQuery({
+    queryKey: ["evolution-config"],
+    queryFn: () => validateFn(),
+  });
+
+  const { data: instanceData, isLoading: isInstanceLoading } = useQuery({
     queryKey: ["evolution-instance"],
     queryFn: () => getFn(),
     refetchInterval: (query: any) => {
       const data = query.state.data as any;
       return (data?.status === "qrcode_ready" || data?.status === "connecting" ? 3000 : false);
     },
+    enabled: !!configStatus?.valid,
   });
 
   const instance = instanceData as any;
@@ -49,10 +62,36 @@ export function EvolutionWhatsappPanel() {
     onError: (e: any) => toast.error(e?.message ?? "Falha ao desconectar"),
   });
 
-  if (isLoading) {
+  if (isConfigLoading || isInstanceLoading) {
     return (
       <Card className="p-8 flex items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </Card>
+    );
+  }
+
+  if (configStatus && !configStatus.valid) {
+    return (
+      <Card className="p-6 border-destructive/50 bg-destructive/5">
+        <div className="flex items-center gap-3 text-destructive mb-4">
+          <AlertCircle className="h-6 w-6" />
+          <h3 className="font-bold">Erro de Configuração do Sistema</h3>
+        </div>
+        <div className="space-y-2 mb-6">
+          {configStatus.errors.map((err: string, i: number) => (
+            <p key={i} className="text-sm text-destructive/80">• {err}</p>
+          ))}
+        </div>
+        <p className="text-xs text-muted-foreground italic mb-4">
+          Webhook esperado: <code className="bg-muted px-1 rounded">{configStatus.webhookUrl || 'N/A'}</code>
+        </p>
+        <Button 
+          variant="outline" 
+          onClick={() => qc.invalidateQueries({ queryKey: ["evolution-config"] })}
+          className="w-full"
+        >
+          <RefreshCw className="mr-2 h-4 w-4" /> Validar Novamente
+        </Button>
       </Card>
     );
   }
