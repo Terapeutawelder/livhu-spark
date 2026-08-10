@@ -19,8 +19,9 @@ export const connectEvolution = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const globalApikey = process.env['EVOLUTION_API_KEY'];
+    console.log("Tentando conectar Evolution. Chave presente:", !!globalApikey);
+    
     if (!globalApikey) {
-      console.warn("EVOLUTION_API_KEY não encontrada no process.env");
       throw new Error("Conexão Mental: EVOLUTION_API_KEY não configurada no servidor (Solicite ao Admin).");
     }
 
@@ -53,12 +54,13 @@ export const connectEvolution = createServerFn({ method: "POST" })
           status: "connecting",
         });
 
-        const webhookUrl = `${process.env.SUPABASE_URL?.replace('.supabase.co', '.lovable.app')}/api/public/evolution/webhook`;
+        const webhookUrl = `${process.env.VITE_SUPABASE_URL?.replace('.supabase.co', '.lovable.app')}/api/public/evolution/webhook`;
         
-        await createInstance(instanceName, globalApikey);
+        console.log(`Iniciando criação de instância: ${instanceName}`);
+        const createRes = await createInstance(instanceName, globalApikey);
+        console.log("Resposta createInstance:", JSON.stringify(createRes));
         
         // Garantir que a instância na EvolutionGo receba o webhook deste ambiente específico.
-        // O webhook URL agora aponta para o domínio dinâmico do projeto Lovable.
         console.log(`Configurando webhook dinâmico para ${instanceName}: ${webhookUrl}`);
       }
 
