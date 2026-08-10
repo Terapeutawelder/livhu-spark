@@ -71,10 +71,15 @@ export const connectEvolution = createServerFn({ method: "POST" })
       return { status: "qrcode_ready", qrcode: qr.base64 };
     } catch (err: any) {
       console.error("Evolution connect error:", err);
-      await (context.supabase as any)
-        .from("whatsapp_evolution_instances")
-        .update({ status: "error", last_error: err.message })
-        .eq("instance_name", instanceName);
+      // Tentamos atualizar o erro se a instância existir
+      try {
+        await (context.supabase as any)
+          .from("whatsapp_evolution_instances")
+          .update({ status: "error", last_error: err.message })
+          .eq("instance_name", instanceName);
+      } catch (e) {
+        // Ignorar erro de update se a instância não foi criada
+      }
       throw err;
     }
   });
