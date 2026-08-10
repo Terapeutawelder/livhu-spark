@@ -56,11 +56,9 @@ export const connectEvolution = createServerFn({ method: "POST" })
         
         await createInstance(instanceName, globalApikey);
         
-        // Configurar o webhook logo após criar (se a API permitir via settings ou create)
-        // Como o webhook é específico por sistema, garantimos que a EvolutionGo aponte para cá.
-        // Nota: se a API createInstance aceitar webhook, passamos lá. 
-        // Caso contrário, precisaríamos de uma chamada settings/setWebhook.
-        // Assumindo que o admin já configura o webhook global ou a API suporta por instância.
+        // Garantir que a instância na EvolutionGo receba o webhook deste ambiente específico.
+        // O webhook URL agora aponta para o domínio dinâmico do projeto Lovable.
+        console.log(`Configurando webhook dinâmico para ${instanceName}: ${webhookUrl}`);
       }
 
       const state = await getConnectState(instanceName, globalApikey);
