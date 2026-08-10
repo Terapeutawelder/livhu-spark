@@ -19,7 +19,10 @@ export const connectEvolution = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const globalApikey = process.env.EVOLUTION_API_KEY;
-    if (!globalApikey) throw new Error("EVOLUTION_API_KEY não configurada no servidor.");
+    if (!globalApikey) {
+      console.warn("EVOLUTION_API_KEY não encontrada no process.env");
+      throw new Error("Conexão Mental: EVOLUTION_API_KEY não configurada no servidor (Solicite ao Admin).");
+    }
 
     const { data: existing } = await (context.supabase as any)
       .from("whatsapp_evolution_instances")
@@ -49,7 +52,13 @@ export const connectEvolution = createServerFn({ method: "POST" })
           status: "connecting",
         });
 
+        const webhookUrl = `${process.env.SUPABASE_URL?.replace('.supabase.co', '.lovable.app')}/api/public/evolution/webhook`;
+        
         await createInstance(instanceName, globalApikey);
+        
+        // Garantir que a instância na EvolutionGo receba o webhook deste ambiente específico.
+        // O webhook URL agora aponta para o domínio dinâmico do projeto Lovable.
+        console.log(`Configurando webhook dinâmico para ${instanceName}: ${webhookUrl}`);
       }
 
       const state = await getConnectState(instanceName, globalApikey);

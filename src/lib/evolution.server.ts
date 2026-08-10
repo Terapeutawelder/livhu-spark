@@ -26,6 +26,9 @@ export async function evolutionApi(path: string, apikey: string, init: RequestIn
 }
 
 export async function createInstance(instanceName: string, globalApikey: string) {
+  // Criar instância com as configurações de integração e webhook habilitado
+  const webhookUrl = `${process.env.VITE_SUPABASE_URL?.replace('.supabase.co', '.lovable.app')}/api/public/evolution/webhook`;
+
   return evolutionApi("/instance/create", globalApikey, {
     method: "POST",
     body: JSON.stringify({
@@ -33,6 +36,7 @@ export async function createInstance(instanceName: string, globalApikey: string)
       token: Math.random().toString(36).substring(2, 15),
       number: "",
       qrcode: true,
+      webhook: webhookUrl, // Enviar webhook na criação se suportado pela API
     }),
   });
 }
