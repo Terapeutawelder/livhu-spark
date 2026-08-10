@@ -3,6 +3,8 @@ import { WhatsappCloudPanel } from "@/components/whatsapp-cloud-panel";
 import { OmnichannelChannelsPanel } from "@/components/omnichannel-channels-panel";
 
 import { ZernioChannelsPanel } from "@/components/zernio-channels-panel";
+import { EvolutionWhatsappPanel } from "@/components/evolution-whatsapp-panel";
+
 import { useEffect, useState, useCallback } from "react";
 import {
   User, Bell, MessageCircle, Cloud, Palette, Shield, KeyRound, Link2, Building2, Check, Copy, Globe, Loader2, ExternalLink, Radio, Zap,
@@ -53,6 +55,7 @@ const tabs = [
   { id: "perfil", label: "Perfil", icon: User },
   { id: "consultorio", label: "Consultório", icon: Building2 },
   { id: "dominio", label: "Meu domínio", icon: Globe },
+  { id: "whatsapp-evo", label: "WhatsApp Direto (Novo)", icon: Zap },
   { id: "zernio", label: "Conectar canais", icon: Zap },
   { id: "canais", label: "Canais Omnichannel", icon: Radio },
   { id: "whatsapp", label: "WhatsApp (Meta) — avançado", icon: MessageCircle },
@@ -63,6 +66,7 @@ const tabs = [
   { id: "seguranca", label: "Segurança", icon: Shield },
   { id: "api", label: "API & Webhooks", icon: KeyRound },
 ];
+
 
 
 function ConfiguracoesPage() {
@@ -103,6 +107,7 @@ function ConfiguracoesPage() {
           {tab === "perfil" && <PerfilPanel />}
           {tab === "consultorio" && <ConsultorioPanel />}
           {tab === "dominio" && <DominioPanel />}
+          {tab === "whatsapp-evo" && <EvolutionWhatsappPanel />}
           {tab === "zernio" && <ZernioChannelsPanel />}
           {tab === "canais" && <OmnichannelChannelsPanel onOpenWhatsapp={() => setTab("whatsapp")} />}
           {tab === "whatsapp" && <WhatsappPanel />}
@@ -112,6 +117,7 @@ function ConfiguracoesPage() {
           {tab === "integracoes" && <IntegracoesPanel />}
           {tab === "seguranca" && <SegurancaPanel />}
           {tab === "api" && <ApiPanel />}
+
         </div>
       </div>
     </div>
