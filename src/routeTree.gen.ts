@@ -50,6 +50,7 @@ import { Route as AuthenticatedAdminSuporteRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminTenantsRouteImport } from './routes/_authenticated.admin.tenants'
 import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated.admin.usuarios'
 import { Route as AuthenticatedAdminWhiteLabelRouteImport } from './routes/_authenticated.admin.white-label'
+import { Route as ApiPublicEvolutionWebhookRouteImport } from './routes/api.public.evolution.webhook'
 import { Route as ApiPublicHooksNotificationsDispatchRouteImport } from './routes/api.public.hooks.notifications-dispatch'
 import { Route as ApiPublicMetaDataDeletionRouteImport } from './routes/api.public.meta.data-deletion'
 import { Route as ApiPublicMetaDeauthorizeRouteImport } from './routes/api.public.meta.deauthorize'
@@ -281,6 +282,12 @@ const AuthenticatedAdminWhiteLabelRoute =
     path: '/white-label',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const ApiPublicEvolutionWebhookRoute =
+  ApiPublicEvolutionWebhookRouteImport.update({
+    id: '/api/public/evolution/webhook',
+    path: '/api/public/evolution/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksNotificationsDispatchRoute =
   ApiPublicHooksNotificationsDispatchRouteImport.update({
     id: '/api/public/hooks/notifications-dispatch',
@@ -373,6 +380,7 @@ export interface FileRoutesByFullPath {
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/admin/white-label': typeof AuthenticatedAdminWhiteLabelRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/evolution/webhook': typeof ApiPublicEvolutionWebhookRoute
   '/api/public/hooks/notifications-dispatch': typeof ApiPublicHooksNotificationsDispatchRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
@@ -423,6 +431,7 @@ export interface FileRoutesByTo {
   '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/admin/white-label': typeof AuthenticatedAdminWhiteLabelRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/api/public/evolution/webhook': typeof ApiPublicEvolutionWebhookRoute
   '/api/public/hooks/notifications-dispatch': typeof ApiPublicHooksNotificationsDispatchRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
@@ -476,6 +485,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/_authenticated/admin/white-label': typeof AuthenticatedAdminWhiteLabelRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/evolution/webhook': typeof ApiPublicEvolutionWebhookRoute
   '/api/public/hooks/notifications-dispatch': typeof ApiPublicHooksNotificationsDispatchRoute
   '/api/public/meta/data-deletion': typeof ApiPublicMetaDataDeletionRoute
   '/api/public/meta/deauthorize': typeof ApiPublicMetaDeauthorizeRoute
@@ -529,6 +539,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/admin/white-label'
     | '/admin/'
+    | '/api/public/evolution/webhook'
     | '/api/public/hooks/notifications-dispatch'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
@@ -579,6 +590,7 @@ export interface FileRouteTypes {
     | '/admin/usuarios'
     | '/admin/white-label'
     | '/admin'
+    | '/api/public/evolution/webhook'
     | '/api/public/hooks/notifications-dispatch'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
@@ -631,6 +643,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/usuarios'
     | '/_authenticated/admin/white-label'
     | '/_authenticated/admin/'
+    | '/api/public/evolution/webhook'
     | '/api/public/hooks/notifications-dispatch'
     | '/api/public/meta/data-deletion'
     | '/api/public/meta/deauthorize'
@@ -653,6 +666,7 @@ export interface RootRouteChildren {
   AdminResetPasswordRoute: typeof AdminResetPasswordRoute
   PSlugRoute: typeof PSlugRoute
   PagamentoRetornoRoute: typeof PagamentoRetornoRoute
+  ApiPublicEvolutionWebhookRoute: typeof ApiPublicEvolutionWebhookRoute
   ApiPublicHooksNotificationsDispatchRoute: typeof ApiPublicHooksNotificationsDispatchRoute
   ApiPublicMetaDataDeletionRoute: typeof ApiPublicMetaDataDeletionRoute
   ApiPublicMetaDeauthorizeRoute: typeof ApiPublicMetaDeauthorizeRoute
@@ -953,6 +967,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminWhiteLabelRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/api/public/evolution/webhook': {
+      id: '/api/public/evolution/webhook'
+      path: '/api/public/evolution/webhook'
+      fullPath: '/api/public/evolution/webhook'
+      preLoaderRoute: typeof ApiPublicEvolutionWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/notifications-dispatch': {
       id: '/api/public/hooks/notifications-dispatch'
       path: '/api/public/hooks/notifications-dispatch'
@@ -1111,6 +1132,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminResetPasswordRoute: AdminResetPasswordRoute,
   PSlugRoute: PSlugRoute,
   PagamentoRetornoRoute: PagamentoRetornoRoute,
+  ApiPublicEvolutionWebhookRoute: ApiPublicEvolutionWebhookRoute,
   ApiPublicHooksNotificationsDispatchRoute:
     ApiPublicHooksNotificationsDispatchRoute,
   ApiPublicMetaDataDeletionRoute: ApiPublicMetaDataDeletionRoute,
