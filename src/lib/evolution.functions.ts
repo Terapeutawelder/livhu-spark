@@ -2,6 +2,29 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+export const validateEvolutionConfig = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async () => {
+    const globalApikey = process.env['EVOLUTION_API_KEY'];
+    const supabaseUrl = process.env.VITE_SUPABASE_URL;
+    
+    const errors = [];
+    if (!globalApikey) errors.push("EVOLUTION_API_KEY não configurada no servidor.");
+    if (!supabaseUrl) errors.push("VITE_SUPABASE_URL não encontrada (necessária para webhook).");
+    
+    const webhookUrl = supabaseUrl ? `${supabaseUrl.replace('.supabase.co', '.lovable.app')}/api/public/evolution/webhook` : null;
+    
+    if (webhookUrl && !webhookUrl.startsWith('https://')) {
+      errors.push("URL do Webhook inválida ou insegura.");
+    }
+
+    return {
+      valid: errors.length === 0,
+      errors,
+      webhookUrl
+    };
+  });
+
 export const getEvolutionInstance = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -19,10 +42,10 @@ export const connectEvolution = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const globalApikey = process.env['EVOLUTION_API_KEY'];
-    console.log("Tentando conectar Evolution. Chave presente:", !!globalApikey);
-    
-    if (!globalApikey) {
-      throw new Error("Conexão Mental: EVOLUTION_API_KEY não configurada no servidor (Solicite ao Admin).");
+    const supabaseUrl = process.env.VITE_SUPABASE_URL;
+
+    if (!globalApikey || !supabaseUrl) {
+      throw new Error("Configuração incompleta: EVOLUTION_API_KEY ou VITE_SUPABASE_URL ausentes.");
     }
 
     const { data: existing } = await (context.supabase as any)
