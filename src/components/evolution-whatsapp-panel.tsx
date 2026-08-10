@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
@@ -10,7 +9,7 @@ import {
   AlertCircle, 
   QrCode, 
   MessageSquareOff,
-  ExternalLink
+  Zap
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,11 +23,16 @@ export function EvolutionWhatsappPanel() {
   const connectFn = useServerFn(connectEvolution);
   const disconnectFn = useServerFn(disconnectEvolution);
 
-  const { data: instance, isLoading } = useQuery({
+  const { data: instanceData, isLoading } = useQuery({
     queryKey: ["evolution-instance"],
     queryFn: () => getFn(),
-    refetchInterval: (data) => (data?.status === "qrcode_ready" || data?.status === "connecting" ? 3000 : false),
+    refetchInterval: (query: any) => {
+      const data = query.state.data as any;
+      return (data?.status === "qrcode_ready" || data?.status === "connecting" ? 3000 : false);
+    },
   });
+
+  const instance = instanceData as any;
 
   const connect = useMutation({
     mutationFn: () => connectFn(),
@@ -99,7 +103,7 @@ export function EvolutionWhatsappPanel() {
               disabled={connect.isPending}
               className="bg-gold hover:bg-gold/90 text-black font-semibold"
             >
-              {connect.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Plug className="mr-2 h-4 w-4" />}
+              {connect.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Zap className="mr-2 h-4 w-4" />}
               Conectar WhatsApp
             </Button>
           </div>
