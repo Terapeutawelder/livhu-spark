@@ -5,13 +5,17 @@
 const BASE_URL = "https://api.conexaomental.online";
 
 export async function evolutionApi(path: string, apikey: string, init: RequestInit = {}) {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(init.headers as Record<string, string> ?? {}),
+  };
+
+  // Garante que a apikey seja enviada no header esperado pela EvolutionGo
+  headers["apikey"] = apikey;
+
   const res = await fetch(`${BASE_URL}${path}`, {
     ...init,
-    headers: {
-      "Content-Type": "application/json",
-      apikey,
-      ...(init.headers ?? {}),
-    },
+    headers,
   });
   
   const body = await res.text();
