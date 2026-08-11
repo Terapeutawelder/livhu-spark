@@ -44,6 +44,7 @@ export function ZernioChannelsPanel() {
   const syncFn = useServerFn(syncZernioAccounts);
   const disconnectFn = useServerFn(disconnectZernioAccount);
   const testFn = useServerFn(sendZernioTestMessage);
+  const checkTelegramFn = useServerFn(checkZernioTelegram);
 
   const { data, isLoading } = useQuery({
     queryKey: ["zernio-status"],
