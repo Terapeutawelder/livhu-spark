@@ -595,19 +595,36 @@ export function PublicLanding({ template, theme, content, services, slug, intera
       <section className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 pb-10 sm:pb-14">
         <div
           className="flex flex-col items-center gap-4 px-6 py-10 text-center md:flex-row md:justify-between md:text-left"
-          style={card}
+          style={
+            isClinic
+              ? {
+                  borderRadius: theme.radius + 8,
+                  background: `linear-gradient(120deg, ${theme.band} 0%, ${theme.accent} 160%)`,
+                  color: theme.bandText,
+                  boxShadow: "0 30px 60px -40px rgba(28,27,46,.8)",
+                }
+              : card
+          }
         >
           <div>
-            <h3 className="text-[clamp(1.4rem,5vw,1.875rem)] leading-tight" style={{ ...h, color: theme.text }}>
+            <h3
+              className={`text-[clamp(1.4rem,5vw,1.875rem)] leading-tight ${isClinic ? "font-extrabold tracking-tight" : ""}`}
+              style={{ ...h, color: isClinic ? theme.bandText : theme.text }}
+            >
               Pronto para dar o primeiro passo?
             </h3>
-            <p className="mt-2 text-base" style={{ color: theme.muted }}>
+            <p className="mt-2 text-base" style={{ color: isClinic ? theme.bandText : theme.muted, opacity: isClinic ? 0.8 : 1 }}>
               Escolha o plano de terapia que combina com você e reserve seu horário.
             </p>
           </div>
-          <a href="#agendar" className="px-6 py-3 text-sm font-semibold" style={btn}>
+          <a
+            href="#agendar"
+            className="px-6 py-3.5 text-sm font-bold"
+            style={isClinic ? { borderRadius: 999, background: "#ffffff", color: theme.band } : btn}
+          >
             {content.ctaLabel}
           </a>
+
         </div>
       </section>
 
