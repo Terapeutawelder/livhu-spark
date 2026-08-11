@@ -700,7 +700,7 @@ function BookingWidget({
           }}
         >
           <span className="text-sm font-semibold" style={{ color: theme.text }}>
-            {service ? service.name : "Escolha um serviço ao lado"}
+            {service ? service.name : "Escolha um serviço na seção acima"}
           </span>
           {service && (
             <span className="text-xs" style={{ color: theme.muted }}>
