@@ -118,6 +118,7 @@ export const TEMPLATES: TemplateDef[] = [
   },
   {
     id: "aurora",
+    audience: "individual",
     name: "Aurora",
     description: "Fundo escuro azul-noite com dourado — premium e intimista.",
     swatch: ["#0d1524", "#141f33", "#f2f4f8", "#d8b165"],
@@ -137,6 +138,7 @@ export const TEMPLATES: TemplateDef[] = [
   },
   {
     id: "bosque",
+    audience: "individual",
     name: "Bosque",
     description: "Verde profundo e bege — natural, sólido e confiável.",
     swatch: ["#f3efe6", "#ffffff", "#1f3d2b", "#2f6b45"],
@@ -156,6 +158,7 @@ export const TEMPLATES: TemplateDef[] = [
   },
   {
     id: "equilibrio",
+    audience: "individual",
     name: "Equilíbrio",
     description: "Branco clínico com verde sálvia — clean e direto ao ponto.",
     swatch: ["#ffffff", "#f4f7f5", "#16241d", "#4c7c66"],
