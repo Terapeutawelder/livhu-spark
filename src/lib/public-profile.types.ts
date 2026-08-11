@@ -293,7 +293,11 @@ export function defaultContent(name = "Seu Nome"): ProfileContent {
       { title: "Luto", description: "Apoio para atravessar perdas com respeito ao seu tempo." },
       { title: "Estresse e burnout", description: "Recupere o equilíbrio entre trabalho, descanso e vida pessoal." },
     ],
+    teamTitle: "Profissionais da clínica",
+    teamIntro: "Cada profissional tem sua própria página e agenda — escolha quem vai te atender.",
+    team: [],
     testimonialsTitle: "O que dizem os pacientes",
+
     testimonials: [
       { name: "M. S.", text: "A terapia me deu ferramentas concretas para lidar com a ansiedade no trabalho." },
       { name: "R. A.", text: "Um espaço seguro, sem julgamentos. Mudou minha relação comigo mesma." },
