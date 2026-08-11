@@ -335,6 +335,65 @@ export function ZernioChannelsPanel() {
           <li>Pode desconectar qualquer canal a qualquer momento por aqui.</li>
         </ul>
       </Card>
+
+      <Dialog open={!!codeFlow} onOpenChange={(o) => !o && setCodeFlow(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              Conectar {ZERNIO_PLATFORM_LABEL[codeFlow?.platform ?? ""] ?? "canal"}
+            </DialogTitle>
+            <DialogDescription>
+              Este canal não usa login OAuth: a conexão é feita enviando um código ao bot oficial.
+            </DialogDescription>
+          </DialogHeader>
+
+          {codeFlow && (
+            <div className="space-y-4">
+              <div className="rounded-lg border bg-muted/40 p-3">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">Seu código</p>
+                <div className="mt-1 flex items-center justify-between gap-2">
+                  <code className="text-lg font-bold tracking-wider">{codeFlow.code}</code>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => {
+                      navigator.clipboard.writeText(codeFlow.code);
+                      toast.success("Código copiado");
+                    }}
+                  >
+                    Copiar
+                  </Button>
+                </div>
+                <p className="mt-1 text-xs text-muted-foreground">Válido por 15 minutos.</p>
+              </div>
+
+              <ol className="list-decimal space-y-1 pl-5 text-sm text-muted-foreground">
+                {codeFlow.instructions.map((line, i) => (
+                  <li key={i}>{line.replace(/^\d+\.\s*/, "")}</li>
+                ))}
+              </ol>
+
+              <div className="flex flex-wrap gap-2">
+                {codeFlow.botUsername && (
+                  <Button asChild variant="outline" size="sm">
+                    <a
+                      href={`https://t.me/${codeFlow.botUsername}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Abrir @{codeFlow.botUsername}
+                    </a>
+                  </Button>
+                )}
+                <Button size="sm" onClick={() => sync.mutate()} disabled={sync.isPending}>
+                  {sync.isPending ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : null}
+                  Já enviei, verificar
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
