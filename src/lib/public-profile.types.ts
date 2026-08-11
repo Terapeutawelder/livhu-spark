@@ -210,6 +210,25 @@ export const TEMPLATES: TemplateDef[] = [
       bodyFont: "'Inter', system-ui, sans-serif",
     },
   },
+  {
+    id: "clinica",
+    name: "Clínica",
+    description: "Header full-bleed com painel lilás translúcido — ideal para clínicas e equipes.",
+    swatch: ["#faf7fd", "#ffffff", "#2b1f3d", "#7c4dbe"],
+    theme: {
+      bg: "#faf7fd",
+      surface: "#ffffff",
+      text: "#2b1f3d",
+      muted: "#6f6383",
+      accent: "#7c4dbe",
+      accentText: "#ffffff",
+      band: "#efe6fa",
+      bandText: "#2b1f3d",
+      radius: 20,
+      headingFont: "'Plus Jakarta Sans', system-ui, sans-serif",
+      bodyFont: "'Inter', system-ui, sans-serif",
+    },
+  },
 ];
 
 export function templateById(id: string): TemplateDef {
