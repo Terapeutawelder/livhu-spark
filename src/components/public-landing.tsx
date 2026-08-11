@@ -557,7 +557,7 @@ function BookingWidget({
   slug,
   services,
   serviceId,
-  onSelectService,
+  
   theme,
   card,
   btn,
