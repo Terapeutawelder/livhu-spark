@@ -83,6 +83,7 @@ function fileToDataUrl(file: File): Promise<string> {
 
 function PerfilPublicoPage() {
   const { data: tenant } = useCurrentTenant();
+  const { accountType } = useAccountType();
   const queryClient = useQueryClient();
 
   const [tab, setTab] = useState<TabId>("layout");
@@ -158,9 +159,13 @@ function PerfilPublicoPage() {
       const tpl = templateById(profile.template);
       const savedContent = (profile.content ?? {}) as Partial<ProfileContent>;
       const defaults = defaultContent(tenant.name);
-      const isClinic = profile.template === "clinica";
-      setTemplate(profile.template);
-      setTheme({ ...tpl.theme, ...((profile.theme ?? {}) as Partial<ProfileTheme>) });
+      // Se o plano mudou (individual <-> clínica), cai no layout padrão do tipo de conta.
+      const allowed = templatesForAccount(accountType).some((t) => t.id === profile.template);
+      const effectiveTemplate = allowed ? profile.template : defaultTemplateFor(accountType);
+      const effectiveTpl = allowed ? tpl : templateById(effectiveTemplate);
+      const isClinic = effectiveTemplate === "clinica";
+      setTemplate(effectiveTemplate);
+      setTheme({ ...effectiveTpl.theme, ...((profile.theme ?? {}) as Partial<ProfileTheme>) });
       setContent({
         ...defaults,
         ...savedContent,
@@ -173,11 +178,19 @@ function PerfilPublicoPage() {
       setSlug(profile.slug ?? "");
       setPublished(!!profile.is_published);
     } else {
-      setContent(defaultContent(tenant.name));
+      const tplId = defaultTemplateFor(accountType);
+      setTemplate(tplId);
+      setTheme({ ...templateById(tplId).theme });
+      const base = defaultContent(tenant.name);
+      setContent(
+        tplId === "clinica"
+          ? { ...base, sections: { ...base.sections, team: true, about: false } }
+          : base,
+      );
       setSlug(slugify(tenant.slug || tenant.name));
     }
     setLoaded(true);
-  }, [profile, profileFetched, tenant, loaded]);
+  }, [profile, profileFetched, tenant, loaded, accountType]);
 
   const publicUrl = useMemo(() => {
     if (typeof window === "undefined") return `/p/${slug}`;
@@ -335,6 +348,7 @@ function PerfilPublicoPage() {
                 onSelect={applyTemplate}
                 sections={content.sections}
                 onToggle={(k, v) => patch({ sections: { ...content.sections, [k]: v } })}
+                accountType={accountType}
               />
             )}
             {tab === "conteudo" && <ContentTab template={template} content={content} patch={patch} />}
