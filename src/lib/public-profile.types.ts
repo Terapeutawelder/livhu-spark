@@ -89,6 +89,8 @@ export type TemplateDef = {
   id: string;
   name: string;
   description: string;
+  /** Público-alvo: layouts de profissional individual ou de clínica. */
+  audience: "individual" | "clinic";
   swatch: string[];
   theme: ProfileTheme;
 };
@@ -96,6 +98,7 @@ export type TemplateDef = {
 export const TEMPLATES: TemplateDef[] = [
   {
     id: "serena",
+    audience: "individual",
     name: "Serena",
     description: "Editorial em tons nude e areia — acolhedor e sofisticado.",
     swatch: ["#f6f1ea", "#ffffff", "#3f342c", "#b08968"],
@@ -172,6 +175,7 @@ export const TEMPLATES: TemplateDef[] = [
   },
   {
     id: "essencia",
+    audience: "individual",
     name: "Essência",
     description: "Editorial nude com serifada alta — inspirado em sites de psicologia premium.",
     swatch: ["#f7f2ec", "#ffffff", "#4a3f37", "#a98a6d"],
@@ -191,6 +195,7 @@ export const TEMPLATES: TemplateDef[] = [
   },
   {
     id: "florescer",
+    audience: "individual",
     name: "Florescer",
     description: "Coral suave e off-white floral — leve, feminino e acolhedor.",
     swatch: ["#fdf6f2", "#ffffff", "#4b3b36", "#e78b73"],
@@ -210,6 +215,7 @@ export const TEMPLATES: TemplateDef[] = [
   },
   {
     id: "oxnard",
+    audience: "individual",
     name: "Oxnard",
     description: "Verde-petróleo escuro e tipografia clean — executivo e sofisticado.",
     swatch: ["#12312c", "#194039", "#eef4f1", "#9ec9b6"],
@@ -229,6 +235,7 @@ export const TEMPLATES: TemplateDef[] = [
   },
   {
     id: "clinica",
+    audience: "clinic",
     name: "Clínica",
     description: "Hero dividido creme + foto, faixas escuras e roxo vibrante — estilo plataforma de terapia online.",
     swatch: ["#faf8f5", "#ffffff", "#1c1b2e", "#7c3aed"],
@@ -250,6 +257,15 @@ export const TEMPLATES: TemplateDef[] = [
 
 export function templateById(id: string): TemplateDef {
   return TEMPLATES.find((t) => t.id === id) ?? TEMPLATES[0];
+}
+
+/** Layouts disponíveis conforme o tipo de conta (profissional x clínica). */
+export function templatesForAccount(accountType: "individual" | "clinic"): TemplateDef[] {
+  return TEMPLATES.filter((t) => t.audience === accountType);
+}
+
+export function defaultTemplateFor(accountType: "individual" | "clinic"): string {
+  return templatesForAccount(accountType)[0]?.id ?? TEMPLATES[0].id;
 }
 
 export const DEFAULT_SECTIONS: ProfileSections = {
