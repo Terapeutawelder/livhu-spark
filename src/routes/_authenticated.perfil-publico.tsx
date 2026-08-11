@@ -496,7 +496,77 @@ function ContentTab({ content, patch }: { content: ProfileContent; patch: (p: Pa
         </button>
       </div>
 
+      <Divider>Equipe da clínica</Divider>
+      <p className="-mt-1 text-[11px] text-muted-foreground">
+        Cada profissional aparece com foto e botão “Ver agenda”, que abre a página pública dele (/p/slug) com o
+        calendário próprio. Ative a seção “Equipe da clínica” na aba Layout.
+      </p>
+      <Input label="Título da seção" value={content.teamTitle ?? ""} onChange={(v) => patch({ teamTitle: v })} />
+      <Textarea label="Introdução" rows={2} value={content.teamIntro ?? ""} onChange={(v) => patch({ teamIntro: v })} />
+      <div className="space-y-3">
+        {(content.team ?? []).map((m, i) => {
+          const team = content.team ?? [];
+          const upd = (part: Partial<(typeof team)[number]>) =>
+            patch({ team: team.map((x, xi) => (xi === i ? { ...x, ...part } : x)) });
+          return (
+            <div key={i} className="rounded-lg border border-border p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-[11px] font-semibold uppercase text-muted-foreground">
+                  Profissional {i + 1}
+                </span>
+                <button
+                  onClick={() => patch({ team: team.filter((_, x) => x !== i) })}
+                  className="inline-flex items-center gap-1 text-[11px] text-destructive hover:underline"
+                >
+                  <X className="h-3 w-3" /> Remover
+                </button>
+              </div>
+              <Input label="Nome" value={m.name} onChange={(v) => upd({ name: v })} />
+              <Input label="Especialidade / CRP" value={m.role} onChange={(v) => upd({ role: v })} />
+              <Textarea label="Mini bio" rows={2} value={m.bio} onChange={(v) => upd({ bio: v })} />
+              <Input
+                label="Slug da página do profissional"
+                value={m.slug}
+                onChange={(v) => upd({ slug: v.replace(/[^a-z0-9-]/gi, "").toLowerCase() })}
+                placeholder="ana-souza"
+              />
+              <Input
+                label="URL da foto"
+                value={m.photo}
+                onChange={(v) => upd({ photo: v })}
+                placeholder="https://…"
+              />
+              {m.photo && (
+                <div className="mt-2 flex items-center gap-2">
+                  <img src={m.photo} alt={`Foto de ${m.name}`} className="h-12 w-12 rounded-full object-cover" />
+                  <button
+                    onClick={() => upd({ photo: "" })}
+                    className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[11px] hover:bg-muted"
+                  >
+                    <Trash2 className="h-3 w-3" /> Excluir foto
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        })}
+        <button
+          onClick={() =>
+            patch({
+              team: [
+                ...(content.team ?? []),
+                { name: "Nome do profissional", role: "Psicoterapeuta · CRP 00/00000", bio: "", photo: "", slug: "" },
+              ],
+            })
+          }
+          className="inline-flex w-full items-center justify-center gap-1 rounded-lg border border-dashed border-border py-2 text-xs font-semibold text-muted-foreground hover:border-gold hover:text-foreground"
+        >
+          <Plus className="h-3.5 w-3.5" /> Adicionar profissional
+        </button>
+      </div>
+
       <Divider>Depoimentos</Divider>
+
       <Input label="Título" value={content.testimonialsTitle} onChange={(v) => patch({ testimonialsTitle: v })} />
       <div className="space-y-3">
         {content.testimonials.map((t, i) => (
