@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useCurrentTenant } from "@/hooks/use-tenant";
+import { useAccountType, useCurrentTenant } from "@/hooks/use-tenant";
 import { generateStudioPhoto, signProfileImages } from "@/lib/public-profile.functions";
 import { PublicLanding, type PublicService } from "@/components/public-landing";
 import {
@@ -11,7 +11,9 @@ import {
   STUDIO_STYLES,
   TEMPLATES,
   defaultContent,
+  defaultTemplateFor,
   templateById,
+  templatesForAccount,
   type ProfileContent,
   type ProfileSections,
   type ProfileTheme,
@@ -415,17 +417,25 @@ function LayoutTab({
   onSelect,
   sections,
   onToggle,
+  accountType,
 }: {
   template: string;
   onSelect: (id: string) => void;
   sections: ProfileSections;
   onToggle: (k: keyof ProfileSections, v: boolean) => void;
+  accountType: "individual" | "clinic";
 }) {
+  const available = templatesForAccount(accountType);
   return (
     <>
-      <Field label="Modelo de landing page">
+      <Field label={accountType === "clinic" ? "Modelo de landing page (Clínica)" : "Modelo de landing page (Profissional)"}>
+        <p className="mb-3 text-[11px] text-muted-foreground">
+          {accountType === "clinic"
+            ? "Seu plano é Clínica: os layouts abaixo são exclusivos para equipes de profissionais."
+            : "Seu plano é Individual: os layouts abaixo são exclusivos para profissionais autônomos."}
+        </p>
         <div className="grid gap-3 sm:grid-cols-2">
-          {TEMPLATES.map((t) => {
+          {available.map((t) => {
             const active = t.id === template;
             return (
               <button
