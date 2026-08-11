@@ -399,8 +399,8 @@ export function ZernioChannelsPanel() {
                     </a>
                   </Button>
                 )}
-                <Button size="sm" onClick={() => sync.mutate()} disabled={sync.isPending}>
-                  {sync.isPending ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : null}
+                <Button size="sm" onClick={() => checkTelegram.mutate()} disabled={checkTelegram.isPending}>
+                  {checkTelegram.isPending ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : null}
                   Já enviei, verificar
                 </Button>
               </div>
