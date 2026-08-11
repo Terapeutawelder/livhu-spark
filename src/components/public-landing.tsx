@@ -285,26 +285,55 @@ export function PublicLanding({ template, theme, content, services, slug, intera
       {/* Tópicos */}
       {content.sections.topics && (
         <section id="servicos" className="py-10 sm:py-14 md:py-20" style={{ background: theme.band, color: theme.bandText }}>
-          <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6">
-            <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>
+          <div className={`mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 ${isClinic ? "text-center" : ""}`}>
+            <h2
+              className={`text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl ${isClinic ? "font-extrabold tracking-tight" : ""}`}
+              style={h}
+            >
               {content.topicsTitle}
             </h2>
-            <p className="mt-3 max-w-2xl text-[15px] sm:text-base md:text-lg" style={{ opacity: 0.75 }}>
+            <p
+              className={`mt-3 max-w-2xl text-[15px] sm:text-base md:text-lg ${isClinic ? "mx-auto" : ""}`}
+              style={{ opacity: 0.75 }}
+            >
               {content.topicsIntro}
             </p>
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-10 grid gap-4 text-left sm:grid-cols-2 lg:grid-cols-3">
               {content.topics.map((t, i) => (
-                <div key={i} className="p-6" style={card}>
+                <div
+                  key={i}
+                  className="p-6"
+                  style={
+                    isClinic
+                      ? {
+                          background: theme.accent,
+                          borderRadius: theme.radius,
+                          border: "1px solid rgba(255,255,255,.14)",
+                          boxShadow: "0 18px 40px -24px rgba(124,58,237,.9)",
+                        }
+                      : card
+                  }
+                >
                   <div
                     className="mb-4 grid h-9 w-9 place-items-center text-sm font-bold"
-                    style={{ background: theme.accent, color: theme.accentText, borderRadius: 999 }}
+                    style={
+                      isClinic
+                        ? { background: "rgba(255,255,255,.18)", color: "#ffffff", borderRadius: 999 }
+                        : { background: theme.accent, color: theme.accentText, borderRadius: 999 }
+                    }
                   >
                     {String(i + 1).padStart(2, "0")}
                   </div>
-                  <h3 className="text-xl font-semibold" style={{ ...h, color: theme.text }}>
+                  <h3
+                    className="text-xl font-semibold"
+                    style={{ ...h, color: isClinic ? "#ffffff" : theme.text }}
+                  >
                     {t.title}
                   </h3>
-                  <p className="mt-2 text-[15px] leading-relaxed" style={{ color: theme.muted }}>
+                  <p
+                    className="mt-2 text-[15px] leading-relaxed"
+                    style={{ color: isClinic ? "rgba(255,255,255,.85)" : theme.muted }}
+                  >
                     {t.description}
                   </p>
                 </div>
