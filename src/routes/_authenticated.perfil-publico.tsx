@@ -27,6 +27,9 @@ import {
   Save,
   Smartphone,
   Sparkles,
+  Trash2,
+  Plus,
+  X,
   Type as TypeIcon,
   Upload,
 } from "lucide-react";
@@ -813,19 +816,19 @@ function PhotoTab({
 
           <div className="mt-3 flex flex-wrap gap-2">
             {heroImage && (
-              <Button type="button" size="sm" variant="outline" onClick={() => onHero("")}>
+              <button type="button" onClick={() => onHero("")} className="inline-flex items-center rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted">
                 <Trash2 className="mr-1 h-3.5 w-3.5" /> Excluir foto de capa
-              </Button>
+              </button>
             )}
             {aboutImage && (
-              <Button type="button" size="sm" variant="outline" onClick={() => onAbout("")}>
+              <button type="button" onClick={() => onAbout("")} className="inline-flex items-center rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted">
                 <Trash2 className="mr-1 h-3.5 w-3.5" /> Excluir foto “Sobre”
-              </Button>
+              </button>
             )}
             {avatarImage && (
-              <Button type="button" size="sm" variant="outline" onClick={() => onAvatar("")}>
+              <button type="button" onClick={() => onAvatar("")} className="inline-flex items-center rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted">
                 <Trash2 className="mr-1 h-3.5 w-3.5" /> Excluir foto de perfil
-              </Button>
+              </button>
             )}
           </div>
         </Field>
