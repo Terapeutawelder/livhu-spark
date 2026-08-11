@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode, useMemo } from "react";
 import { Link, useRouterState, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -141,6 +141,14 @@ export function AppSidebar() {
   const { collapsed, mobileOpen, setMobileOpen } = useSidebar();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { isClinic } = useAccountType();
+
+  // Plano Clínica ganha o módulo de equipe; plano individual vê apenas Serviços.
+  const navItems = useMemo(() => {
+    const list = [...items];
+    list.splice(6, 0, isClinic ? clinicItem : soloItem);
+    return list;
+  }, [isClinic]);
 
   // Close mobile drawer on route change
   useEffect(() => {
