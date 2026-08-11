@@ -2,6 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import type { ProfileContent, ProfileTheme } from "@/lib/public-profile.types";
 import { THERAPY_PLANS, findPlan, planTotalCents } from "@/lib/therapy-plans";
+import clinicHeroAsset from "@/assets/clinica-hero.jpg.asset.json";
+
+const CLINIC_HERO = clinicHeroAsset.url;
+
 
 export type PublicService = {
   id: string;
