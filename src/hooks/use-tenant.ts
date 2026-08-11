@@ -11,7 +11,10 @@ export type Tenant = {
   timezone: string;
   plan: string;
   is_active: boolean;
+  account_type?: string | null;
 };
+
+export type AccountType = "individual" | "clinic";
 
 /**
  * Retorna o tenant "corrente" do usuário logado (o primeiro que ele possui).
