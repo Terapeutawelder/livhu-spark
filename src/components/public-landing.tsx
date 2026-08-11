@@ -279,7 +279,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
       )}
 
       {/* Equipe da clínica */}
-      {content.sections.team && (content.team ?? []).length > 0 && (
+      {content.sections.team && ((content.team ?? []).length > 0 || template === "clinica") && (
         <section id="equipe" className="py-10 sm:py-14 md:py-20" style={{ background: theme.band, color: theme.bandText }}>
           <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6">
             <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>
