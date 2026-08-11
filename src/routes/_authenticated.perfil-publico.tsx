@@ -27,6 +27,9 @@ import {
   Save,
   Smartphone,
   Sparkles,
+  Trash2,
+  Plus,
+  X,
   Type as TypeIcon,
   Upload,
 } from "lucide-react";
@@ -121,23 +124,29 @@ function PerfilPublicoPage() {
   // Fotos ainda não publicadas só abrem com URL assinada — usada apenas na pré-visualização.
   const [signed, setSigned] = useState<Record<string, string>>({});
   useEffect(() => {
-    const paths = [content.heroImage, content.aboutImage].filter(
-      (u) => u && u.startsWith("/api/public/perfil/img/") && !signed[u],
-    ) as string[];
+    const paths = [
+      content.heroImage,
+      content.aboutImage,
+      content.avatarImage,
+      ...(content.team ?? []).map((m) => m.photo),
+    ].filter((u) => u && u.startsWith("/api/public/perfil/img/") && !signed[u]) as string[];
     if (paths.length === 0) return;
-    signProfileImages({ data: { paths } })
+    signProfileImages({ data: { paths: [...new Set(paths)] } })
       .then((map) => setSigned((prev) => ({ ...prev, ...map })))
       .catch(() => {});
-  }, [content.heroImage, content.aboutImage, signed]);
+  }, [content.heroImage, content.aboutImage, content.avatarImage, content.team, signed]);
 
   const previewContent = useMemo(
     () => ({
       ...content,
       heroImage: signed[content.heroImage] ?? content.heroImage,
       aboutImage: signed[content.aboutImage] ?? content.aboutImage,
+      avatarImage: signed[content.avatarImage] ?? content.avatarImage,
+      team: (content.team ?? []).map((m) => ({ ...m, photo: signed[m.photo] ?? m.photo })),
     }),
     [content, signed],
   );
+
 
   useEffect(() => {
     // Só inicializa depois que a consulta do perfil terminou — senão o
@@ -302,9 +311,12 @@ function PerfilPublicoPage() {
               <PhotoTab
                 heroImage={content.heroImage}
                 aboutImage={content.aboutImage}
+                avatarImage={content.avatarImage ?? ""}
                 onHero={(url) => patch({ heroImage: url })}
                 onAbout={(url) => patch({ aboutImage: url })}
+                onAvatar={(url) => patch({ avatarImage: url })}
                 signedUrls={signed}
+
                 framing={{
                   heroZoom: content.heroZoom ?? 100,
                   heroPosY: content.heroPosY ?? 50,
@@ -362,6 +374,8 @@ const SECTION_LABELS: Record<keyof ProfileSections, string> = {
   hero: "Capa (hero)",
   topics: "Como eu ajudo",
   about: "Sobre mim",
+  team: "Equipe da clínica",
+
   testimonials: "Depoimentos",
   booking: "Agendamento + checkout",
   footer: "Rodapé",
@@ -482,7 +496,77 @@ function ContentTab({ content, patch }: { content: ProfileContent; patch: (p: Pa
         </button>
       </div>
 
+      <Divider>Equipe da clínica</Divider>
+      <p className="-mt-1 text-[11px] text-muted-foreground">
+        Cada profissional aparece com foto e botão “Ver agenda”, que abre a página pública dele (/p/slug) com o
+        calendário próprio. Ative a seção “Equipe da clínica” na aba Layout.
+      </p>
+      <Input label="Título da seção" value={content.teamTitle ?? ""} onChange={(v) => patch({ teamTitle: v })} />
+      <Textarea label="Introdução" rows={2} value={content.teamIntro ?? ""} onChange={(v) => patch({ teamIntro: v })} />
+      <div className="space-y-3">
+        {(content.team ?? []).map((m, i) => {
+          const team = content.team ?? [];
+          const upd = (part: Partial<(typeof team)[number]>) =>
+            patch({ team: team.map((x, xi) => (xi === i ? { ...x, ...part } : x)) });
+          return (
+            <div key={i} className="rounded-lg border border-border p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="text-[11px] font-semibold uppercase text-muted-foreground">
+                  Profissional {i + 1}
+                </span>
+                <button
+                  onClick={() => patch({ team: team.filter((_, x) => x !== i) })}
+                  className="inline-flex items-center gap-1 text-[11px] text-destructive hover:underline"
+                >
+                  <X className="h-3 w-3" /> Remover
+                </button>
+              </div>
+              <Input label="Nome" value={m.name} onChange={(v) => upd({ name: v })} />
+              <Input label="Especialidade / CRP" value={m.role} onChange={(v) => upd({ role: v })} />
+              <Textarea label="Mini bio" rows={2} value={m.bio} onChange={(v) => upd({ bio: v })} />
+              <Input
+                label="Slug da página do profissional"
+                value={m.slug}
+                onChange={(v) => upd({ slug: v.replace(/[^a-z0-9-]/gi, "").toLowerCase() })}
+                placeholder="ana-souza"
+              />
+              <Input
+                label="URL da foto"
+                value={m.photo}
+                onChange={(v) => upd({ photo: v })}
+                placeholder="https://…"
+              />
+              {m.photo && (
+                <div className="mt-2 flex items-center gap-2">
+                  <img src={m.photo} alt={`Foto de ${m.name}`} className="h-12 w-12 rounded-full object-cover" />
+                  <button
+                    onClick={() => upd({ photo: "" })}
+                    className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 text-[11px] hover:bg-muted"
+                  >
+                    <Trash2 className="h-3 w-3" /> Excluir foto
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        })}
+        <button
+          onClick={() =>
+            patch({
+              team: [
+                ...(content.team ?? []),
+                { name: "Nome do profissional", role: "Psicoterapeuta · CRP 00/00000", bio: "", photo: "", slug: "" },
+              ],
+            })
+          }
+          className="inline-flex w-full items-center justify-center gap-1 rounded-lg border border-dashed border-border py-2 text-xs font-semibold text-muted-foreground hover:border-gold hover:text-foreground"
+        >
+          <Plus className="h-3.5 w-3.5" /> Adicionar profissional
+        </button>
+      </div>
+
       <Divider>Depoimentos</Divider>
+
       <Input label="Título" value={content.testimonialsTitle} onChange={(v) => patch({ testimonialsTitle: v })} />
       <div className="space-y-3">
         {content.testimonials.map((t, i) => (
@@ -538,20 +622,25 @@ type Framing = { heroZoom: number; heroPosY: number; aboutZoom: number; aboutPos
 function PhotoTab({
   heroImage,
   aboutImage,
+  avatarImage,
   onHero,
   onAbout,
+  onAvatar,
   signedUrls,
   framing,
   patchFraming,
 }: {
   heroImage: string;
   aboutImage: string;
+  avatarImage: string;
   onHero: (url: string) => void;
   onAbout: (url: string) => void;
+  onAvatar: (url: string) => void;
   signedUrls: Record<string, string>;
   framing: Framing;
   patchFraming: (p: Partial<ProfileContent>) => void;
 }) {
+
   const fileRef = useRef<HTMLInputElement>(null);
   const [source, setSource] = useState<string | null>(null);
   const [style, setStyle] = useState<string>(STUDIO_STYLES[0].id);
@@ -762,10 +851,10 @@ function PhotoTab({
         />
       </Field>
 
-      {(results.length > 0 || heroImage || aboutImage) && (
+      {(results.length > 0 || heroImage || aboutImage || avatarImage) && (
         <Field label="Suas imagens">
           <div className="grid grid-cols-3 gap-2">
-            {[...new Set([...results, heroImage, aboutImage].filter(Boolean))].map((url) => (
+            {[...new Set([...results, heroImage, aboutImage, avatarImage].filter(Boolean))].map((url) => (
               <div key={url} className="group relative overflow-hidden rounded-lg border border-border">
                 <img src={pic(url)} alt="Retrato gerado" className="h-28 w-full object-cover" />
                 <div className="absolute inset-x-0 bottom-0 flex opacity-0 transition group-hover:opacity-100">
@@ -781,6 +870,12 @@ function PhotoTab({
                   >
                     Sobre
                   </button>
+                  <button
+                    onClick={() => onAvatar(url)}
+                    className="flex-1 bg-black/75 py-1 text-[10px] font-semibold text-white"
+                  >
+                    Perfil
+                  </button>
                 </div>
               </div>
             ))}
@@ -788,8 +883,27 @@ function PhotoTab({
           <p className="mt-2 flex items-center gap-1 text-[11px] text-muted-foreground">
             <ImagePlus className="h-3 w-3" /> Passe o mouse na imagem e escolha onde aplicar.
           </p>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            {heroImage && (
+              <button type="button" onClick={() => onHero("")} className="inline-flex items-center rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted">
+                <Trash2 className="mr-1 h-3.5 w-3.5" /> Excluir foto de capa
+              </button>
+            )}
+            {aboutImage && (
+              <button type="button" onClick={() => onAbout("")} className="inline-flex items-center rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted">
+                <Trash2 className="mr-1 h-3.5 w-3.5" /> Excluir foto “Sobre”
+              </button>
+            )}
+            {avatarImage && (
+              <button type="button" onClick={() => onAvatar("")} className="inline-flex items-center rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-muted">
+                <Trash2 className="mr-1 h-3.5 w-3.5" /> Excluir foto de perfil
+              </button>
+            )}
+          </div>
         </Field>
       )}
+
     </>
   );
 }

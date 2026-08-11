@@ -15,10 +15,21 @@ export type ProfileTheme = {
 export type ProfileTopic = { title: string; description: string };
 export type ProfileTestimonial = { name: string; text: string };
 
+/** Profissional que atende pela clínica — cada um com sua própria página/agenda. */
+export type ProfileTeamMember = {
+  name: string;
+  role: string;
+  bio: string;
+  photo: string;
+  /** Slug do perfil público do profissional (agenda própria): /p/{slug} */
+  slug: string;
+};
+
 export type ProfileSections = {
   hero: boolean;
   topics: boolean;
   about: boolean;
+  team: boolean;
   booking: boolean;
   testimonials: boolean;
   footer: boolean;
@@ -36,6 +47,8 @@ export type ProfileContent = {
   heroZoom: number;
   /** Posição vertical do recorte da foto de capa em % (0 = topo). */
   heroPosY: number;
+  /** Foto de perfil (avatar) exibida no header — usada no layout Clínica. */
+  avatarImage: string;
   aboutTitle: string;
   aboutText: string;
   aboutImage: string;
@@ -44,6 +57,9 @@ export type ProfileContent = {
   topicsTitle: string;
   topicsIntro: string;
   topics: ProfileTopic[];
+  teamTitle: string;
+  teamIntro: string;
+  team: ProfileTeamMember[];
   testimonialsTitle: string;
   testimonials: ProfileTestimonial[];
   bookingTitle: string;
@@ -56,6 +72,7 @@ export type ProfileContent = {
   sections: ProfileSections;
   checkoutLinks: Record<string, string>;
 };
+
 
 export type PublicProfileRow = {
   id: string;
@@ -239,10 +256,12 @@ export const DEFAULT_SECTIONS: ProfileSections = {
   hero: true,
   topics: true,
   about: true,
+  team: false,
   booking: true,
   testimonials: false,
   footer: true,
 };
+
 
 export function defaultContent(name = "Seu Nome"): ProfileContent {
   return {
@@ -256,6 +275,8 @@ export function defaultContent(name = "Seu Nome"): ProfileContent {
     heroImage: "",
     heroZoom: 100,
     heroPosY: 50,
+    avatarImage: "",
+
     aboutTitle: "Sobre mim",
     aboutText:
       "Sou psicoterapeuta e acredito que todo processo de mudança começa com uma escolha: olhar para dentro. Meu trabalho une escuta acolhedora e técnicas baseadas em evidências para transformar sofrimento em movimento.",
@@ -272,7 +293,11 @@ export function defaultContent(name = "Seu Nome"): ProfileContent {
       { title: "Luto", description: "Apoio para atravessar perdas com respeito ao seu tempo." },
       { title: "Estresse e burnout", description: "Recupere o equilíbrio entre trabalho, descanso e vida pessoal." },
     ],
+    teamTitle: "Profissionais da clínica",
+    teamIntro: "Cada profissional tem sua própria página e agenda — escolha quem vai te atender.",
+    team: [],
     testimonialsTitle: "O que dizem os pacientes",
+
     testimonials: [
       { name: "M. S.", text: "A terapia me deu ferramentas concretas para lidar com a ansiedade no trabalho." },
       { name: "R. A.", text: "Um espaço seguro, sem julgamentos. Mudou minha relação comigo mesma." },
