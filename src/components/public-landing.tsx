@@ -76,7 +76,76 @@ export function PublicLanding({ template, theme, content, services, slug, intera
       </header>
 
       {/* Hero */}
-      {content.sections.hero && (
+      {content.sections.hero && template === "clinica" && (
+        <section className="mx-auto max-w-7xl px-3 py-6 sm:px-5 sm:py-8 lg:px-6">
+          <div
+            className="relative overflow-hidden"
+            style={{ borderRadius: theme.radius + 8, background: theme.band }}
+          >
+            <img
+              src={content.heroImage || PLACEHOLDER}
+              alt={`Equipe da ${content.name}`}
+              className="h-[420px] w-full object-cover sm:h-[460px] md:h-[540px]"
+              style={{
+                objectPosition: `70% ${content.heroPosY ?? 40}%`,
+                transform: `scale(${(content.heroZoom ?? 100) / 100})`,
+              }}
+              loading="eager"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(43,31,61,.92) 0%, rgba(124,77,190,.78) 48%, rgba(124,77,190,0) 82%)",
+              }}
+            />
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full max-w-xl p-6 sm:p-10 md:p-14">
+                <span
+                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white"
+                  style={{ background: "rgba(255,255,255,.18)", border: "1px solid rgba(255,255,255,.28)" }}
+                >
+                  {content.eyebrow}
+                </span>
+                <h1
+                  className="mt-5 text-[clamp(2rem,8vw,3.25rem)] font-semibold leading-[1.05] text-white md:text-6xl"
+                  style={h}
+                >
+                  {content.headline}
+                </h1>
+                <p className="mt-4 max-w-md text-base leading-relaxed text-white/85 sm:text-lg">
+                  {content.subheadline}
+                </p>
+                <div className="mt-7 flex flex-wrap items-center gap-3">
+                  <a
+                    href="#agendar"
+                    className="px-6 py-3 text-sm font-semibold"
+                    style={{ background: "#ffffff", color: theme.accent, borderRadius: 999 }}
+                  >
+                    {content.ctaLabel}
+                  </a>
+                  {content.whatsapp && (
+                    <a
+                      href={`https://wa.me/${content.whatsapp.replace(/\D/g, "")}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-6 py-3 text-sm font-semibold text-white"
+                      style={{ borderRadius: 999, border: "1px solid rgba(255,255,255,.55)" }}
+                    >
+                      Falar no WhatsApp
+                    </a>
+                  )}
+                </div>
+                <p className="mt-6 text-xs text-white/70">
+                  {content.credential} · {content.city}
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {content.sections.hero && template !== "clinica" && (
         <section className="mx-auto grid max-w-7xl items-center gap-8 px-3 sm:px-5 lg:px-6 py-10 sm:py-14 md:grid-cols-2 md:py-20">
           <div className={template === "bosque" ? "md:order-1" : ""}>
             <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: theme.accent }}>
