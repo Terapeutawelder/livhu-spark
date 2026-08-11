@@ -72,12 +72,35 @@ export function ZernioChannelsPanel() {
   }, []);
 
   const [connecting, setConnecting] = useState<string | null>(null);
+  const [codeFlow, setCodeFlow] = useState<
+    { platform: string; code: string; botUsername?: string; instructions: string[] } | null
+  >(null);
+
   async function connect(platform: string) {
     try {
       setConnecting(platform);
       const redirectUrl = `${window.location.origin}/configuracoes?tab=zernio`;
-      const res = (await connectFn({ data: { platform, redirectUrl } })) as { authUrl: string };
-      window.location.href = res.authUrl;
+      const res = (await connectFn({ data: { platform, redirectUrl } })) as {
+        authUrl?: string;
+        code?: string;
+        botUsername?: string;
+        instructions?: string[];
+      };
+      if (res.authUrl) {
+        window.location.href = res.authUrl;
+        return;
+      }
+      if (res.code) {
+        setCodeFlow({
+          platform,
+          code: res.code,
+          botUsername: res.botUsername,
+          instructions: res.instructions ?? [],
+        });
+        setConnecting(null);
+        return;
+      }
+      throw new Error("Não foi possível iniciar a conexão deste canal.");
     } catch (e: any) {
       toast.error(e?.message ?? "Não foi possível iniciar a conexão");
       setConnecting(null);
