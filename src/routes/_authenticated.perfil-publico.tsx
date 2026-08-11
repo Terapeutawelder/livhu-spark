@@ -549,20 +549,25 @@ type Framing = { heroZoom: number; heroPosY: number; aboutZoom: number; aboutPos
 function PhotoTab({
   heroImage,
   aboutImage,
+  avatarImage,
   onHero,
   onAbout,
+  onAvatar,
   signedUrls,
   framing,
   patchFraming,
 }: {
   heroImage: string;
   aboutImage: string;
+  avatarImage: string;
   onHero: (url: string) => void;
   onAbout: (url: string) => void;
+  onAvatar: (url: string) => void;
   signedUrls: Record<string, string>;
   framing: Framing;
   patchFraming: (p: Partial<ProfileContent>) => void;
 }) {
+
   const fileRef = useRef<HTMLInputElement>(null);
   const [source, setSource] = useState<string | null>(null);
   const [style, setStyle] = useState<string>(STUDIO_STYLES[0].id);
