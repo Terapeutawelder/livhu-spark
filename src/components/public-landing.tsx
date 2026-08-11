@@ -101,12 +101,22 @@ export function PublicLanding({ template, theme, content, services, slug, intera
             />
             <div className="absolute inset-0 flex items-center">
               <div className="w-full max-w-xl p-6 sm:p-10 md:p-14">
+                {content.avatarImage && (
+                  <img
+                    src={content.avatarImage}
+                    alt={`Foto de perfil — ${content.name}`}
+                    className="mb-5 h-20 w-20 rounded-full object-cover sm:h-24 sm:w-24"
+                    style={{ border: "3px solid rgba(255,255,255,.75)" }}
+                    loading="eager"
+                  />
+                )}
                 <span
                   className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white"
                   style={{ background: "rgba(255,255,255,.18)", border: "1px solid rgba(255,255,255,.28)" }}
                 >
                   {content.eyebrow}
                 </span>
+
                 <h1
                   className="mt-5 text-[clamp(2rem,8vw,3.25rem)] font-semibold leading-[1.05] text-white md:text-6xl"
                   style={h}
