@@ -278,6 +278,61 @@ export function PublicLanding({ template, theme, content, services, slug, intera
         </section>
       )}
 
+      {/* Equipe da clínica */}
+      {content.sections.team && (content.team ?? []).length > 0 && (
+        <section id="equipe" className="py-10 sm:py-14 md:py-20" style={{ background: theme.band, color: theme.bandText }}>
+          <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6">
+            <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>
+              {content.teamTitle}
+            </h2>
+            <p className="mt-3 max-w-2xl text-[15px] sm:text-base md:text-lg" style={{ opacity: 0.75 }}>
+              {content.teamIntro}
+            </p>
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {(content.team ?? []).map((m, i) => (
+                <article key={i} className="flex flex-col p-6" style={card}>
+                  <img
+                    src={m.photo || PLACEHOLDER}
+                    alt={`Foto de ${m.name}`}
+                    className="h-24 w-24 rounded-full object-cover"
+                    style={{ border: `2px solid ${theme.accent}` }}
+                    loading="lazy"
+                  />
+                  <h3 className="mt-4 text-xl font-semibold" style={{ ...h, color: theme.text }}>
+                    {m.name}
+                  </h3>
+                  <p className="text-xs font-semibold" style={{ color: theme.accent }}>
+                    {m.role}
+                  </p>
+                  {m.bio && (
+                    <p className="mt-3 flex-1 text-[15px] leading-relaxed" style={{ color: theme.muted }}>
+                      {m.bio}
+                    </p>
+                  )}
+                  {m.slug ? (
+                    <a
+                      href={`/p/${m.slug}#agendar`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-5 inline-flex justify-center px-5 py-2.5 text-sm font-semibold"
+                      style={btn}
+                    >
+                      Ver agenda
+                    </a>
+                  ) : (
+                    <span className="mt-5 text-xs" style={{ color: theme.muted }}>
+                      Agenda em breve
+                    </span>
+                  )}
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+
+
       {/* Agendamento */}
       {content.sections.booking && (
         <section id="agendar" className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 py-10 sm:py-14 md:py-20">
