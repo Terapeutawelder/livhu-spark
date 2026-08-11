@@ -472,14 +472,32 @@ export function PublicLanding({ template, theme, content, services, slug, intera
 
       {/* Serviços — bloco separado da agenda */}
       {content.sections.booking && (
-        <section id="servicos" className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 py-10 sm:py-14">
-          <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>
+        <section
+          id="servicos"
+          className={`mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 py-10 sm:py-14 ${isClinic ? "text-center" : ""}`}
+        >
+          {isClinic && (
+            <span
+              className="inline-flex items-center gap-2 px-4 py-1.5 text-[12px] font-semibold"
+              style={{ borderRadius: 999, background: `${theme.accent}14`, color: theme.accent }}
+            >
+              ✓ Escolha o cuidado ideal
+            </span>
+          )}
+          <h2
+            className={`text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl ${isClinic ? "mt-4 font-extrabold tracking-tight" : ""}`}
+            style={h}
+          >
             Serviços
           </h2>
-          <p className="mt-3 max-w-2xl text-[15px] sm:text-base" style={{ color: theme.muted }}>
+          <p
+            className={`mt-3 max-w-2xl text-[15px] sm:text-base ${isClinic ? "mx-auto" : ""}`}
+            style={{ color: theme.muted }}
+          >
             Escolha o serviço desejado. Em seguida, selecione o dia e o horário na agenda.
           </p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid gap-3 text-left sm:grid-cols-2 lg:grid-cols-3">
+
             {services.length === 0 && (
               <p className="text-sm" style={{ color: theme.muted }}>
                 Nenhum serviço publicado ainda.
