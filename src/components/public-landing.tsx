@@ -183,7 +183,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
             {/* Coluna da imagem */}
             <div className="relative min-h-[340px] lg:min-h-[720px]">
               <img
-                src={content.heroImage || PLACEHOLDER}
+                src={content.heroImage || CLINIC_HERO}
                 alt={`Equipe da ${content.name}`}
                 className="h-full w-full object-cover"
                 style={{
