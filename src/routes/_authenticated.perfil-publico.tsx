@@ -178,6 +178,24 @@ function PerfilPublicoPage() {
   function applyTemplate(id: string) {
     setTemplate(id);
     setTheme({ ...templateById(id).theme });
+    if (id === "clinica") {
+      setContent((c) => ({
+        ...c,
+        sections: { ...c.sections, team: true, about: false },
+        team:
+          (c.team ?? []).length > 0
+            ? c.team
+            : [
+                {
+                  name: "Nome do profissional",
+                  role: "Psicoterapeuta · CRP 00/00000",
+                  bio: "Breve descrição da abordagem e das áreas de atuação.",
+                  photo: "",
+                  slug: "",
+                },
+              ],
+      }));
+    }
   }
 
   async function save(nextPublished = published) {
