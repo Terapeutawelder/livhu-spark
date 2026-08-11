@@ -326,6 +326,11 @@ export function PublicLanding({ template, theme, content, services, slug, intera
                   )}
                 </article>
               ))}
+              {(content.team ?? []).length === 0 && (
+                <article className="p-6 text-sm" style={{ ...card, color: theme.muted }}>
+                  Adicione os profissionais da clínica na aba Conteúdo → Equipe da clínica. Cada um terá página e agenda próprias.
+                </article>
+              )}
             </div>
           </div>
         </section>
