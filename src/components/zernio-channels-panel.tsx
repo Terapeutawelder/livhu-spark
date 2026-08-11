@@ -169,6 +169,7 @@ export function ZernioChannelsPanel() {
                 <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                   {items.map((p) => {
                     const isConnected = connectedIds.has(p.id);
+                    const soon = (p as { comingSoon?: boolean }).comingSoon === true;
                     return (
                       <div
                         key={p.id}
@@ -192,21 +193,21 @@ export function ZernioChannelsPanel() {
                           <div className="min-w-0">
                             <p className="truncate text-sm font-medium">{p.label}</p>
                             <p className="text-xs text-muted-foreground">
-                              {isConnected ? "Conectado" : "Não conectado"}
+                              {soon ? "Em breve" : isConnected ? "Conectado" : "Não conectado"}
                             </p>
                           </div>
                         </div>
                         <Button
                           size="sm"
                           variant={isConnected ? "outline" : "default"}
-                          disabled={!data?.configured || connecting === p.id}
+                          disabled={soon || !data?.configured || connecting === p.id}
                           onClick={() => connect(p.id)}
                         >
                           {connecting === p.id ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
                           ) : (
                             <>
-                              <Plug className="mr-1 h-4 w-4" /> {isConnected ? "Reconectar" : "Conectar"}
+                              <Plug className="mr-1 h-4 w-4" /> {soon ? "Em breve" : isConnected ? "Reconectar" : "Conectar"}
                             </>
                           )}
                         </Button>
