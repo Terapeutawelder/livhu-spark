@@ -362,6 +362,8 @@ const SECTION_LABELS: Record<keyof ProfileSections, string> = {
   hero: "Capa (hero)",
   topics: "Como eu ajudo",
   about: "Sobre mim",
+  team: "Equipe da clínica",
+
   testimonials: "Depoimentos",
   booking: "Agendamento + checkout",
   footer: "Rodapé",
