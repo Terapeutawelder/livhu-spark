@@ -121,23 +121,29 @@ function PerfilPublicoPage() {
   // Fotos ainda não publicadas só abrem com URL assinada — usada apenas na pré-visualização.
   const [signed, setSigned] = useState<Record<string, string>>({});
   useEffect(() => {
-    const paths = [content.heroImage, content.aboutImage].filter(
-      (u) => u && u.startsWith("/api/public/perfil/img/") && !signed[u],
-    ) as string[];
+    const paths = [
+      content.heroImage,
+      content.aboutImage,
+      content.avatarImage,
+      ...(content.team ?? []).map((m) => m.photo),
+    ].filter((u) => u && u.startsWith("/api/public/perfil/img/") && !signed[u]) as string[];
     if (paths.length === 0) return;
-    signProfileImages({ data: { paths } })
+    signProfileImages({ data: { paths: [...new Set(paths)] } })
       .then((map) => setSigned((prev) => ({ ...prev, ...map })))
       .catch(() => {});
-  }, [content.heroImage, content.aboutImage, signed]);
+  }, [content.heroImage, content.aboutImage, content.avatarImage, content.team, signed]);
 
   const previewContent = useMemo(
     () => ({
       ...content,
       heroImage: signed[content.heroImage] ?? content.heroImage,
       aboutImage: signed[content.aboutImage] ?? content.aboutImage,
+      avatarImage: signed[content.avatarImage] ?? content.avatarImage,
+      team: (content.team ?? []).map((m) => ({ ...m, photo: signed[m.photo] ?? m.photo })),
     }),
     [content, signed],
   );
+
 
   useEffect(() => {
     // Só inicializa depois que a consulta do perfil terminou — senão o
