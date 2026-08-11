@@ -77,14 +77,41 @@ export const startZernioConnect = createServerFn({ method: "POST" })
       .parse(i),
   )
   .handler(async ({ data, context }) => {
-    const { ZERNIO_PLATFORMS } = await import("./zernio.platforms");
+    const { ZERNIO_PLATFORMS, ZERNIO_ADS_PLATFORMS, ZERNIO_PLATFORM_LABEL } = await import("./zernio.platforms");
     const platform = ZERNIO_PLATFORMS.find((p) => p.id === data.platform);
     if (!platform) throw new Error("Canal desconhecido.");
     if ((platform as { comingSoon?: boolean }).comingSoon) {
       throw new Error(`${platform.label} ainda não está disponível para conexão. Em breve.`);
     }
+
+    const ads = ZERNIO_ADS_PLATFORMS[data.platform];
+    const { tenantId, profileId } = await ensureProfileId(context);
+
+    if (ads) {
+      let accountId: string | undefined;
+      const { data: parent } = await context.supabase
+        .from("zernio_accounts")
+        .select("account_id")
+        .eq("tenant_id", tenantId)
+        .eq("platform", ads.base)
+        .maybeSingle();
+      accountId = (parent?.account_id as string | undefined) ?? undefined;
+      if (ads.requiresParent && !accountId) {
+        const baseLabel = ZERNIO_PLATFORM_LABEL[ads.base] ?? ads.base;
+        throw new Error(
+          `Conecte primeiro o canal ${baseLabel} — ${platform.label} usa a mesma conta autorizada.`,
+        );
+      }
+      const { getZernioAdsConnectUrl } = await import("./zernio.server");
+      return await getZernioAdsConnectUrl({
+        base: ads.base,
+        profileId,
+        redirectUrl: data.redirectUrl,
+        accountId,
+      });
+    }
+
     const { getZernioConnectUrl } = await import("./zernio.server");
-    const { profileId } = await ensureProfileId(context);
     const result = await getZernioConnectUrl({
       platform: data.platform,
       profileId,
@@ -92,6 +119,7 @@ export const startZernioConnect = createServerFn({ method: "POST" })
     });
     return result;
   });
+
 
 /** Sincroniza as contas conectadas na Zernio com o banco do LivHub. */
 export const syncZernioAccounts = createServerFn({ method: "POST" })
