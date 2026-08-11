@@ -778,10 +778,10 @@ function PhotoTab({
         />
       </Field>
 
-      {(results.length > 0 || heroImage || aboutImage) && (
+      {(results.length > 0 || heroImage || aboutImage || avatarImage) && (
         <Field label="Suas imagens">
           <div className="grid grid-cols-3 gap-2">
-            {[...new Set([...results, heroImage, aboutImage].filter(Boolean))].map((url) => (
+            {[...new Set([...results, heroImage, aboutImage, avatarImage].filter(Boolean))].map((url) => (
               <div key={url} className="group relative overflow-hidden rounded-lg border border-border">
                 <img src={pic(url)} alt="Retrato gerado" className="h-28 w-full object-cover" />
                 <div className="absolute inset-x-0 bottom-0 flex opacity-0 transition group-hover:opacity-100">
@@ -797,6 +797,12 @@ function PhotoTab({
                   >
                     Sobre
                   </button>
+                  <button
+                    onClick={() => onAvatar(url)}
+                    className="flex-1 bg-black/75 py-1 text-[10px] font-semibold text-white"
+                  >
+                    Perfil
+                  </button>
                 </div>
               </div>
             ))}
@@ -804,8 +810,27 @@ function PhotoTab({
           <p className="mt-2 flex items-center gap-1 text-[11px] text-muted-foreground">
             <ImagePlus className="h-3 w-3" /> Passe o mouse na imagem e escolha onde aplicar.
           </p>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            {heroImage && (
+              <Button type="button" size="sm" variant="outline" onClick={() => onHero("")}>
+                <Trash2 className="mr-1 h-3.5 w-3.5" /> Excluir foto de capa
+              </Button>
+            )}
+            {aboutImage && (
+              <Button type="button" size="sm" variant="outline" onClick={() => onAbout("")}>
+                <Trash2 className="mr-1 h-3.5 w-3.5" /> Excluir foto “Sobre”
+              </Button>
+            )}
+            {avatarImage && (
+              <Button type="button" size="sm" variant="outline" onClick={() => onAvatar("")}>
+                <Trash2 className="mr-1 h-3.5 w-3.5" /> Excluir foto de perfil
+              </Button>
+            )}
+          </div>
         </Field>
       )}
+
     </>
   );
 }
