@@ -108,17 +108,37 @@ export async function listZernioProfiles() {
   return res?.profiles ?? [];
 }
 
-/** URL de OAuth para conectar um canal ao profile do consultório. */
+/**
+ * Inicia a conexão de um canal.
+ * A maioria dos canais devolve `authUrl` (OAuth). O Telegram devolve um código
+ * que o usuário envia ao bot, sem OAuth.
+ */
+export type ZernioConnectStart = {
+  authUrl?: string;
+  code?: string;
+  botUsername?: string;
+  instructions?: string[];
+  expiresIn?: number;
+};
+
 export async function getZernioConnectUrl(args: {
   platform: string;
   profileId: string;
   redirectUrl: string;
-}) {
-  const res = await zernioFetch<{ authUrl: string; state?: string }>(`/connect/${args.platform}`, {
+}): Promise<ZernioConnectStart> {
+  const res = await zernioFetch<ZernioConnectStart>(`/connect/${args.platform}`, {
     query: { profileId: args.profileId, redirect_url: args.redirectUrl },
   });
-  if (!res?.authUrl) throw new Error("Zernio não retornou a URL de autorização.");
-  return res.authUrl;
+  if (res?.authUrl) return { authUrl: res.authUrl };
+  if (res?.code) {
+    return {
+      code: res.code,
+      botUsername: res.botUsername,
+      instructions: res.instructions ?? [],
+      expiresIn: res.expiresIn,
+    };
+  }
+  throw new Error("Zernio não retornou a URL de autorização.");
 }
 
 export type ZernioAccount = {
