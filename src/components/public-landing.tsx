@@ -2,6 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import type { ProfileContent, ProfileTheme } from "@/lib/public-profile.types";
 import { THERAPY_PLANS, findPlan, planTotalCents } from "@/lib/therapy-plans";
+import clinicHeroAsset from "@/assets/clinica-hero.jpg.asset.json";
+
+const CLINIC_HERO = clinicHeroAsset.url;
+
 
 export type PublicService = {
   id: string;
@@ -179,7 +183,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
             {/* Coluna da imagem */}
             <div className="relative min-h-[340px] lg:min-h-[720px]">
               <img
-                src={content.heroImage || PLACEHOLDER}
+                src={content.heroImage || CLINIC_HERO}
                 alt={`Equipe da ${content.name}`}
                 className="h-full w-full object-cover"
                 style={{
@@ -378,17 +382,47 @@ export function PublicLanding({ template, theme, content, services, slug, intera
 
       {/* Equipe da clínica */}
       {(isClinic || content.sections.team) && (
-        <section id="equipe" className="py-10 sm:py-14 md:py-20" style={{ background: theme.band, color: theme.bandText }}>
-          <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6">
-            <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>
+        <section
+          id="equipe"
+          className="py-10 sm:py-14 md:py-20"
+          style={
+            isClinic
+              ? { background: theme.bg, color: theme.text }
+              : { background: theme.band, color: theme.bandText }
+          }
+        >
+          <div className={`mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 ${isClinic ? "text-center" : ""}`}>
+            {isClinic && (
+              <span
+                className="inline-flex items-center gap-2 px-4 py-1.5 text-[12px] font-semibold"
+                style={{ borderRadius: 999, background: `${theme.accent}14`, color: theme.accent }}
+              >
+                ♥ Profissionais verificados
+              </span>
+            )}
+            <h2
+              className={`text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl ${isClinic ? "mt-4 font-extrabold tracking-tight" : ""}`}
+              style={h}
+            >
               {content.teamTitle}
             </h2>
-            <p className="mt-3 max-w-2xl text-[15px] sm:text-base md:text-lg" style={{ opacity: 0.75 }}>
+            <p
+              className={`mt-3 max-w-2xl text-[15px] sm:text-base md:text-lg ${isClinic ? "mx-auto" : ""}`}
+              style={{ opacity: 0.75 }}
+            >
               {content.teamIntro}
             </p>
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-10 grid gap-4 text-left sm:grid-cols-2 lg:grid-cols-3">
               {(content.team ?? []).map((m, i) => (
-                <article key={i} className="flex flex-col p-6" style={card}>
+                <article
+                  key={i}
+                  className={`flex flex-col p-6 ${isClinic ? "items-center text-center" : ""}`}
+                  style={
+                    isClinic
+                      ? { ...card, boxShadow: "0 24px 50px -34px rgba(28,27,46,.55)" }
+                      : card
+                  }
+                >
                   <img
                     src={m.photo || PLACEHOLDER}
                     alt={`Foto de ${m.name}`}
@@ -438,14 +472,32 @@ export function PublicLanding({ template, theme, content, services, slug, intera
 
       {/* Serviços — bloco separado da agenda */}
       {content.sections.booking && (
-        <section id="servicos" className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 py-10 sm:py-14">
-          <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>
+        <section
+          id="servicos"
+          className={`mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 py-10 sm:py-14 ${isClinic ? "text-center" : ""}`}
+        >
+          {isClinic && (
+            <span
+              className="inline-flex items-center gap-2 px-4 py-1.5 text-[12px] font-semibold"
+              style={{ borderRadius: 999, background: `${theme.accent}14`, color: theme.accent }}
+            >
+              ✓ Escolha o cuidado ideal
+            </span>
+          )}
+          <h2
+            className={`text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl ${isClinic ? "mt-4 font-extrabold tracking-tight" : ""}`}
+            style={h}
+          >
             Serviços
           </h2>
-          <p className="mt-3 max-w-2xl text-[15px] sm:text-base" style={{ color: theme.muted }}>
+          <p
+            className={`mt-3 max-w-2xl text-[15px] sm:text-base ${isClinic ? "mx-auto" : ""}`}
+            style={{ color: theme.muted }}
+          >
             Escolha o serviço desejado. Em seguida, selecione o dia e o horário na agenda.
           </p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="mt-6 grid gap-3 text-left sm:grid-cols-2 lg:grid-cols-3">
+
             {services.length === 0 && (
               <p className="text-sm" style={{ color: theme.muted }}>
                 Nenhum serviço publicado ainda.
@@ -486,12 +538,21 @@ export function PublicLanding({ template, theme, content, services, slug, intera
       {/* Agendamento */}
       {content.sections.booking && (
         <section id="agendar" className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 pb-10 sm:pb-14 md:pb-20">
-          <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>
-            {content.bookingTitle}
-          </h2>
-          <p className="mt-3 max-w-2xl text-[15px] sm:text-base md:text-lg" style={{ color: theme.muted }}>
-            {content.bookingIntro}
-          </p>
+          <div className={isClinic ? "text-center" : ""}>
+            <h2
+              className={`text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl ${isClinic ? "font-extrabold tracking-tight" : ""}`}
+              style={h}
+            >
+              {content.bookingTitle}
+            </h2>
+            <p
+              className={`mt-3 max-w-2xl text-[15px] sm:text-base md:text-lg ${isClinic ? "mx-auto" : ""}`}
+              style={{ color: theme.muted }}
+            >
+              {content.bookingIntro}
+            </p>
+          </div>
+
           <BookingWidget
             slug={slug}
             services={services}
@@ -534,19 +595,36 @@ export function PublicLanding({ template, theme, content, services, slug, intera
       <section className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 pb-10 sm:pb-14">
         <div
           className="flex flex-col items-center gap-4 px-6 py-10 text-center md:flex-row md:justify-between md:text-left"
-          style={card}
+          style={
+            isClinic
+              ? {
+                  borderRadius: theme.radius + 8,
+                  background: `linear-gradient(120deg, ${theme.band} 0%, ${theme.accent} 160%)`,
+                  color: theme.bandText,
+                  boxShadow: "0 30px 60px -40px rgba(28,27,46,.8)",
+                }
+              : card
+          }
         >
           <div>
-            <h3 className="text-[clamp(1.4rem,5vw,1.875rem)] leading-tight" style={{ ...h, color: theme.text }}>
+            <h3
+              className={`text-[clamp(1.4rem,5vw,1.875rem)] leading-tight ${isClinic ? "font-extrabold tracking-tight" : ""}`}
+              style={{ ...h, color: isClinic ? theme.bandText : theme.text }}
+            >
               Pronto para dar o primeiro passo?
             </h3>
-            <p className="mt-2 text-base" style={{ color: theme.muted }}>
+            <p className="mt-2 text-base" style={{ color: isClinic ? theme.bandText : theme.muted, opacity: isClinic ? 0.8 : 1 }}>
               Escolha o plano de terapia que combina com você e reserve seu horário.
             </p>
           </div>
-          <a href="#agendar" className="px-6 py-3 text-sm font-semibold" style={btn}>
+          <a
+            href="#agendar"
+            className="px-6 py-3.5 text-sm font-bold"
+            style={isClinic ? { borderRadius: 999, background: "#ffffff", color: theme.band } : btn}
+          >
             {content.ctaLabel}
           </a>
+
         </div>
       </section>
 
