@@ -75,7 +75,17 @@ function PublicProfilePage() {
 
   const tpl = templateById(data.profile.template);
   const theme = { ...tpl.theme, ...((data.profile.theme ?? {}) as Partial<ProfileTheme>) } as ProfileTheme;
-  const content = { ...defaultContent(), ...((data.profile.content ?? {}) as Partial<ProfileContent>) } as ProfileContent;
+  const defaults = defaultContent();
+  const savedContent = (data.profile.content ?? {}) as Partial<ProfileContent>;
+  const content = {
+    ...defaults,
+    ...savedContent,
+    sections: {
+      ...defaults.sections,
+      ...(savedContent.sections ?? {}),
+      ...(data.profile.template === "clinica" ? { team: true, about: false } : {}),
+    },
+  } as ProfileContent;
 
   return (
     <PublicLanding
