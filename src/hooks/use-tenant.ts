@@ -48,3 +48,13 @@ export function useCurrentTenant() {
     staleTime: 5 * 60 * 1000,
   });
 }
+
+/**
+ * Tipo de conta do tenant: profissional individual ou clínica.
+ * Definido pelo plano assinado (ver tabela subscription_plans.account_type).
+ */
+export function useAccountType(): { accountType: AccountType; isClinic: boolean; isLoading: boolean } {
+  const { data, isLoading } = useCurrentTenant();
+  const accountType: AccountType = data?.account_type === "clinic" ? "clinic" : "individual";
+  return { accountType, isClinic: accountType === "clinic", isLoading };
+}
