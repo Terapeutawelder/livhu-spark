@@ -308,9 +308,12 @@ function PerfilPublicoPage() {
               <PhotoTab
                 heroImage={content.heroImage}
                 aboutImage={content.aboutImage}
+                avatarImage={content.avatarImage ?? ""}
                 onHero={(url) => patch({ heroImage: url })}
                 onAbout={(url) => patch({ aboutImage: url })}
+                onAvatar={(url) => patch({ avatarImage: url })}
                 signedUrls={signed}
+
                 framing={{
                   heroZoom: content.heroZoom ?? 100,
                   heroPosY: content.heroPosY ?? 50,
