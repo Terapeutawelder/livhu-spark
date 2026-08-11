@@ -67,7 +67,9 @@ export function PublicLanding({ template, theme, content, services, slug, intera
           <nav className="hidden items-center gap-6 text-sm md:flex" style={{ color: theme.muted }}>
             {content.sections.topics && <a href="#servicos">Como ajudo</a>}
             {content.sections.about && <a href="#sobre">Sobre</a>}
+            {content.sections.team && (content.team ?? []).length > 0 && <a href="#equipe">Equipe</a>}
             {content.sections.booking && <a href="#agendar">Agenda</a>}
+
           </nav>
           <a href="#agendar" className="px-4 py-2 text-sm font-semibold" style={btn}>
             {content.ctaLabel}
