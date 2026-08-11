@@ -77,14 +77,20 @@ export const startZernioConnect = createServerFn({ method: "POST" })
       .parse(i),
   )
   .handler(async ({ data, context }) => {
+    const { ZERNIO_PLATFORMS } = await import("./zernio.platforms");
+    const platform = ZERNIO_PLATFORMS.find((p) => p.id === data.platform);
+    if (!platform) throw new Error("Canal desconhecido.");
+    if ((platform as { comingSoon?: boolean }).comingSoon) {
+      throw new Error(`${platform.label} ainda não está disponível para conexão. Em breve.`);
+    }
     const { getZernioConnectUrl } = await import("./zernio.server");
     const { profileId } = await ensureProfileId(context);
-    const authUrl = await getZernioConnectUrl({
+    const result = await getZernioConnectUrl({
       platform: data.platform,
       profileId,
       redirectUrl: data.redirectUrl,
     });
-    return { authUrl };
+    return result;
   });
 
 /** Sincroniza as contas conectadas na Zernio com o banco do LivHub. */
