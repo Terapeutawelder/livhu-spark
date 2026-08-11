@@ -339,9 +339,56 @@ export function PublicLanding({ template, theme, content, services, slug, intera
 
 
 
+      {/* Serviços — bloco separado da agenda */}
+      {content.sections.booking && (
+        <section id="servicos" className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 py-10 sm:py-14">
+          <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>
+            Serviços
+          </h2>
+          <p className="mt-3 max-w-2xl text-[15px] sm:text-base" style={{ color: theme.muted }}>
+            Escolha o serviço desejado. Em seguida, selecione o dia e o horário na agenda.
+          </p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {services.length === 0 && (
+              <p className="text-sm" style={{ color: theme.muted }}>
+                Nenhum serviço publicado ainda.
+              </p>
+            )}
+            {services.map((sv) => {
+              const active = sv.id === serviceId;
+              return (
+                <button
+                  key={sv.id}
+                  type="button"
+                  onClick={() => setServiceId(sv.id)}
+                  className="p-5 text-left transition"
+                  style={{
+                    ...card,
+                    border: `1.5px solid ${active ? theme.accent : "rgba(125,125,125,.25)"}`,
+                    background: active ? `${theme.accent}14` : (card.background as string),
+                  }}
+                >
+                  <span className="block text-[15px] font-semibold" style={{ color: theme.text }}>
+                    {sv.name}
+                  </span>
+                  <span className="mt-1 block text-xs" style={{ color: theme.muted }}>
+                    {sv.duration_minutes} min · {sv.price_cents > 0 ? money(sv.price_cents) : "Valor a combinar"}
+                  </span>
+                  {sv.description && (
+                    <span className="mt-2 block text-xs leading-relaxed" style={{ color: theme.muted }}>
+                      {sv.description}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       {/* Agendamento */}
       {content.sections.booking && (
-        <section id="agendar" className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 py-10 sm:py-14 md:py-20">
+        <section id="agendar" className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 pb-10 sm:pb-14 md:pb-20">
           <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>
             {content.bookingTitle}
           </h2>
@@ -351,6 +398,8 @@ export function PublicLanding({ template, theme, content, services, slug, intera
           <BookingWidget
             slug={slug}
             services={services}
+            serviceId={serviceId}
+            onSelectService={setServiceId}
             theme={theme}
             card={card}
             btn={btn}
@@ -359,6 +408,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
           />
         </section>
       )}
+
 
       {/* Depoimentos */}
       {content.sections.testimonials && content.testimonials.length > 0 && (
