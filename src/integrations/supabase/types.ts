@@ -1429,6 +1429,7 @@ export type Database = {
       }
       subscription_plans: {
         Row: {
+          account_type: string
           additional_channel_price_cents: number | null
           additional_user_price_cents: number | null
           ai_agents_limit: number
@@ -1450,6 +1451,7 @@ export type Database = {
           users_limit: number
         }
         Insert: {
+          account_type?: string
           additional_channel_price_cents?: number | null
           additional_user_price_cents?: number | null
           ai_agents_limit?: number
@@ -1471,6 +1473,7 @@ export type Database = {
           users_limit?: number
         }
         Update: {
+          account_type?: string
           additional_channel_price_cents?: number | null
           additional_user_price_cents?: number | null
           ai_agents_limit?: number
@@ -1718,6 +1721,7 @@ export type Database = {
       }
       tenants: {
         Row: {
+          account_type: string
           contacts_limit: number
           created_at: string
           custom_domain: string | null
@@ -1742,6 +1746,7 @@ export type Database = {
           usage_reset_at: string
         }
         Insert: {
+          account_type?: string
           contacts_limit?: number
           created_at?: string
           custom_domain?: string | null
@@ -1766,6 +1771,7 @@ export type Database = {
           usage_reset_at?: string
         }
         Update: {
+          account_type?: string
           contacts_limit?: number
           created_at?: string
           custom_domain?: string | null
@@ -2476,6 +2482,7 @@ export type Database = {
       get_tenant_usage: {
         Args: never
         Returns: {
+          account_type: string
           contacts_limit: number
           contacts_used: number
           is_owner: boolean
