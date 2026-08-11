@@ -1,6 +1,6 @@
 /** Canais suportados pela Zernio (client-safe). */
 export const ZERNIO_PLATFORMS = [
-  { id: "whatsapp", label: "WhatsApp Business", group: "Mensagens", color: "#25D366", icon: "whatsapp" },
+  { id: "whatsapp", label: "WhatsApp", group: "Mensagens", color: "#25D366", icon: "whatsapp" },
   { id: "instagram", label: "Instagram", group: "Mensagens", color: "#E4405F", icon: "instagram" },
   { id: "facebook", label: "Facebook / Messenger", group: "Mensagens", color: "#1877F2", icon: "facebook" },
   { id: "telegram", label: "Telegram", group: "Mensagens", color: "#0088CC", icon: "telegram" },
@@ -14,8 +14,15 @@ export const ZERNIO_PLATFORMS = [
   { id: "discord", label: "Discord", group: "Comunidade", color: "#5865F2", icon: "discord" },
   { id: "slack", label: "Slack", group: "Comunidade", color: "#4A154B", icon: "slack" },
   { id: "bluesky", label: "Bluesky", group: "Comunidade", color: "#0285FF", icon: "bluesky" },
-  { id: "snapchat", label: "Snapchat", group: "Comunidade", color: "#FFFC00", icon: "snapchat" },
+  { id: "snapchat", label: "Snapchat", group: "Comunidade", color: "#FFFC00", icon: "snapchat", comingSoon: true },
   { id: "reddit", label: "Reddit", group: "Comunidade", color: "#FF4500", icon: "reddit" },
+  { id: "googleads", label: "Google Ads", group: "Anúncios", color: "#4285F4", icon: "googleads" },
+  { id: "metaads", label: "Meta Ads", group: "Anúncios", color: "#0668E1", icon: "meta" },
+  { id: "linkedinads", label: "LinkedIn Ads", group: "Anúncios", color: "#0077B5", icon: "linkedin" },
+  { id: "tiktokads", label: "TikTok Ads", group: "Anúncios", color: "#000000", icon: "tiktok" },
+  { id: "pinterestads", label: "Pinterest Ads", group: "Anúncios", color: "#BD081C", icon: "pinterest" },
+  { id: "xads", label: "X Ads", group: "Anúncios", color: "#000000", icon: "x" },
+  { id: "openaiads", label: "OpenAI Ads", group: "Anúncios", color: "#412991", icon: "openai" },
 ] as const;
 
 export type ZernioPlatformId = (typeof ZERNIO_PLATFORMS)[number]["id"];
