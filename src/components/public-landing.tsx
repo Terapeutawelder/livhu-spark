@@ -33,6 +33,7 @@ const PLACEHOLDER =
 
 export function PublicLanding({ template, theme, content, services, slug, interactive = true }: Props) {
   const dark = template === "aurora" || template === "oxnard";
+  const isClinic = template === "clinica";
   const s: CSSProperties = {
     background: theme.bg,
     color: theme.text,
@@ -66,8 +67,8 @@ export function PublicLanding({ template, theme, content, services, slug, intera
           </span>
           <nav className="hidden items-center gap-6 text-sm md:flex" style={{ color: theme.muted }}>
             {content.sections.topics && <a href="#servicos">Como ajudo</a>}
-            {content.sections.about && <a href="#sobre">Sobre</a>}
-            {content.sections.team && (content.team ?? []).length > 0 && <a href="#equipe">Equipe</a>}
+            {!isClinic && content.sections.about && <a href="#sobre">Sobre</a>}
+            {(isClinic || content.sections.team) && <a href="#equipe">Equipe</a>}
             {content.sections.booking && <a href="#agendar">Agenda</a>}
 
           </nav>
@@ -246,7 +247,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
       )}
 
       {/* Sobre */}
-      {content.sections.about && !(template === "clinica" && content.sections.team) && (
+      {!isClinic && content.sections.about && (
         <section id="sobre" className="mx-auto grid max-w-7xl items-center gap-8 px-3 sm:px-5 lg:px-6 py-10 sm:py-14 md:grid-cols-[0.9fr_1.1fr] md:py-20">
           <div
             className="h-[360px] w-full overflow-hidden md:h-[480px]"
@@ -279,7 +280,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
       )}
 
       {/* Equipe da clínica */}
-      {content.sections.team && ((content.team ?? []).length > 0 || template === "clinica") && (
+      {(isClinic || content.sections.team) && (
         <section id="equipe" className="py-10 sm:py-14 md:py-20" style={{ background: theme.band, color: theme.bandText }}>
           <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6">
             <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>

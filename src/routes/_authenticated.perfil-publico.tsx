@@ -154,9 +154,20 @@ function PerfilPublicoPage() {
     if (loaded || !tenant || !profileFetched) return;
     if (profile) {
       const tpl = templateById(profile.template);
+      const savedContent = (profile.content ?? {}) as Partial<ProfileContent>;
+      const defaults = defaultContent(tenant.name);
+      const isClinic = profile.template === "clinica";
       setTemplate(profile.template);
       setTheme({ ...tpl.theme, ...((profile.theme ?? {}) as Partial<ProfileTheme>) });
-      setContent({ ...defaultContent(tenant.name), ...((profile.content ?? {}) as Partial<ProfileContent>) });
+      setContent({
+        ...defaults,
+        ...savedContent,
+        sections: {
+          ...defaults.sections,
+          ...(savedContent.sections ?? {}),
+          ...(isClinic ? { team: true, about: false } : {}),
+        },
+      });
       setSlug(profile.slug ?? "");
       setPublished(!!profile.is_published);
     } else {
@@ -324,7 +335,7 @@ function PerfilPublicoPage() {
                 onToggle={(k, v) => patch({ sections: { ...content.sections, [k]: v } })}
               />
             )}
-            {tab === "conteudo" && <ContentTab content={content} patch={patch} />}
+            {tab === "conteudo" && <ContentTab template={template} content={content} patch={patch} />}
             {tab === "foto" && (
               <PhotoTab
                 heroImage={content.heroImage}
@@ -460,7 +471,15 @@ function LayoutTab({
   );
 }
 
-function ContentTab({ content, patch }: { content: ProfileContent; patch: (p: Partial<ProfileContent>) => void }) {
+function ContentTab({
+  template,
+  content,
+  patch,
+}: {
+  template: string;
+  content: ProfileContent;
+  patch: (p: Partial<ProfileContent>) => void;
+}) {
   return (
     <>
       <Input label="Nome" value={content.name} onChange={(v) => patch({ name: v })} />
@@ -470,9 +489,13 @@ function ContentTab({ content, patch }: { content: ProfileContent; patch: (p: Pa
       <Textarea label="Subtítulo" value={content.subheadline} onChange={(v) => patch({ subheadline: v })} />
       <Input label="Texto do botão" value={content.ctaLabel} onChange={(v) => patch({ ctaLabel: v })} />
 
-      <Divider>Sobre mim</Divider>
-      <Input label="Título" value={content.aboutTitle} onChange={(v) => patch({ aboutTitle: v })} />
-      <Textarea label="Texto" rows={6} value={content.aboutText} onChange={(v) => patch({ aboutText: v })} />
+      {template !== "clinica" && (
+        <>
+          <Divider>Sobre mim</Divider>
+          <Input label="Título" value={content.aboutTitle} onChange={(v) => patch({ aboutTitle: v })} />
+          <Textarea label="Texto" rows={6} value={content.aboutText} onChange={(v) => patch({ aboutText: v })} />
+        </>
+      )}
 
       <Divider>Como eu ajudo</Divider>
       <Input label="Título" value={content.topicsTitle} onChange={(v) => patch({ topicsTitle: v })} />
