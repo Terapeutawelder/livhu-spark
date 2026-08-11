@@ -34,6 +34,11 @@ const PLACEHOLDER =
 export function PublicLanding({ template, theme, content, services, slug, interactive = true }: Props) {
   const dark = template === "aurora" || template === "oxnard";
   const isClinic = template === "clinica";
+  const [serviceId, setServiceId] = useState<string | null>(services[0]?.id ?? null);
+  useEffect(() => {
+    setServiceId((cur) => (cur && services.some((s2) => s2.id === cur) ? cur : (services[0]?.id ?? null)));
+  }, [services]);
+
   const s: CSSProperties = {
     background: theme.bg,
     color: theme.text,
