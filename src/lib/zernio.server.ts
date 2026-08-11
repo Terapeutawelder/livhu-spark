@@ -141,6 +141,31 @@ export async function getZernioConnectUrl(args: {
   throw new Error("Zernio não retornou a URL de autorização.");
 }
 
+/**
+ * Conexão de contas de anúncios: GET /v1/connect/{base}/ads
+ * Pode retornar `alreadyConnected` (same-token) ou `authUrl` (OAuth próprio).
+ */
+export async function getZernioAdsConnectUrl(args: {
+  base: string;
+  profileId: string;
+  redirectUrl: string;
+  accountId?: string;
+}): Promise<ZernioConnectStart & { alreadyConnected?: boolean }> {
+  const res = await zernioFetch<ZernioConnectStart & { alreadyConnected?: boolean; account?: unknown }>(
+    `/connect/${args.base}/ads`,
+    {
+      query: {
+        profileId: args.profileId,
+        redirect_url: args.redirectUrl,
+        accountId: args.accountId,
+      },
+    },
+  );
+  if (res?.authUrl) return { authUrl: res.authUrl };
+  if (res?.alreadyConnected || res?.account) return { alreadyConnected: true };
+  throw new Error("Zernio não retornou a URL de autorização para anúncios.");
+}
+
 export type ZernioAccount = {
   _id: string;
   platform: string;
