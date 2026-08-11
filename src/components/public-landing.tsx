@@ -501,6 +501,8 @@ function toDateKey(d: Date) {
 function BookingWidget({
   slug,
   services,
+  serviceId,
+  onSelectService,
   theme,
   card,
   btn,
@@ -509,13 +511,15 @@ function BookingWidget({
 }: {
   slug: string;
   services: PublicService[];
+  serviceId: string | null;
+  onSelectService: (id: string) => void;
   theme: ProfileTheme;
   card: CSSProperties;
   btn: CSSProperties;
   heading: CSSProperties;
   interactive: boolean;
 }) {
-  const [serviceId, setServiceId] = useState<string | null>(services[0]?.id ?? null);
+
   const [planId, setPlanId] = useState<string>("single");
   const [date, setDate] = useState<string>(toDateKey(new Date()));
   const [slots, setSlots] = useState<string[]>([]);
