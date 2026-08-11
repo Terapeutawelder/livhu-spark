@@ -11,7 +11,10 @@ export type Tenant = {
   timezone: string;
   plan: string;
   is_active: boolean;
+  account_type?: string | null;
 };
+
+export type AccountType = "individual" | "clinic";
 
 /**
  * Retorna o tenant "corrente" do usuário logado (o primeiro que ele possui).
@@ -44,4 +47,14 @@ export function useCurrentTenant() {
     },
     staleTime: 5 * 60 * 1000,
   });
+}
+
+/**
+ * Tipo de conta do tenant: profissional individual ou clínica.
+ * Definido pelo plano assinado (ver tabela subscription_plans.account_type).
+ */
+export function useAccountType(): { accountType: AccountType; isClinic: boolean; isLoading: boolean } {
+  const { data, isLoading } = useCurrentTenant();
+  const accountType: AccountType = data?.account_type === "clinic" ? "clinic" : "individual";
+  return { accountType, isClinic: accountType === "clinic", isLoading };
 }

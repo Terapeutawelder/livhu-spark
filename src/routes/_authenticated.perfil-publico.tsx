@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useCurrentTenant } from "@/hooks/use-tenant";
+import { useAccountType, useCurrentTenant } from "@/hooks/use-tenant";
 import { generateStudioPhoto, signProfileImages } from "@/lib/public-profile.functions";
 import { PublicLanding, type PublicService } from "@/components/public-landing";
 import {
@@ -11,7 +11,9 @@ import {
   STUDIO_STYLES,
   TEMPLATES,
   defaultContent,
+  defaultTemplateFor,
   templateById,
+  templatesForAccount,
   type ProfileContent,
   type ProfileSections,
   type ProfileTheme,
@@ -81,6 +83,7 @@ function fileToDataUrl(file: File): Promise<string> {
 
 function PerfilPublicoPage() {
   const { data: tenant } = useCurrentTenant();
+  const { accountType } = useAccountType();
   const queryClient = useQueryClient();
 
   const [tab, setTab] = useState<TabId>("layout");
@@ -156,9 +159,13 @@ function PerfilPublicoPage() {
       const tpl = templateById(profile.template);
       const savedContent = (profile.content ?? {}) as Partial<ProfileContent>;
       const defaults = defaultContent(tenant.name);
-      const isClinic = profile.template === "clinica";
-      setTemplate(profile.template);
-      setTheme({ ...tpl.theme, ...((profile.theme ?? {}) as Partial<ProfileTheme>) });
+      // Se o plano mudou (individual <-> clínica), cai no layout padrão do tipo de conta.
+      const allowed = templatesForAccount(accountType).some((t) => t.id === profile.template);
+      const effectiveTemplate = allowed ? profile.template : defaultTemplateFor(accountType);
+      const effectiveTpl = allowed ? tpl : templateById(effectiveTemplate);
+      const isClinic = effectiveTemplate === "clinica";
+      setTemplate(effectiveTemplate);
+      setTheme({ ...effectiveTpl.theme, ...((profile.theme ?? {}) as Partial<ProfileTheme>) });
       setContent({
         ...defaults,
         ...savedContent,
@@ -171,11 +178,19 @@ function PerfilPublicoPage() {
       setSlug(profile.slug ?? "");
       setPublished(!!profile.is_published);
     } else {
-      setContent(defaultContent(tenant.name));
+      const tplId = defaultTemplateFor(accountType);
+      setTemplate(tplId);
+      setTheme({ ...templateById(tplId).theme });
+      const base = defaultContent(tenant.name);
+      setContent(
+        tplId === "clinica"
+          ? { ...base, sections: { ...base.sections, team: true, about: false } }
+          : base,
+      );
       setSlug(slugify(tenant.slug || tenant.name));
     }
     setLoaded(true);
-  }, [profile, profileFetched, tenant, loaded]);
+  }, [profile, profileFetched, tenant, loaded, accountType]);
 
   const publicUrl = useMemo(() => {
     if (typeof window === "undefined") return `/p/${slug}`;
@@ -333,6 +348,7 @@ function PerfilPublicoPage() {
                 onSelect={applyTemplate}
                 sections={content.sections}
                 onToggle={(k, v) => patch({ sections: { ...content.sections, [k]: v } })}
+                accountType={accountType}
               />
             )}
             {tab === "conteudo" && <ContentTab template={template} content={content} patch={patch} />}
@@ -415,17 +431,25 @@ function LayoutTab({
   onSelect,
   sections,
   onToggle,
+  accountType,
 }: {
   template: string;
   onSelect: (id: string) => void;
   sections: ProfileSections;
   onToggle: (k: keyof ProfileSections, v: boolean) => void;
+  accountType: "individual" | "clinic";
 }) {
+  const available = templatesForAccount(accountType);
   return (
     <>
-      <Field label="Modelo de landing page">
+      <Field label={accountType === "clinic" ? "Modelo de landing page (Clínica)" : "Modelo de landing page (Profissional)"}>
+        <p className="mb-3 text-[11px] text-muted-foreground">
+          {accountType === "clinic"
+            ? "Seu plano é Clínica: os layouts abaixo são exclusivos para equipes de profissionais."
+            : "Seu plano é Individual: os layouts abaixo são exclusivos para profissionais autônomos."}
+        </p>
         <div className="grid gap-3 sm:grid-cols-2">
-          {TEMPLATES.map((t) => {
+          {available.map((t) => {
             const active = t.id === template;
             return (
               <button

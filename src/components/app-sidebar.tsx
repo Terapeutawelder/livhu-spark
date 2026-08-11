@@ -1,6 +1,7 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode, useMemo } from "react";
 import { Link, useRouterState, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { useAccountType } from "@/hooks/use-tenant";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import livhubLogo from "@/assets/livhub-logo.png.asset.json";
 import {
@@ -36,6 +37,9 @@ interface NavItem {
   icon: LucideIcon;
 }
 
+const clinicItem: NavItem = { to: "/servicos", label: "Clínica & Equipe", icon: Building2 };
+const soloItem: NavItem = { to: "/servicos", label: "Serviços", icon: Building2 };
+
 const items: NavItem[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/mensagens", label: "Mensagens", icon: MessageSquare },
@@ -43,7 +47,6 @@ const items: NavItem[] = [
   { to: "/pacientes", label: "Pacientes", icon: HeartPulse },
   { to: "/kanban", label: "Kanban", icon: KanbanSquare },
   { to: "/agendamento", label: "Agendamento", icon: CalendarDays },
-  { to: "/servicos", label: "Clínica & Equipe", icon: Building2 },
   { to: "/calendario", label: "Calendário", icon: CalendarClock },
   { to: "/notificacoes", label: "Notificações", icon: Bell },
   { to: "/fluxos", label: "Fluxos", icon: Workflow },
@@ -139,6 +142,14 @@ export function AppSidebar() {
   const { collapsed, mobileOpen, setMobileOpen } = useSidebar();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { isClinic } = useAccountType();
+
+  // Plano Clínica ganha o módulo de equipe; plano individual vê apenas Serviços.
+  const navItems = useMemo(() => {
+    const list = [...items];
+    list.splice(6, 0, isClinic ? clinicItem : soloItem);
+    return list;
+  }, [isClinic]);
 
   // Close mobile drawer on route change
   useEffect(() => {
@@ -237,7 +248,7 @@ export function AppSidebar() {
             (collapsed ? "lg:px-2 px-3" : "px-3")
           }
         >
-          {items.map((item) => {
+          {navItems.map((item) => {
             const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
             const Icon = item.icon;
             const base =

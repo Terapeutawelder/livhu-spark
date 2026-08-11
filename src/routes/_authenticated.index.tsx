@@ -30,6 +30,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { MetricCard } from "@/components/metric-card";
 import { getDashboardData } from "@/lib/dashboard.functions";
+import { ClinicTeamPanel } from "@/components/clinic-team-panel";
 
 export const Route = createFileRoute("/_authenticated/")({
   beforeLoad: async () => {
@@ -66,6 +67,8 @@ const dashboardQueryOptions = queryOptions({
 function Dashboard() {
   const { data } = useSuspenseQuery(dashboardQueryOptions);
   const { profile, usage, messageTotals, last7Days, upcomingSessions, monthlyRevenue } = data;
+
+  const isClinic = (usage as { account_type?: string } | null)?.account_type === "clinic";
 
   const firstName = (profile?.full_name ?? "Psicoterapeuta").split(" ")[0];
   const initials = (profile?.full_name ?? "PS")
@@ -131,10 +134,12 @@ function Dashboard() {
           <div className="grid gap-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
             <div className="min-w-0 space-y-4">
               <p className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-                Bem-vindo(a), {firstName}
+                {isClinic ? `Bem-vindo(a) à ${profile?.full_name ? "sua clínica" : "clínica"}, ${firstName}` : `Bem-vindo(a), ${firstName}`}
               </p>
               <p className="max-w-lg text-sm/relaxed text-sidebar-active-foreground/80">
-                Aqui está um resumo da sua prática hoje. Acompanhe mensagens, sessões e faturamento em tempo real.
+                {isClinic
+                  ? "Resumo da clínica hoje: atendimentos da equipe, mensagens e faturamento consolidado."
+                  : "Aqui está um resumo da sua prática hoje. Acompanhe mensagens, sessões e faturamento em tempo real."}
               </p>
 
               <div className="flex flex-wrap gap-2 pt-1">
@@ -316,7 +321,7 @@ function Dashboard() {
       {/* RIGHT PANEL (My activity) */}
       <aside className="space-y-6 rounded-3xl bg-surface-2 p-5 lg:sticky lg:top-20 lg:h-fit">
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-lg font-bold">Minha atividade</h2>
+          <h2 className="font-display text-lg font-bold">{isClinic ? "Atividade da clínica" : "Minha atividade"}</h2>
           <Link to="/agendamento" className="text-xs font-semibold text-gold hover:underline">Ver tudo</Link>
         </div>
 
@@ -375,9 +380,11 @@ function Dashboard() {
           </div>
         </section>
 
+        {isClinic && <ClinicTeamPanel />}
+
         <section>
           <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
-            Metas da semana
+            {isClinic ? "Boas práticas da equipe" : "Metas da semana"}
           </p>
           <ul className="space-y-2">
             {[

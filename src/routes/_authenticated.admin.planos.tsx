@@ -35,6 +35,7 @@ type Plan = {
   is_active: boolean;
   is_highlighted: boolean;
   sort_order: number;
+  account_type: "individual" | "clinic";
 };
 
 const emptyPlan: Omit<Plan, "id"> = {
@@ -53,6 +54,7 @@ const emptyPlan: Omit<Plan, "id"> = {
   is_active: true,
   is_highlighted: false,
   sort_order: 99,
+  account_type: "individual",
 };
 
 function PlansPage() {
@@ -103,6 +105,7 @@ function PlansPage() {
         is_active: p.is_active ?? true,
         is_highlighted: p.is_highlighted ?? false,
         sort_order: Number(p.sort_order) || 0,
+        account_type: p.account_type === "clinic" ? "clinic" : "individual",
       };
       if (p.id) {
         const { error } = await supabase.from("subscription_plans").update(payload).eq("id", p.id);
@@ -170,6 +173,16 @@ function PlansPage() {
                 <div>
                   <h3 className="font-display text-xl font-bold text-foreground">{p.name}</h3>
                   <p className="mt-0.5 font-mono text-[11px] text-muted-foreground">{p.slug}</p>
+                  <span
+                    className={
+                      "mt-2 inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide " +
+                      (p.account_type === "clinic"
+                        ? "bg-violet-500/15 text-violet-500"
+                        : "bg-gold/15 text-gold")
+                    }
+                  >
+                    {p.account_type === "clinic" ? "Clínica" : "Profissional"}
+                  </span>
                 </div>
                 <div className="flex items-center gap-1">
                   <button
@@ -315,6 +328,20 @@ function PlanEditor({
               onChange={(e) => up("price_cents", Number(e.target.value))}
               className="h-9 rounded-lg border border-border bg-background px-3 text-sm"
             />
+          </label>
+          <label className="grid gap-1.5 text-sm sm:col-span-2">
+            <span className="font-medium text-foreground">Tipo de conta</span>
+            <select
+              value={value.account_type ?? "individual"}
+              onChange={(e) => up("account_type", e.target.value as "individual" | "clinic")}
+              className="h-9 rounded-lg border border-border bg-background px-3 text-sm"
+            >
+              <option value="individual">Profissional individual</option>
+              <option value="clinic">Clínica (equipe de profissionais)</option>
+            </select>
+            <p className="text-[10px] leading-tight text-muted-foreground">
+              Define o painel e os layouts de landing page liberados para quem assina este plano.
+            </p>
           </label>
           <label className="grid gap-1.5 text-sm">
             <span className="font-medium text-foreground">Ordem</span>
