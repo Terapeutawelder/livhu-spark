@@ -23,6 +23,7 @@ import {
   syncZernioAccounts,
   disconnectZernioAccount,
   sendZernioTestMessage,
+  checkZernioTelegram,
 } from "@/lib/zernio.functions";
 
 type ZAccount = {
