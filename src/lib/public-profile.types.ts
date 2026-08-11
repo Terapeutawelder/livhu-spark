@@ -256,10 +256,12 @@ export const DEFAULT_SECTIONS: ProfileSections = {
   hero: true,
   topics: true,
   about: true,
+  team: false,
   booking: true,
   testimonials: false,
   footer: true,
 };
+
 
 export function defaultContent(name = "Seu Nome"): ProfileContent {
   return {
