@@ -538,12 +538,21 @@ export function PublicLanding({ template, theme, content, services, slug, intera
       {/* Agendamento */}
       {content.sections.booking && (
         <section id="agendar" className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 pb-10 sm:pb-14 md:pb-20">
-          <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>
-            {content.bookingTitle}
-          </h2>
-          <p className="mt-3 max-w-2xl text-[15px] sm:text-base md:text-lg" style={{ color: theme.muted }}>
-            {content.bookingIntro}
-          </p>
+          <div className={isClinic ? "text-center" : ""}>
+            <h2
+              className={`text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl ${isClinic ? "font-extrabold tracking-tight" : ""}`}
+              style={h}
+            >
+              {content.bookingTitle}
+            </h2>
+            <p
+              className={`mt-3 max-w-2xl text-[15px] sm:text-base md:text-lg ${isClinic ? "mx-auto" : ""}`}
+              style={{ color: theme.muted }}
+            >
+              {content.bookingIntro}
+            </p>
+          </div>
+
           <BookingWidget
             slug={slug}
             services={services}
