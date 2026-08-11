@@ -85,83 +85,146 @@ export function PublicLanding({ template, theme, content, services, slug, intera
 
       {/* Hero */}
       {content.sections.hero && template === "clinica" && (
-        <section className="mx-auto max-w-7xl px-3 py-6 sm:px-5 sm:py-8 lg:px-6">
-          <div
-            className="relative overflow-hidden"
-            style={{ borderRadius: theme.radius + 8, background: theme.band }}
-          >
-            <img
-              src={content.heroImage || PLACEHOLDER}
-              alt={`Equipe da ${content.name}`}
-              className="h-[420px] w-full object-cover sm:h-[460px] md:h-[540px]"
-              style={{
-                objectPosition: `70% ${content.heroPosY ?? 40}%`,
-                transform: `scale(${(content.heroZoom ?? 100) / 100})`,
-              }}
-              loading="eager"
-            />
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(90deg, rgba(43,31,61,.92) 0%, rgba(124,77,190,.78) 48%, rgba(124,77,190,0) 82%)",
-              }}
-            />
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full max-w-xl p-6 sm:p-10 md:p-14">
-                {content.avatarImage && (
-                  <img
-                    src={content.avatarImage}
-                    alt={`Foto de perfil — ${content.name}`}
-                    className="mb-5 h-20 w-20 rounded-full object-cover sm:h-24 sm:w-24"
-                    style={{ border: "3px solid rgba(255,255,255,.75)" }}
-                    loading="eager"
-                  />
-                )}
+        <section className="relative overflow-hidden">
+          <div className="grid items-stretch lg:grid-cols-[1.05fr_1fr]">
+            {/* Coluna de texto */}
+            <div className="px-4 py-10 sm:px-8 sm:py-14 lg:py-20 lg:pl-[max(1.5rem,calc((100vw-80rem)/2+1.5rem))] lg:pr-12">
+              <div className="mx-auto w-full max-w-xl lg:mx-0">
                 <span
-                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white"
-                  style={{ background: "rgba(255,255,255,.18)", border: "1px solid rgba(255,255,255,.28)" }}
+                  className="inline-flex items-center gap-2 text-[13px] font-medium"
+                  style={{ color: theme.muted }}
                 >
                   {content.eyebrow}
+                  <span aria-hidden style={{ color: theme.accent }}>♥</span>
                 </span>
 
                 <h1
-                  className="mt-5 text-[clamp(2rem,8vw,3.25rem)] font-semibold leading-[1.05] text-white md:text-6xl"
+                  className="mt-4 text-[clamp(2.1rem,7.5vw,3.6rem)] font-extrabold leading-[1.03] tracking-tight"
                   style={h}
                 >
-                  {content.headline}
+                  {(() => {
+                    const words = content.headline.trim().split(" ");
+                    const cut = Math.max(1, Math.ceil(words.length * 0.6));
+                    return (
+                      <>
+                        {words.slice(0, cut).join(" ")}{" "}
+                        <span style={{ color: theme.accent }}>{words.slice(cut).join(" ")}</span>
+                      </>
+                    );
+                  })()}
                 </h1>
-                <p className="mt-4 max-w-md text-base leading-relaxed text-white/85 sm:text-lg">
+
+                <p className="mt-5 max-w-lg text-base leading-relaxed sm:text-lg" style={{ color: theme.muted }}>
                   {content.subheadline}
                 </p>
-                <div className="mt-7 flex flex-wrap items-center gap-3">
-                  <a
-                    href="#agendar"
-                    className="px-6 py-3 text-sm font-semibold"
-                    style={{ background: "#ffffff", color: theme.accent, borderRadius: 999 }}
-                  >
+
+                <div className="mt-8 flex flex-wrap items-center gap-3">
+                  <a href="#agendar" className="px-6 py-3.5 text-sm font-bold" style={btn}>
                     {content.ctaLabel}
+                  </a>
+                  <a
+                    href="#equipe"
+                    className="px-6 py-3.5 text-sm font-bold"
+                    style={{ borderRadius: 999, border: `1.5px solid ${theme.accent}`, color: theme.accent }}
+                  >
+                    Encontrar profissionais
                   </a>
                   {content.whatsapp && (
                     <a
                       href={`https://wa.me/${content.whatsapp.replace(/\D/g, "")}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-6 py-3 text-sm font-semibold text-white"
-                      style={{ borderRadius: 999, border: "1px solid rgba(255,255,255,.55)" }}
+                      className="px-6 py-3.5 text-sm font-bold text-white"
+                      style={{ borderRadius: 999, background: "#22a565" }}
                     >
                       Falar no WhatsApp
                     </a>
                   )}
                 </div>
-                <p className="mt-6 text-xs text-white/70">
+
+                <ul className="mt-10 grid grid-cols-2 gap-5 sm:grid-cols-4">
+                  {[
+                    { icon: "🔒", title: "Sigilo absoluto", sub: "100% confidencial" },
+                    { icon: "🗓", title: "Flexibilidade total", sub: "Terapia onde e quando quiser" },
+                    { icon: "✓", title: "Profissionais verificados", sub: "Especialistas selecionados" },
+                    { icon: "♥", title: "Acolhimento que transforma", sub: "Você no centro do cuidado" },
+                  ].map((f) => (
+                    <li key={f.title} className="text-center sm:text-left">
+                      <span
+                        className="mb-3 inline-grid h-11 w-11 place-items-center text-base"
+                        style={{
+                          borderRadius: 14,
+                          border: `1.5px solid ${theme.accent}44`,
+                          background: `${theme.accent}14`,
+                          color: theme.accent,
+                        }}
+                        aria-hidden
+                      >
+                        {f.icon}
+                      </span>
+                      <p className="text-[13px] font-bold leading-tight">{f.title}</p>
+                      <p className="mt-1 text-[11px] leading-tight" style={{ color: theme.muted }}>
+                        {f.sub}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+
+                <p className="mt-8 text-xs" style={{ color: theme.muted }}>
                   {content.credential} · {content.city}
                 </p>
+              </div>
+            </div>
+
+            {/* Coluna da imagem */}
+            <div className="relative min-h-[340px] lg:min-h-[720px]">
+              <img
+                src={content.heroImage || PLACEHOLDER}
+                alt={`Equipe da ${content.name}`}
+                className="h-full w-full object-cover"
+                style={{
+                  objectPosition: `50% ${content.heroPosY ?? 40}%`,
+                  transform: `scale(${(content.heroZoom ?? 100) / 100})`,
+                }}
+                loading="eager"
+              />
+              <div
+                className="pointer-events-none absolute inset-y-0 left-0 hidden w-40 lg:block"
+                style={{ background: `linear-gradient(90deg, ${theme.bg} 0%, transparent 100%)` }}
+              />
+              <div className="absolute bottom-5 left-4 right-4 sm:left-auto sm:right-8 sm:max-w-sm">
+                <div className="flex items-start gap-3 p-4 shadow-xl sm:p-5" style={card}>
+                  {content.avatarImage ? (
+                    <img
+                      src={content.avatarImage}
+                      alt={`Foto de perfil — ${content.name}`}
+                      className="h-11 w-11 shrink-0 rounded-full object-cover"
+                      loading="eager"
+                    />
+                  ) : (
+                    <span
+                      className="grid h-11 w-11 shrink-0 place-items-center"
+                      style={{ borderRadius: 999, background: `${theme.accent}1f`, color: theme.accent }}
+                      aria-hidden
+                    >
+                      ☺
+                    </span>
+                  )}
+                  <div>
+                    <p className="text-sm font-bold" style={{ color: theme.text }}>
+                      {content.name}
+                    </p>
+                    <p className="mt-1 text-[13px] leading-snug" style={{ color: theme.muted }}>
+                      {content.credential}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </section>
       )}
+
 
       {content.sections.hero && template !== "clinica" && (
         <section className="mx-auto grid max-w-7xl items-center gap-8 px-3 sm:px-5 lg:px-6 py-10 sm:py-14 md:grid-cols-2 md:py-20">
@@ -222,26 +285,55 @@ export function PublicLanding({ template, theme, content, services, slug, intera
       {/* Tópicos */}
       {content.sections.topics && (
         <section id="servicos" className="py-10 sm:py-14 md:py-20" style={{ background: theme.band, color: theme.bandText }}>
-          <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6">
-            <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>
+          <div className={`mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 ${isClinic ? "text-center" : ""}`}>
+            <h2
+              className={`text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl ${isClinic ? "font-extrabold tracking-tight" : ""}`}
+              style={h}
+            >
               {content.topicsTitle}
             </h2>
-            <p className="mt-3 max-w-2xl text-[15px] sm:text-base md:text-lg" style={{ opacity: 0.75 }}>
+            <p
+              className={`mt-3 max-w-2xl text-[15px] sm:text-base md:text-lg ${isClinic ? "mx-auto" : ""}`}
+              style={{ opacity: 0.75 }}
+            >
               {content.topicsIntro}
             </p>
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-10 grid gap-4 text-left sm:grid-cols-2 lg:grid-cols-3">
               {content.topics.map((t, i) => (
-                <div key={i} className="p-6" style={card}>
+                <div
+                  key={i}
+                  className="p-6"
+                  style={
+                    isClinic
+                      ? {
+                          background: theme.accent,
+                          borderRadius: theme.radius,
+                          border: "1px solid rgba(255,255,255,.14)",
+                          boxShadow: "0 18px 40px -24px rgba(124,58,237,.9)",
+                        }
+                      : card
+                  }
+                >
                   <div
                     className="mb-4 grid h-9 w-9 place-items-center text-sm font-bold"
-                    style={{ background: theme.accent, color: theme.accentText, borderRadius: 999 }}
+                    style={
+                      isClinic
+                        ? { background: "rgba(255,255,255,.18)", color: "#ffffff", borderRadius: 999 }
+                        : { background: theme.accent, color: theme.accentText, borderRadius: 999 }
+                    }
                   >
                     {String(i + 1).padStart(2, "0")}
                   </div>
-                  <h3 className="text-xl font-semibold" style={{ ...h, color: theme.text }}>
+                  <h3
+                    className="text-xl font-semibold"
+                    style={{ ...h, color: isClinic ? "#ffffff" : theme.text }}
+                  >
                     {t.title}
                   </h3>
-                  <p className="mt-2 text-[15px] leading-relaxed" style={{ color: theme.muted }}>
+                  <p
+                    className="mt-2 text-[15px] leading-relaxed"
+                    style={{ color: isClinic ? "rgba(255,255,255,.85)" : theme.muted }}
+                  >
                     {t.description}
                   </p>
                 </div>
