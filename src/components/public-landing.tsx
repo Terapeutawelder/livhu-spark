@@ -627,48 +627,8 @@ function BookingWidget({
   }
 
   return (
-    <div className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,260px)_minmax(0,1.15fr)_minmax(0,0.9fr)]">
-      {/* Serviços em cards na lateral */}
-      <aside className="p-5" style={card}>
-        <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: theme.muted }}>
-          Serviços
-        </p>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
-          {services.length === 0 && (
-            <p className="text-sm" style={{ color: theme.muted }}>
-              Nenhum serviço publicado ainda.
-            </p>
-          )}
-          {services.map((sv) => {
-            const active = sv.id === serviceId;
-            return (
-              <button
-                key={sv.id}
-                type="button"
-                onClick={() => setServiceId(sv.id)}
-                className="p-4 text-left transition"
-                style={{
-                  borderRadius: theme.radius,
-                  border: `1.5px solid ${active ? theme.accent : "rgba(125,125,125,.25)"}`,
-                  background: active ? `${theme.accent}14` : "transparent",
-                }}
-              >
-                <span className="block text-[15px] font-semibold" style={{ color: theme.text }}>
-                  {sv.name}
-                </span>
-                <span className="mt-1 block text-xs" style={{ color: theme.muted }}>
-                  {sv.duration_minutes} min · {sv.price_cents > 0 ? money(sv.price_cents) : "Valor a combinar"}
-                </span>
-                {sv.description && (
-                  <span className="mt-2 block text-xs leading-relaxed" style={{ color: theme.muted }}>
-                    {sv.description}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </aside>
+    <div className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.9fr)]">
+
 
       <div className="p-6" style={card}>
         {/* Serviço selecionado acima do calendário */}
