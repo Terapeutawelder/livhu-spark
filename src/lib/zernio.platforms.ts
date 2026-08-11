@@ -16,13 +16,13 @@ export const ZERNIO_PLATFORMS = [
   { id: "bluesky", label: "Bluesky", group: "Comunidade", color: "#0285FF", icon: "bluesky" },
   { id: "snapchat", label: "Snapchat", group: "Comunidade", color: "#FFFC00", icon: "snapchat", comingSoon: true },
   { id: "reddit", label: "Reddit", group: "Comunidade", color: "#FF4500", icon: "reddit" },
-  { id: "googleads", label: "Google Ads", group: "Anúncios", color: "#4285F4", icon: "googleads" },
-  { id: "metaads", label: "Meta Ads", group: "Anúncios", color: "#0668E1", icon: "meta" },
-  { id: "linkedinads", label: "LinkedIn Ads", group: "Anúncios", color: "#0077B5", icon: "linkedin" },
-  { id: "tiktokads", label: "TikTok Ads", group: "Anúncios", color: "#000000", icon: "tiktok" },
-  { id: "pinterestads", label: "Pinterest Ads", group: "Anúncios", color: "#BD081C", icon: "pinterest" },
-  { id: "xads", label: "X Ads", group: "Anúncios", color: "#000000", icon: "x" },
-  { id: "openaiads", label: "OpenAI Ads", group: "Anúncios", color: "#412991", icon: "openai" },
+  { comingSoon: true, id: "googleads", label: "Google Ads", group: "Anúncios", color: "#4285F4", icon: "googleads" },
+  { comingSoon: true, id: "metaads", label: "Meta Ads", group: "Anúncios", color: "#0668E1", icon: "meta" },
+  { comingSoon: true, id: "linkedinads", label: "LinkedIn Ads", group: "Anúncios", color: "#0077B5", icon: "linkedin" },
+  { comingSoon: true, id: "tiktokads", label: "TikTok Ads", group: "Anúncios", color: "#000000", icon: "tiktok" },
+  { comingSoon: true, id: "pinterestads", label: "Pinterest Ads", group: "Anúncios", color: "#BD081C", icon: "pinterest" },
+  { comingSoon: true, id: "xads", label: "X Ads", group: "Anúncios", color: "#000000", icon: "x" },
+  { comingSoon: true, id: "openaiads", label: "OpenAI Ads", group: "Anúncios", color: "#412991", icon: "openai" },
 ] as const;
 
 export type ZernioPlatformId = (typeof ZERNIO_PLATFORMS)[number]["id"];
