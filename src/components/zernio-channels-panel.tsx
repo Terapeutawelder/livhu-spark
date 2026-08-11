@@ -23,6 +23,7 @@ import {
   syncZernioAccounts,
   disconnectZernioAccount,
   sendZernioTestMessage,
+  checkZernioTelegram,
 } from "@/lib/zernio.functions";
 
 type ZAccount = {
@@ -43,6 +44,7 @@ export function ZernioChannelsPanel() {
   const syncFn = useServerFn(syncZernioAccounts);
   const disconnectFn = useServerFn(disconnectZernioAccount);
   const testFn = useServerFn(sendZernioTestMessage);
+  const checkTelegramFn = useServerFn(checkZernioTelegram);
 
   const { data, isLoading } = useQuery({
     queryKey: ["zernio-status"],
@@ -60,6 +62,21 @@ export function ZernioChannelsPanel() {
     },
     onError: (e: any) => toast.error(e?.message ?? "Falha ao sincronizar"),
   });
+
+  const checkTelegram = useMutation({
+    mutationFn: async () => checkTelegramFn({ data: undefined as never }) as Promise<{ connected: boolean }>,
+    onSuccess: async (res) => {
+      if (res?.connected) {
+        toast.success("Telegram conectado");
+        setCodeFlow(null);
+        await sync.mutateAsync();
+      } else {
+        toast.info("Ainda não recebemos a confirmação. Envie o código ao bot e tente de novo.");
+      }
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Falha ao verificar conexão"),
+  });
+
 
   // Após voltar do OAuth da Zernio, sincroniza automaticamente.
   useEffect(() => {
@@ -399,8 +416,8 @@ export function ZernioChannelsPanel() {
                     </a>
                   </Button>
                 )}
-                <Button size="sm" onClick={() => sync.mutate()} disabled={sync.isPending}>
-                  {sync.isPending ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : null}
+                <Button size="sm" onClick={() => checkTelegram.mutate()} disabled={checkTelegram.isPending}>
+                  {checkTelegram.isPending ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : null}
                   Já enviei, verificar
                 </Button>
               </div>

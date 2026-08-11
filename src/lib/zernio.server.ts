@@ -126,20 +126,42 @@ export async function getZernioConnectUrl(args: {
   profileId: string;
   redirectUrl: string;
 }): Promise<ZernioConnectStart> {
-  const res = await zernioFetch<ZernioConnectStart>(`/connect/${args.platform}`, {
-    query: { profileId: args.profileId, redirect_url: args.redirectUrl },
-  });
+  // Telegram não usa OAuth: só aceita profileId e devolve um código de pareamento.
+  const query =
+    args.platform === "telegram"
+      ? { profileId: args.profileId }
+      : { profileId: args.profileId, redirect_url: args.redirectUrl };
+  const res = await zernioFetch<ZernioConnectStart & { accessCode?: string; expiresAt?: string }>(
+    `/connect/${args.platform}`,
+    { query },
+  );
   if (res?.authUrl) return { authUrl: res.authUrl };
-  if (res?.code) {
+  const code = res?.code ?? res?.accessCode;
+  if (code) {
     return {
-      code: res.code,
-      botUsername: res.botUsername,
-      instructions: res.instructions ?? [],
+      code,
+      botUsername: res.botUsername ?? "zernio_bot",
+      instructions:
+        res.instructions ?? [
+          "Adicione o bot como administrador do seu canal ou grupo no Telegram.",
+          "Abra uma conversa com o bot e envie: o código acima seguido de @seucanal.",
+          "Volte aqui e clique em “Já enviei, verificar”.",
+        ],
       expiresIn: res.expiresIn,
     };
   }
   throw new Error("Zernio não retornou a URL de autorização.");
 }
+
+/** Consulta o status do pareamento do Telegram (PATCH /v1/connect/telegram). */
+export async function checkZernioTelegramStatus(profileId: string): Promise<boolean> {
+  const res = await zernioFetch<{ connected?: boolean; status?: string; account?: unknown }>(
+    "/connect/telegram",
+    { method: "PATCH", body: { profileId }, query: { profileId } },
+  );
+  return !!(res?.connected || res?.account || res?.status === "connected");
+}
+
 
 /**
  * Conexão de contas de anúncios: GET /v1/connect/{base}/ads

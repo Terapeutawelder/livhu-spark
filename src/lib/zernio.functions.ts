@@ -233,3 +233,22 @@ export const provisionZernioProfile = createServerFn({ method: "POST" })
       return { configured: true as const, profileId: null };
     }
   });
+
+/** Verifica se o pareamento do Telegram foi concluído e sincroniza as contas. */
+export const checkZernioTelegram = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { checkZernioTelegramStatus, listZernioAccounts } = await import("./zernio.server");
+    const { tenantId, profileId } = await ensureProfileId(context);
+    let connected = false;
+    try {
+      connected = await checkZernioTelegramStatus(profileId);
+    } catch (e) {
+      console.error("Falha ao checar status do Telegram:", e);
+    }
+    if (!connected) {
+      const remote = await listZernioAccounts(profileId);
+      connected = remote.some((a) => a.platform === "telegram");
+    }
+    return { connected, tenantId };
+  });
