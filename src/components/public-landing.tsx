@@ -382,17 +382,47 @@ export function PublicLanding({ template, theme, content, services, slug, intera
 
       {/* Equipe da clínica */}
       {(isClinic || content.sections.team) && (
-        <section id="equipe" className="py-10 sm:py-14 md:py-20" style={{ background: theme.band, color: theme.bandText }}>
-          <div className="mx-auto max-w-7xl px-3 sm:px-5 lg:px-6">
-            <h2 className="text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl" style={h}>
+        <section
+          id="equipe"
+          className="py-10 sm:py-14 md:py-20"
+          style={
+            isClinic
+              ? { background: theme.bg, color: theme.text }
+              : { background: theme.band, color: theme.bandText }
+          }
+        >
+          <div className={`mx-auto max-w-7xl px-3 sm:px-5 lg:px-6 ${isClinic ? "text-center" : ""}`}>
+            {isClinic && (
+              <span
+                className="inline-flex items-center gap-2 px-4 py-1.5 text-[12px] font-semibold"
+                style={{ borderRadius: 999, background: `${theme.accent}14`, color: theme.accent }}
+              >
+                ♥ Profissionais verificados
+              </span>
+            )}
+            <h2
+              className={`text-[clamp(1.6rem,5.5vw,2.25rem)] leading-tight md:text-5xl ${isClinic ? "mt-4 font-extrabold tracking-tight" : ""}`}
+              style={h}
+            >
               {content.teamTitle}
             </h2>
-            <p className="mt-3 max-w-2xl text-[15px] sm:text-base md:text-lg" style={{ opacity: 0.75 }}>
+            <p
+              className={`mt-3 max-w-2xl text-[15px] sm:text-base md:text-lg ${isClinic ? "mx-auto" : ""}`}
+              style={{ opacity: 0.75 }}
+            >
               {content.teamIntro}
             </p>
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-10 grid gap-4 text-left sm:grid-cols-2 lg:grid-cols-3">
               {(content.team ?? []).map((m, i) => (
-                <article key={i} className="flex flex-col p-6" style={card}>
+                <article
+                  key={i}
+                  className={`flex flex-col p-6 ${isClinic ? "items-center text-center" : ""}`}
+                  style={
+                    isClinic
+                      ? { ...card, boxShadow: "0 24px 50px -34px rgba(28,27,46,.55)" }
+                      : card
+                  }
+                >
                   <img
                     src={m.photo || PLACEHOLDER}
                     alt={`Foto de ${m.name}`}
