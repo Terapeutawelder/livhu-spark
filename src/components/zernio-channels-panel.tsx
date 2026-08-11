@@ -89,12 +89,19 @@ export function ZernioChannelsPanel() {
       const redirectUrl = `${window.location.origin}/configuracoes?tab=zernio`;
       const res = (await connectFn({ data: { platform, redirectUrl } })) as {
         authUrl?: string;
+        alreadyConnected?: boolean;
         code?: string;
         botUsername?: string;
         instructions?: string[];
       };
       if (res.authUrl) {
         window.location.href = res.authUrl;
+        return;
+      }
+      if (res.alreadyConnected) {
+        toast.success(`${ZERNIO_PLATFORM_LABEL[platform] ?? platform} conectado`);
+        setConnecting(null);
+        sync.mutate();
         return;
       }
       if (res.code) {
