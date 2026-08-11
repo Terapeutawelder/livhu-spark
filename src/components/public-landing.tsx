@@ -246,7 +246,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
       )}
 
       {/* Sobre */}
-      {content.sections.about && (
+      {content.sections.about && !(template === "clinica" && content.sections.team) && (
         <section id="sobre" className="mx-auto grid max-w-7xl items-center gap-8 px-3 sm:px-5 lg:px-6 py-10 sm:py-14 md:grid-cols-[0.9fr_1.1fr] md:py-20">
           <div
             className="h-[360px] w-full overflow-hidden md:h-[480px]"
