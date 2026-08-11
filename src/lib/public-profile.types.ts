@@ -275,6 +275,8 @@ export function defaultContent(name = "Seu Nome"): ProfileContent {
     heroImage: "",
     heroZoom: 100,
     heroPosY: 50,
+    avatarImage: "",
+
     aboutTitle: "Sobre mim",
     aboutText:
       "Sou psicoterapeuta e acredito que todo processo de mudança começa com uma escolha: olhar para dentro. Meu trabalho une escuta acolhedora e técnicas baseadas em evidências para transformar sofrimento em movimento.",
