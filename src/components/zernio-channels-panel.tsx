@@ -61,6 +61,21 @@ export function ZernioChannelsPanel() {
     onError: (e: any) => toast.error(e?.message ?? "Falha ao sincronizar"),
   });
 
+  const checkTelegram = useMutation({
+    mutationFn: async () => checkTelegramFn({ data: undefined as never }) as Promise<{ connected: boolean }>,
+    onSuccess: async (res) => {
+      if (res?.connected) {
+        toast.success("Telegram conectado");
+        setCodeFlow(null);
+        await sync.mutateAsync();
+      } else {
+        toast.info("Ainda não recebemos a confirmação. Envie o código ao bot e tente de novo.");
+      }
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Falha ao verificar conexão"),
+  });
+
+
   // Após voltar do OAuth da Zernio, sincroniza automaticamente.
   useEffect(() => {
     if (typeof window === "undefined") return;
