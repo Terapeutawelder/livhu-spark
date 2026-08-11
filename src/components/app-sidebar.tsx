@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode, useMemo } from "react";
 import { Link, useRouterState, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
+import { useAccountType } from "@/hooks/use-tenant";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import livhubLogo from "@/assets/livhub-logo.png.asset.json";
 import {
