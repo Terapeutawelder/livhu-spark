@@ -633,6 +633,8 @@ function ContentTab({
           <Plus className="h-3.5 w-3.5" /> Adicionar profissional
         </button>
       </div>
+      </>
+      )}
 
       <Divider>Depoimentos</Divider>
 
