@@ -14,7 +14,7 @@ export type Tenant = {
   account_type?: string | null;
 };
 
-export type AccountType = "individual" | "clinic";
+export type AccountType = "individual" | "clinic" | "whitelabel";
 
 /**
  * Retorna o tenant "corrente" do usuário logado (o primeiro que ele possui).
@@ -53,8 +53,27 @@ export function useCurrentTenant() {
  * Tipo de conta do tenant: profissional individual ou clínica.
  * Definido pelo plano assinado (ver tabela subscription_plans.account_type).
  */
-export function useAccountType(): { accountType: AccountType; isClinic: boolean; isLoading: boolean } {
+export function useAccountType(): {
+  accountType: AccountType;
+  isClinic: boolean;
+  isWhitelabel: boolean;
+  isLoading: boolean;
+} {
   const { data, isLoading } = useCurrentTenant();
-  const accountType: AccountType = data?.account_type === "clinic" ? "clinic" : "individual";
-  return { accountType, isClinic: accountType === "clinic", isLoading };
+  const raw = data?.account_type;
+  const accountType: AccountType =
+    raw === "clinic" ? "clinic" : raw === "whitelabel" ? "whitelabel" : "individual";
+  return {
+    accountType,
+    isClinic: accountType === "clinic",
+    isWhitelabel: accountType === "whitelabel",
+    isLoading,
+  };
+}
+
+/** Tela de login correspondente a cada tipo de plano. */
+export function loginPathFor(accountType: AccountType): string {
+  if (accountType === "clinic") return "/clinica/login";
+  if (accountType === "whitelabel") return "/white-label/login";
+  return "/auth";
 }

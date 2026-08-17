@@ -41,6 +41,7 @@ import { Route as AdminResetPasswordRouteImport } from './routes/admin.reset-pas
 import { Route as ClinicaLoginRouteImport } from './routes/clinica.login'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as PagamentoRetornoRouteImport } from './routes/pagamento.retorno'
+import { Route as WhiteLabelLoginRouteImport } from './routes/white-label.login'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
 import { Route as AuthenticatedAdminCalendarioRouteImport } from './routes/_authenticated.admin.calendario'
 import { Route as AuthenticatedAdminConfiguracaoRouteImport } from './routes/_authenticated.admin.configuracao'
@@ -229,6 +230,11 @@ const PagamentoRetornoRoute = PagamentoRetornoRouteImport.update({
   path: '/pagamento/retorno',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WhiteLabelLoginRoute = WhiteLabelLoginRouteImport.update({
+  id: '/white-label/login',
+  path: '/white-label/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -383,6 +389,7 @@ export interface FileRoutesByFullPath {
   '/clinica/login': typeof ClinicaLoginRoute
   '/p/$slug': typeof PSlugRoute
   '/pagamento/retorno': typeof PagamentoRetornoRoute
+  '/white-label/login': typeof WhiteLabelLoginRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
   '/admin/dominios': typeof AuthenticatedAdminDominiosRoute
@@ -435,6 +442,7 @@ export interface FileRoutesByTo {
   '/clinica/login': typeof ClinicaLoginRoute
   '/p/$slug': typeof PSlugRoute
   '/pagamento/retorno': typeof PagamentoRetornoRoute
+  '/white-label/login': typeof WhiteLabelLoginRoute
   '/': typeof AuthenticatedIndexRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
@@ -491,6 +499,7 @@ export interface FileRoutesById {
   '/clinica/login': typeof ClinicaLoginRoute
   '/p/$slug': typeof PSlugRoute
   '/pagamento/retorno': typeof PagamentoRetornoRoute
+  '/white-label/login': typeof WhiteLabelLoginRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/_authenticated/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
@@ -548,6 +557,7 @@ export interface FileRouteTypes {
     | '/clinica/login'
     | '/p/$slug'
     | '/pagamento/retorno'
+    | '/white-label/login'
     | '/admin/calendario'
     | '/admin/configuracao'
     | '/admin/dominios'
@@ -600,6 +610,7 @@ export interface FileRouteTypes {
     | '/clinica/login'
     | '/p/$slug'
     | '/pagamento/retorno'
+    | '/white-label/login'
     | '/'
     | '/admin/calendario'
     | '/admin/configuracao'
@@ -655,6 +666,7 @@ export interface FileRouteTypes {
     | '/clinica/login'
     | '/p/$slug'
     | '/pagamento/retorno'
+    | '/white-label/login'
     | '/_authenticated/'
     | '/_authenticated/admin/calendario'
     | '/_authenticated/admin/configuracao'
@@ -691,6 +703,7 @@ export interface RootRouteChildren {
   ClinicaLoginRoute: typeof ClinicaLoginRoute
   PSlugRoute: typeof PSlugRoute
   PagamentoRetornoRoute: typeof PagamentoRetornoRoute
+  WhiteLabelLoginRoute: typeof WhiteLabelLoginRoute
   ApiPublicEvolutionWebhookRoute: typeof ApiPublicEvolutionWebhookRoute
   ApiPublicHooksNotificationsDispatchRoute: typeof ApiPublicHooksNotificationsDispatchRoute
   ApiPublicMetaDataDeletionRoute: typeof ApiPublicMetaDataDeletionRoute
@@ -927,6 +940,13 @@ declare module '@tanstack/react-router' {
       path: '/pagamento/retorno'
       fullPath: '/pagamento/retorno'
       preLoaderRoute: typeof PagamentoRetornoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/white-label/login': {
+      id: '/white-label/login'
+      path: '/white-label/login'
+      fullPath: '/white-label/login'
+      preLoaderRoute: typeof WhiteLabelLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -1174,6 +1194,7 @@ const rootRouteChildren: RootRouteChildren = {
   ClinicaLoginRoute: ClinicaLoginRoute,
   PSlugRoute: PSlugRoute,
   PagamentoRetornoRoute: PagamentoRetornoRoute,
+  WhiteLabelLoginRoute: WhiteLabelLoginRoute,
   ApiPublicEvolutionWebhookRoute: ApiPublicEvolutionWebhookRoute,
   ApiPublicHooksNotificationsDispatchRoute:
     ApiPublicHooksNotificationsDispatchRoute,
