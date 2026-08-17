@@ -77,7 +77,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
           <nav className="hidden items-center gap-6 text-sm md:flex" style={{ color: theme.muted }}>
             {content.sections.topics && <a href="#servicos">Como ajudo</a>}
             {!isClinic && content.sections.about && <a href="#sobre">Sobre</a>}
-            {(isClinic || content.sections.team) && <a href="#equipe">Equipe</a>}
+            {isClinic && <a href="#equipe">Equipe</a>}
             {content.sections.booking && <a href="#agendar">Agenda</a>}
 
           </nav>
@@ -381,7 +381,7 @@ export function PublicLanding({ template, theme, content, services, slug, intera
       )}
 
       {/* Equipe da clínica */}
-      {(isClinic || content.sections.team) && (
+      {isClinic && (
         <section
           id="equipe"
           className="py-10 sm:py-14 md:py-20"

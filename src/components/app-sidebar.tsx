@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode, useMemo } from "react";
 import { Link, useRouterState, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { useAccountType, loginPathFor } from "@/hooks/use-tenant";
+import { useAccountType, loginPathFor, useMyTenantRole } from "@/hooks/use-tenant";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import livhubLogo from "@/assets/livhub-logo.png.asset.json";
 import {
@@ -154,14 +154,16 @@ export function AppSidebar() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { accountType, isClinic, isWhitelabel } = useAccountType();
+  const { isTenantAdmin } = useMyTenantRole();
 
   // Cada tipo de plano tem a sua própria navegação.
   const navItems = useMemo(() => {
     if (isWhitelabel) return whitelabelItems;
     const list = [...items];
-    list.splice(6, 0, isClinic ? clinicItem : soloItem);
+    // Só a gestão da clínica vê a área "Clínica & Equipe"; profissionais veem os próprios serviços.
+    list.splice(6, 0, isClinic && isTenantAdmin ? clinicItem : soloItem);
     return list;
-  }, [isClinic, isWhitelabel]);
+  }, [isClinic, isWhitelabel, isTenantAdmin]);
 
   // Close mobile drawer on route change
   useEffect(() => {

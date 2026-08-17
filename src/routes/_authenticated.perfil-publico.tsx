@@ -475,7 +475,9 @@ function LayoutTab({
 
       <Field label="Seções visíveis">
         <div className="space-y-2">
-          {(Object.keys(SECTION_LABELS) as (keyof ProfileSections)[]).map((k) => (
+          {(Object.keys(SECTION_LABELS) as (keyof ProfileSections)[])
+            .filter((k) => k !== "team" || accountType === "clinic")
+            .map((k) => (
             <label
               key={k}
               className="flex cursor-pointer items-center justify-between rounded-lg border border-border px-3 py-2 text-sm text-foreground"
@@ -561,6 +563,8 @@ function ContentTab({
         </button>
       </div>
 
+      {template === "clinica" && (
+      <>
       <Divider>Equipe da clínica</Divider>
       <p className="-mt-1 text-[11px] text-muted-foreground">
         Cada profissional aparece com foto e botão “Ver agenda”, que abre a página pública dele (/p/slug) com o
@@ -629,6 +633,8 @@ function ContentTab({
           <Plus className="h-3.5 w-3.5" /> Adicionar profissional
         </button>
       </div>
+      </>
+      )}
 
       <Divider>Depoimentos</Divider>
 

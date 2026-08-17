@@ -14,7 +14,8 @@ import {
   Layout
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useCurrentTenant } from "@/hooks/use-tenant";
+import { useAccountType, useCurrentTenant, useMyTenantRole } from "@/hooks/use-tenant";
+import { SoloServicesPanel } from "@/components/solo-services-panel";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -40,21 +41,30 @@ import {
 export const Route = createFileRoute("/_authenticated/servicos")({
   head: () => ({
     meta: [
-      { title: "Clínica & Equipe — LivHub" },
-      { name: "description", content: "Gerencie os membros da sua equipe e as permissões da clínica." },
-      { property: "og:title", content: "Clínica & Equipe — LivHub" },
-      { property: "og:description", content: "Gerencie os membros da sua equipe e as permissões da clínica." },
+      { title: "Serviços — LivHub" },
+      { name: "description", content: "Gerencie seus serviços de terapia — ou a equipe, no plano Clínica." },
+      { property: "og:title", content: "Serviços — LivHub" },
+      { property: "og:description", content: "Gerencie seus serviços de terapia — ou a equipe, no plano Clínica." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: ClinicaPage,
+  component: ServicosPage,
 });
 
 /**
  * Nota: Esta é uma implementação inicial da funcionalidade de Equipes/Clínica.
  * Atualmente as tabelas 'tenant_members' e 'invitations' precisam ser criadas via migração.
  */
+
+/** Contas individuais veem apenas seus serviços; clínicas (gestão) veem a equipe. */
+function ServicosPage() {
+  const { isClinic, isLoading } = useAccountType();
+  const { isTenantAdmin, isLoading: roleLoading } = useMyTenantRole();
+  if (isLoading || roleLoading) return null;
+  if (!isClinic || !isTenantAdmin) return <SoloServicesPanel />;
+  return <ClinicaPage />;
+}
 
 function ClinicaPage() {
   const { data: tenant } = useCurrentTenant();

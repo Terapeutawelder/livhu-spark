@@ -77,3 +77,31 @@ export function loginPathFor(accountType: AccountType) {
   if (accountType === "whitelabel") return "/white-label/login" as const;
   return "/auth" as const;
 }
+
+/** Papel do usuário logado dentro do tenant atual (owner/admin/therapist/assistant). */
+export function useMyTenantRole() {
+  const { data: tenant } = useCurrentTenant();
+  const { data: role, isLoading } = useQuery({
+    queryKey: ["my-tenant-role", tenant?.id],
+    enabled: Boolean(tenant?.id),
+    queryFn: async (): Promise<string | null> => {
+      const { data: userRes } = await supabase.auth.getUser();
+      if (!userRes.user || !tenant?.id) return null;
+      const { data } = await supabase
+        .from("tenant_members")
+        .select("role")
+        .eq("tenant_id", tenant.id)
+        .eq("user_id", userRes.user.id)
+        .maybeSingle();
+      return (data?.role as string | undefined) ?? null;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+  const isOwner = tenant?.owner_id != null && role === "owner";
+  return {
+    role: role ?? null,
+    isTenantAdmin: role === "owner" || role === "admin",
+    isOwner,
+    isLoading,
+  };
+}

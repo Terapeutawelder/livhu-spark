@@ -6,6 +6,7 @@ import { ZernioChannelsPanel } from "@/components/zernio-channels-panel";
 import { EvolutionWhatsappPanel } from "@/components/evolution-whatsapp-panel";
 
 import { useEffect, useState, useCallback } from "react";
+import { useAccountType, useMyTenantRole } from "@/hooks/use-tenant";
 import {
   User, Bell, MessageCircle, Cloud, Palette, Shield, KeyRound, Link2, Building2, Check, Copy, Globe, Loader2, ExternalLink, Radio, Zap,
 } from "lucide-react";
@@ -51,6 +52,9 @@ export const Route = createFileRoute("/_authenticated/configuracoes")({
   component: ConfiguracoesPage,
 });
 
+/** Abas de conexão de canais: na clínica ficam restritas à gestão (owner/admin). */
+const CHANNEL_TABS = ["whatsapp-evo", "zernio", "canais", "whatsapp"];
+
 const tabs = [
   { id: "perfil", label: "Perfil", icon: User },
   { id: "consultorio", label: "Consultório", icon: Building2 },
@@ -59,6 +63,7 @@ const tabs = [
   { id: "zernio", label: "Conectar canais", icon: Zap },
   { id: "canais", label: "Canais Omnichannel", icon: Radio },
   { id: "whatsapp", label: "WhatsApp (Meta) — avançado", icon: MessageCircle },
+  
   
   { id: "notificacoes", label: "Notificações", icon: Bell },
   { id: "marca", label: "Marca", icon: Palette },
@@ -74,6 +79,13 @@ function ConfiguracoesPage() {
     ? new URLSearchParams(window.location.search).get("tab") || "perfil"
     : "perfil";
   const [tab, setTab] = useState(initialTab);
+  const { isClinic } = useAccountType();
+  const { isTenantAdmin } = useMyTenantRole();
+
+  // Em contas de clínica, só a gestão conecta canais (a conexão é da clínica, não do profissional).
+  const canManageChannels = !isClinic || isTenantAdmin;
+  const visibleTabs = canManageChannels ? tabs : tabs.filter((t) => !CHANNEL_TABS.includes(t.id));
+  const activeTab = visibleTabs.some((t) => t.id === tab) ? tab : "perfil";
 
   return (
     <div className="flex flex-col gap-4 p-4 lg:p-6">
@@ -85,9 +97,9 @@ function ConfiguracoesPage() {
       <div className="grid gap-4 lg:grid-cols-[240px_1fr]">
         <Card className="p-2">
           <nav className="flex flex-col">
-            {tabs.map((t) => {
+            {visibleTabs.map((t) => {
               const Icon = t.icon;
-              const active = tab === t.id;
+              const active = activeTab === t.id;
               return (
                 <button
                   key={t.id}
@@ -104,19 +116,19 @@ function ConfiguracoesPage() {
         </Card>
 
         <div className="space-y-4">
-          {tab === "perfil" && <PerfilPanel />}
-          {tab === "consultorio" && <ConsultorioPanel />}
-          {tab === "dominio" && <DominioPanel />}
-          {tab === "whatsapp-evo" && <EvolutionWhatsappPanel />}
-          {tab === "zernio" && <ZernioChannelsPanel />}
-          {tab === "canais" && <OmnichannelChannelsPanel onOpenWhatsapp={() => setTab("whatsapp")} />}
-          {tab === "whatsapp" && <WhatsappPanel />}
+          {activeTab === "perfil" && <PerfilPanel />}
+          {activeTab === "consultorio" && <ConsultorioPanel />}
+          {activeTab === "dominio" && <DominioPanel />}
+          {activeTab === "whatsapp-evo" && <EvolutionWhatsappPanel />}
+          {activeTab === "zernio" && <ZernioChannelsPanel />}
+          {activeTab === "canais" && <OmnichannelChannelsPanel onOpenWhatsapp={() => setTab("whatsapp")} />}
+          {activeTab === "whatsapp" && <WhatsappPanel />}
           
-          {tab === "notificacoes" && <NotificacoesPanel />}
-          {tab === "marca" && <MarcaPanel />}
-          {tab === "integracoes" && <IntegracoesPanel />}
-          {tab === "seguranca" && <SegurancaPanel />}
-          {tab === "api" && <ApiPanel />}
+          {activeTab === "notificacoes" && <NotificacoesPanel />}
+          {activeTab === "marca" && <MarcaPanel />}
+          {activeTab === "integracoes" && <IntegracoesPanel />}
+          {activeTab === "seguranca" && <SegurancaPanel />}
+          {activeTab === "api" && <ApiPanel />}
 
         </div>
       </div>
