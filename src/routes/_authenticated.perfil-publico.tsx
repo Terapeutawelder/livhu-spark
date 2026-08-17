@@ -563,6 +563,8 @@ function ContentTab({
         </button>
       </div>
 
+      {template === "clinica" && (
+      <>
       <Divider>Equipe da clínica</Divider>
       <p className="-mt-1 text-[11px] text-muted-foreground">
         Cada profissional aparece com foto e botão “Ver agenda”, que abre a página pública dele (/p/slug) com o
