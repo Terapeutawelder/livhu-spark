@@ -72,8 +72,8 @@ export function useAccountType(): {
 }
 
 /** Tela de login correspondente a cada tipo de plano. */
-export function loginPathFor(accountType: AccountType): string {
-  if (accountType === "clinic") return "/clinica/login";
-  if (accountType === "whitelabel") return "/white-label/login";
-  return "/auth";
+export function loginPathFor(accountType: AccountType) {
+  if (accountType === "clinic") return "/clinica/login" as const;
+  if (accountType === "whitelabel") return "/white-label/login" as const;
+  return "/auth" as const;
 }
