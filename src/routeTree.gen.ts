@@ -38,6 +38,7 @@ import { Route as AuthenticatedServicosRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedSubContasRouteImport } from './routes/_authenticated.sub-contas'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminResetPasswordRouteImport } from './routes/admin.reset-password'
+import { Route as ClinicaLoginRouteImport } from './routes/clinica.login'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as PagamentoRetornoRouteImport } from './routes/pagamento.retorno'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
@@ -213,6 +214,11 @@ const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
   path: '/admin/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClinicaLoginRoute = ClinicaLoginRouteImport.update({
+  id: '/clinica/login',
+  path: '/clinica/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PSlugRoute = PSlugRouteImport.update({
   id: '/p/$slug',
   path: '/p/$slug',
@@ -374,6 +380,7 @@ export interface FileRoutesByFullPath {
   '/sub-contas': typeof AuthenticatedSubContasRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
+  '/clinica/login': typeof ClinicaLoginRoute
   '/p/$slug': typeof PSlugRoute
   '/pagamento/retorno': typeof PagamentoRetornoRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
@@ -425,6 +432,7 @@ export interface FileRoutesByTo {
   '/sub-contas': typeof AuthenticatedSubContasRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
+  '/clinica/login': typeof ClinicaLoginRoute
   '/p/$slug': typeof PSlugRoute
   '/pagamento/retorno': typeof PagamentoRetornoRoute
   '/': typeof AuthenticatedIndexRoute
@@ -480,6 +488,7 @@ export interface FileRoutesById {
   '/_authenticated/sub-contas': typeof AuthenticatedSubContasRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
+  '/clinica/login': typeof ClinicaLoginRoute
   '/p/$slug': typeof PSlugRoute
   '/pagamento/retorno': typeof PagamentoRetornoRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
@@ -536,6 +545,7 @@ export interface FileRouteTypes {
     | '/sub-contas'
     | '/admin/login'
     | '/admin/reset-password'
+    | '/clinica/login'
     | '/p/$slug'
     | '/pagamento/retorno'
     | '/admin/calendario'
@@ -587,6 +597,7 @@ export interface FileRouteTypes {
     | '/sub-contas'
     | '/admin/login'
     | '/admin/reset-password'
+    | '/clinica/login'
     | '/p/$slug'
     | '/pagamento/retorno'
     | '/'
@@ -641,6 +652,7 @@ export interface FileRouteTypes {
     | '/_authenticated/sub-contas'
     | '/admin/login'
     | '/admin/reset-password'
+    | '/clinica/login'
     | '/p/$slug'
     | '/pagamento/retorno'
     | '/_authenticated/'
@@ -676,6 +688,7 @@ export interface RootRouteChildren {
   TermosRoute: typeof TermosRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminResetPasswordRoute: typeof AdminResetPasswordRoute
+  ClinicaLoginRoute: typeof ClinicaLoginRoute
   PSlugRoute: typeof PSlugRoute
   PagamentoRetornoRoute: typeof PagamentoRetornoRoute
   ApiPublicEvolutionWebhookRoute: typeof ApiPublicEvolutionWebhookRoute
@@ -893,6 +906,13 @@ declare module '@tanstack/react-router' {
       path: '/admin/reset-password'
       fullPath: '/admin/reset-password'
       preLoaderRoute: typeof AdminResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clinica/login': {
+      id: '/clinica/login'
+      path: '/clinica/login'
+      fullPath: '/clinica/login'
+      preLoaderRoute: typeof ClinicaLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/p/$slug': {
@@ -1151,6 +1171,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermosRoute: TermosRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminResetPasswordRoute: AdminResetPasswordRoute,
+  ClinicaLoginRoute: ClinicaLoginRoute,
   PSlugRoute: PSlugRoute,
   PagamentoRetornoRoute: PagamentoRetornoRoute,
   ApiPublicEvolutionWebhookRoute: ApiPublicEvolutionWebhookRoute,
