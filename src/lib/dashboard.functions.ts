@@ -128,3 +128,132 @@ export const getDashboardData = createServerFn({ method: "GET" })
       monthlyRevenue: months,
     };
   });
+
+/** Métricas exclusivas do plano Clínica: equipe, sessões e faturamento por profissional. */
+export const getClinicDashboardData = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    const { data: tenantIdRes } = await supabase.rpc("current_tenant_id");
+    const tenantId = tenantIdRes as string | null;
+    if (!tenantId) return { members: [], sessionsByMember: [], totals: { members: 0, sessions30d: 0, revenue30d: 0 }, myRole: null };
+
+    const since = new Date(Date.now() - 30 * 86400000).toISOString();
+    const [{ data: members }, { data: appts }, { data: orders }] = await Promise.all([
+      supabase.from("tenant_members").select("user_id, role, created_at").eq("tenant_id", tenantId),
+      supabase
+        .from("appointments")
+        .select("id, created_by, status, starts_at")
+        .eq("tenant_id", tenantId)
+        .gte("starts_at", since),
+      supabase
+        .from("payment_orders")
+        .select("amount_cents, paid_at")
+        .eq("tenant_id", tenantId)
+        .eq("status", "paid")
+        .gte("paid_at", since),
+    ]);
+
+    const ids = (members ?? []).map((m) => m.user_id);
+    const { data: profiles } = ids.length
+      ? await supabase.from("profiles").select("id, full_name, email, avatar_url").in("id", ids)
+      : { data: [] as { id: string; full_name: string | null; email: string | null; avatar_url: string | null }[] };
+
+    const enriched = (members ?? []).map((m) => {
+      const p = profiles?.find((x) => x.id === m.user_id);
+      const sessions = (appts ?? []).filter((a) => a.created_by === m.user_id);
+      return {
+        user_id: m.user_id,
+        role: m.role as string,
+        name: p?.full_name ?? p?.email ?? "Profissional",
+        email: p?.email ?? "",
+        avatar_url: p?.avatar_url ?? null,
+        sessions: sessions.length,
+        completed: sessions.filter((a) => a.status === "completed").length,
+      };
+    });
+
+    return {
+      members: enriched,
+      sessionsByMember: enriched.map((m) => ({ name: m.name.split(" ")[0], sessoes: m.sessions })),
+      totals: {
+        members: enriched.length,
+        sessions30d: appts?.length ?? 0,
+        revenue30d: (orders ?? []).reduce((s, o) => s + (o.amount_cents ?? 0), 0),
+      },
+      myRole: (members ?? []).find((m) => m.user_id === userId)?.role ?? null,
+    };
+  });
+
+/** Métricas exclusivas do plano White-label: sub-contas revendidas. */
+export const getWhitelabelDashboardData = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase } = context;
+    const { data: children } = await supabase.rpc("get_whitelabel_children");
+    const rows = (children ?? []) as {
+      id: string;
+      name: string;
+      slug: string;
+      plan: string;
+      account_type: string;
+      is_active: boolean;
+      created_at: string;
+      contacts_count: number;
+      members_count: number;
+    }[];
+    return {
+      children: rows,
+      totals: {
+        accounts: rows.length,
+        active: rows.filter((r) => r.is_active).length,
+        contacts: rows.reduce((s, r) => s + (r.contacts_count ?? 0), 0),
+        professionals: rows.reduce((s, r) => s + (r.members_count ?? 0), 0),
+      },
+    };
+  });
+
+/** Cria uma sub-conta vinculada à conta White-label do usuário. */
+export const createWhitelabelSubAccount = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { name: string; slug: string; accountType: "individual" | "clinic" }) => input)
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: tenantIdRes } = await supabase.rpc("current_tenant_id");
+    const parentId = tenantIdRes as string | null;
+    if (!parentId) throw new Error("Conta não encontrada.");
+
+    const { data: parent } = await supabase
+      .from("tenants")
+      .select("id, account_type, owner_id")
+      .eq("id", parentId)
+      .maybeSingle();
+    if (!parent || parent.account_type !== "whitelabel" || parent.owner_id !== userId) {
+      throw new Error("Apenas o titular de uma conta White-label pode criar sub-contas.");
+    }
+
+    const slug = data.slug
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+    if (slug.length < 3) throw new Error("Informe um identificador com ao menos 3 caracteres.");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: created, error } = await supabaseAdmin
+      .from("tenants")
+      .insert({
+        name: data.name,
+        slug,
+        owner_id: userId,
+        parent_tenant_id: parentId,
+        account_type: data.accountType,
+        plan: "trial",
+        trial_ends_at: new Date(Date.now() + 3 * 86400000).toISOString(),
+      })
+      .select("id, name, slug")
+      .single();
+    if (error) throw new Error(error.message);
+    return created;
+  });
