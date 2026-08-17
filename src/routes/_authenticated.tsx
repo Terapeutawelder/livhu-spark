@@ -64,13 +64,13 @@ function AuthenticatedShell() {
 
 function TherapistShell() {
   const { collapsed } = useSidebar();
-  const [tenantName, setTenantName] = useState<string | null>(null);
+  const { data: tenant, isLoading: tenantLoading } = useCurrentTenant();
+  const tenantName = tenant?.name ?? null;
 
-  useEffect(() => {
-    supabase.from('tenants').select('name').single().then(({ data }) => {
-      if (data?.name) setTenantName(data.name);
-    });
-  }, []);
+  if (!tenantLoading && tenant && tenant.is_active === false) {
+    return <SuspendedAccount name={tenant.name} />;
+  }
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
