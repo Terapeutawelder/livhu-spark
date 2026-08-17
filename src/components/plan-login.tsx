@@ -89,7 +89,7 @@ export function PlanLogin({
     <div className="dark grid min-h-svh place-items-center bg-background p-4 text-foreground">
       <div className="w-full max-w-md rounded-2xl border border-border bg-surface p-6 shadow-2xl sm:p-8">
         <div className="mb-6 flex items-center gap-3">
-          <img src={livhubLogo.src} alt="LivHub" width={40} height={40} className="h-10 w-10 object-contain" />
+          <img src={livhubLogo.url} alt="LivHub" width={40} height={40} className="h-10 w-10 object-contain" />
           <span className="inline-flex items-center gap-2 rounded-full bg-gold/10 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-gold">
             <Icon className="h-3.5 w-3.5" /> {badge}
           </span>
