@@ -51,6 +51,9 @@ export const Route = createFileRoute("/_authenticated/configuracoes")({
   component: ConfiguracoesPage,
 });
 
+/** Abas de conexão de canais: na clínica ficam restritas à gestão (owner/admin). */
+const CHANNEL_TABS = ["whatsapp-evo", "zernio", "canais", "whatsapp"];
+
 const tabs = [
   { id: "perfil", label: "Perfil", icon: User },
   { id: "consultorio", label: "Consultório", icon: Building2 },
@@ -59,6 +62,7 @@ const tabs = [
   { id: "zernio", label: "Conectar canais", icon: Zap },
   { id: "canais", label: "Canais Omnichannel", icon: Radio },
   { id: "whatsapp", label: "WhatsApp (Meta) — avançado", icon: MessageCircle },
+  
   
   { id: "notificacoes", label: "Notificações", icon: Bell },
   { id: "marca", label: "Marca", icon: Palette },
