@@ -78,6 +78,13 @@ function ConfiguracoesPage() {
     ? new URLSearchParams(window.location.search).get("tab") || "perfil"
     : "perfil";
   const [tab, setTab] = useState(initialTab);
+  const { isClinic } = useAccountType();
+  const { isTenantAdmin } = useMyTenantRole();
+
+  // Em contas de clínica, só a gestão conecta canais (a conexão é da clínica, não do profissional).
+  const canManageChannels = !isClinic || isTenantAdmin;
+  const visibleTabs = canManageChannels ? tabs : tabs.filter((t) => !CHANNEL_TABS.includes(t.id));
+  const activeTab = visibleTabs.some((t) => t.id === tab) ? tab : "perfil";
 
   return (
     <div className="flex flex-col gap-4 p-4 lg:p-6">
