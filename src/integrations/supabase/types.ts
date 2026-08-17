@@ -2535,7 +2535,12 @@ export type Database = {
         Args: { _tenant_id: string; _user_id: string }
         Returns: boolean
       }
+      is_tenant_owner: {
+        Args: { _tenant_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_tenant_readonly: { Args: { _tenant_id: string }; Returns: boolean }
+      my_managed_tenant_ids: { Args: never; Returns: string[] }
       tenant_role_of: {
         Args: { _tenant_id: string; _user_id: string }
         Returns: Database["public"]["Enums"]["tenant_role"]
