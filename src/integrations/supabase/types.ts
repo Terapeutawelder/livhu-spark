@@ -1735,6 +1735,7 @@ export type Database = {
           messages_used_this_month: number
           name: string
           owner_id: string
+          parent_tenant_id: string | null
           plan: string
           primary_color: string | null
           settings: Json
@@ -1760,6 +1761,7 @@ export type Database = {
           messages_used_this_month?: number
           name: string
           owner_id: string
+          parent_tenant_id?: string | null
           plan?: string
           primary_color?: string | null
           settings?: Json
@@ -1785,6 +1787,7 @@ export type Database = {
           messages_used_this_month?: number
           name?: string
           owner_id?: string
+          parent_tenant_id?: string | null
           plan?: string
           primary_color?: string | null
           settings?: Json
@@ -1795,7 +1798,15 @@ export type Database = {
           updated_at?: string
           usage_reset_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "tenants_parent_tenant_id_fkey"
+            columns: ["parent_tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -2456,6 +2467,7 @@ export type Database = {
         Args: { _reference?: string; _tenant_id: string }
         Returns: boolean
       }
+      current_account_type: { Args: never; Returns: string }
       current_tenant_id: { Args: never; Returns: string }
       enqueue_notification: {
         Args: {
@@ -2492,6 +2504,20 @@ export type Database = {
           plan: string
           tenant_id: string
           trial_ends_at: string
+        }[]
+      }
+      get_whitelabel_children: {
+        Args: never
+        Returns: {
+          account_type: string
+          contacts_count: number
+          created_at: string
+          id: string
+          is_active: boolean
+          members_count: number
+          name: string
+          plan: string
+          slug: string
         }[]
       }
       grant_message_credits: {

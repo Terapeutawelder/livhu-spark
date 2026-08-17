@@ -437,7 +437,7 @@ function LayoutTab({
   onSelect: (id: string) => void;
   sections: ProfileSections;
   onToggle: (k: keyof ProfileSections, v: boolean) => void;
-  accountType: "individual" | "clinic";
+  accountType: "individual" | "clinic" | "whitelabel";
 }) {
   const available = templatesForAccount(accountType);
   return (

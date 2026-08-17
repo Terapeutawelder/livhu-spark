@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode, useMemo } from "react";
 import { Link, useRouterState, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { useAccountType } from "@/hooks/use-tenant";
+import { useAccountType, loginPathFor } from "@/hooks/use-tenant";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import livhubLogo from "@/assets/livhub-logo.png.asset.json";
 import {
@@ -13,6 +13,7 @@ import {
   CalendarDays,
   CalendarClock,
   Building2,
+  Boxes,
   Bell,
   Workflow,
   Megaphone,
@@ -39,6 +40,16 @@ interface NavItem {
 
 const clinicItem: NavItem = { to: "/servicos", label: "Clínica & Equipe", icon: Building2 };
 const soloItem: NavItem = { to: "/servicos", label: "Serviços", icon: Building2 };
+
+/** Navegação do plano White-label: foco em rede, marca e cobrança. */
+const whitelabelItems: NavItem[] = [
+  { to: "/", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/sub-contas", label: "Sub-contas", icon: Boxes },
+  { to: "/perfil-publico", label: "Marca & Landing", icon: Globe },
+  { to: "/pagamentos", label: "Pagamentos", icon: CreditCard },
+  { to: "/planos", label: "Planos", icon: Coins },
+  { to: "/configuracoes", label: "Configurações", icon: Settings },
+];
 
 const items: NavItem[] = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -142,14 +153,15 @@ export function AppSidebar() {
   const { collapsed, mobileOpen, setMobileOpen } = useSidebar();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { isClinic } = useAccountType();
+  const { accountType, isClinic, isWhitelabel } = useAccountType();
 
-  // Plano Clínica ganha o módulo de equipe; plano individual vê apenas Serviços.
+  // Cada tipo de plano tem a sua própria navegação.
   const navItems = useMemo(() => {
+    if (isWhitelabel) return whitelabelItems;
     const list = [...items];
     list.splice(6, 0, isClinic ? clinicItem : soloItem);
     return list;
-  }, [isClinic]);
+  }, [isClinic, isWhitelabel]);
 
   // Close mobile drawer on route change
   useEffect(() => {
@@ -186,7 +198,7 @@ export function AppSidebar() {
     await queryClient.cancelQueries();
     queryClient.clear();
     await supabase.auth.signOut();
-    router.navigate({ to: "/auth", replace: true });
+    router.navigate({ to: loginPathFor(accountType), replace: true });
   }
 
   const desktopWidth = collapsed ? "lg:w-16" : "lg:w-60";

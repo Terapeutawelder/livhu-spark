@@ -262,12 +262,15 @@ export function templateById(id: string): TemplateDef {
   return TEMPLATES.find((t) => t.id === id) ?? TEMPLATES[0];
 }
 
-/** Layouts disponíveis conforme o tipo de conta (profissional x clínica). */
-export function templatesForAccount(accountType: "individual" | "clinic"): TemplateDef[] {
+export type TemplateAudience = "individual" | "clinic" | "whitelabel";
+
+/** Layouts disponíveis conforme o tipo de conta. White-label acessa todos. */
+export function templatesForAccount(accountType: TemplateAudience): TemplateDef[] {
+  if (accountType === "whitelabel") return TEMPLATES;
   return TEMPLATES.filter((t) => t.audience === accountType);
 }
 
-export function defaultTemplateFor(accountType: "individual" | "clinic"): string {
+export function defaultTemplateFor(accountType: TemplateAudience): string {
   return templatesForAccount(accountType)[0]?.id ?? TEMPLATES[0].id;
 }
 

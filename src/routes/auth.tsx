@@ -260,6 +260,24 @@ function AuthPage() {
               )}
             </div>
 
+            {/* Cada plano tem o seu próprio painel e a sua própria porta de entrada. */}
+            <div className="rounded-xl border border-border bg-muted/30 p-3 text-center text-xs text-muted-foreground">
+              <p className="mb-2 font-semibold uppercase tracking-wide text-[10px]">Outros acessos</p>
+              <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+                <Link to="/clinica/login" className="font-semibold text-primary hover:underline">
+                  Clínica
+                </Link>
+                <span className="opacity-40">·</span>
+                <Link to="/white-label/login" className="font-semibold text-primary hover:underline">
+                  White-label
+                </Link>
+                <span className="opacity-40">·</span>
+                <Link to="/admin/login" className="font-semibold text-primary hover:underline">
+                  Super Admin
+                </Link>
+              </div>
+            </div>
+
             <div className="text-center text-xs text-muted-foreground">
               © {new Date().getFullYear()} LivHub
             </div>

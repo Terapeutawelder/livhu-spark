@@ -35,10 +35,13 @@ import { Route as AuthenticatedPerfilPublicoRouteImport } from './routes/_authen
 import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated.planos'
 import { Route as AuthenticatedRemarketingRouteImport } from './routes/_authenticated.remarketing'
 import { Route as AuthenticatedServicosRouteImport } from './routes/_authenticated.servicos'
+import { Route as AuthenticatedSubContasRouteImport } from './routes/_authenticated.sub-contas'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminResetPasswordRouteImport } from './routes/admin.reset-password'
+import { Route as ClinicaLoginRouteImport } from './routes/clinica.login'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as PagamentoRetornoRouteImport } from './routes/pagamento.retorno'
+import { Route as WhiteLabelLoginRouteImport } from './routes/white-label.login'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
 import { Route as AuthenticatedAdminCalendarioRouteImport } from './routes/_authenticated.admin.calendario'
 import { Route as AuthenticatedAdminConfiguracaoRouteImport } from './routes/_authenticated.admin.configuracao'
@@ -197,6 +200,11 @@ const AuthenticatedServicosRoute = AuthenticatedServicosRouteImport.update({
   path: '/servicos',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedSubContasRoute = AuthenticatedSubContasRouteImport.update({
+  id: '/sub-contas',
+  path: '/sub-contas',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
@@ -207,6 +215,11 @@ const AdminResetPasswordRoute = AdminResetPasswordRouteImport.update({
   path: '/admin/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClinicaLoginRoute = ClinicaLoginRouteImport.update({
+  id: '/clinica/login',
+  path: '/clinica/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PSlugRoute = PSlugRouteImport.update({
   id: '/p/$slug',
   path: '/p/$slug',
@@ -215,6 +228,11 @@ const PSlugRoute = PSlugRouteImport.update({
 const PagamentoRetornoRoute = PagamentoRetornoRouteImport.update({
   id: '/pagamento/retorno',
   path: '/pagamento/retorno',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WhiteLabelLoginRoute = WhiteLabelLoginRouteImport.update({
+  id: '/white-label/login',
+  path: '/white-label/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
@@ -365,10 +383,13 @@ export interface FileRoutesByFullPath {
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
   '/servicos': typeof AuthenticatedServicosRoute
+  '/sub-contas': typeof AuthenticatedSubContasRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
+  '/clinica/login': typeof ClinicaLoginRoute
   '/p/$slug': typeof PSlugRoute
   '/pagamento/retorno': typeof PagamentoRetornoRoute
+  '/white-label/login': typeof WhiteLabelLoginRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
   '/admin/dominios': typeof AuthenticatedAdminDominiosRoute
@@ -415,10 +436,13 @@ export interface FileRoutesByTo {
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
   '/servicos': typeof AuthenticatedServicosRoute
+  '/sub-contas': typeof AuthenticatedSubContasRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
+  '/clinica/login': typeof ClinicaLoginRoute
   '/p/$slug': typeof PSlugRoute
   '/pagamento/retorno': typeof PagamentoRetornoRoute
+  '/white-label/login': typeof WhiteLabelLoginRoute
   '/': typeof AuthenticatedIndexRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
@@ -469,10 +493,13 @@ export interface FileRoutesById {
   '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/_authenticated/remarketing': typeof AuthenticatedRemarketingRoute
   '/_authenticated/servicos': typeof AuthenticatedServicosRoute
+  '/_authenticated/sub-contas': typeof AuthenticatedSubContasRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
+  '/clinica/login': typeof ClinicaLoginRoute
   '/p/$slug': typeof PSlugRoute
   '/pagamento/retorno': typeof PagamentoRetornoRoute
+  '/white-label/login': typeof WhiteLabelLoginRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/_authenticated/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
@@ -524,10 +551,13 @@ export interface FileRouteTypes {
     | '/planos'
     | '/remarketing'
     | '/servicos'
+    | '/sub-contas'
     | '/admin/login'
     | '/admin/reset-password'
+    | '/clinica/login'
     | '/p/$slug'
     | '/pagamento/retorno'
+    | '/white-label/login'
     | '/admin/calendario'
     | '/admin/configuracao'
     | '/admin/dominios'
@@ -574,10 +604,13 @@ export interface FileRouteTypes {
     | '/planos'
     | '/remarketing'
     | '/servicos'
+    | '/sub-contas'
     | '/admin/login'
     | '/admin/reset-password'
+    | '/clinica/login'
     | '/p/$slug'
     | '/pagamento/retorno'
+    | '/white-label/login'
     | '/'
     | '/admin/calendario'
     | '/admin/configuracao'
@@ -627,10 +660,13 @@ export interface FileRouteTypes {
     | '/_authenticated/planos'
     | '/_authenticated/remarketing'
     | '/_authenticated/servicos'
+    | '/_authenticated/sub-contas'
     | '/admin/login'
     | '/admin/reset-password'
+    | '/clinica/login'
     | '/p/$slug'
     | '/pagamento/retorno'
+    | '/white-label/login'
     | '/_authenticated/'
     | '/_authenticated/admin/calendario'
     | '/_authenticated/admin/configuracao'
@@ -664,8 +700,10 @@ export interface RootRouteChildren {
   TermosRoute: typeof TermosRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminResetPasswordRoute: typeof AdminResetPasswordRoute
+  ClinicaLoginRoute: typeof ClinicaLoginRoute
   PSlugRoute: typeof PSlugRoute
   PagamentoRetornoRoute: typeof PagamentoRetornoRoute
+  WhiteLabelLoginRoute: typeof WhiteLabelLoginRoute
   ApiPublicEvolutionWebhookRoute: typeof ApiPublicEvolutionWebhookRoute
   ApiPublicHooksNotificationsDispatchRoute: typeof ApiPublicHooksNotificationsDispatchRoute
   ApiPublicMetaDataDeletionRoute: typeof ApiPublicMetaDataDeletionRoute
@@ -862,6 +900,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedServicosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/sub-contas': {
+      id: '/_authenticated/sub-contas'
+      path: '/sub-contas'
+      fullPath: '/sub-contas'
+      preLoaderRoute: typeof AuthenticatedSubContasRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/admin/login'
@@ -876,6 +921,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/clinica/login': {
+      id: '/clinica/login'
+      path: '/clinica/login'
+      fullPath: '/clinica/login'
+      preLoaderRoute: typeof ClinicaLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/p/$slug': {
       id: '/p/$slug'
       path: '/p/$slug'
@@ -888,6 +940,13 @@ declare module '@tanstack/react-router' {
       path: '/pagamento/retorno'
       fullPath: '/pagamento/retorno'
       preLoaderRoute: typeof PagamentoRetornoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/white-label/login': {
+      id: '/white-label/login'
+      path: '/white-label/login'
+      fullPath: '/white-label/login'
+      preLoaderRoute: typeof WhiteLabelLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -1091,6 +1150,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPlanosRoute: typeof AuthenticatedPlanosRoute
   AuthenticatedRemarketingRoute: typeof AuthenticatedRemarketingRoute
   AuthenticatedServicosRoute: typeof AuthenticatedServicosRoute
+  AuthenticatedSubContasRoute: typeof AuthenticatedSubContasRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
@@ -1114,6 +1174,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPlanosRoute: AuthenticatedPlanosRoute,
   AuthenticatedRemarketingRoute: AuthenticatedRemarketingRoute,
   AuthenticatedServicosRoute: AuthenticatedServicosRoute,
+  AuthenticatedSubContasRoute: AuthenticatedSubContasRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
@@ -1130,8 +1191,10 @@ const rootRouteChildren: RootRouteChildren = {
   TermosRoute: TermosRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminResetPasswordRoute: AdminResetPasswordRoute,
+  ClinicaLoginRoute: ClinicaLoginRoute,
   PSlugRoute: PSlugRoute,
   PagamentoRetornoRoute: PagamentoRetornoRoute,
+  WhiteLabelLoginRoute: WhiteLabelLoginRoute,
   ApiPublicEvolutionWebhookRoute: ApiPublicEvolutionWebhookRoute,
   ApiPublicHooksNotificationsDispatchRoute:
     ApiPublicHooksNotificationsDispatchRoute,
