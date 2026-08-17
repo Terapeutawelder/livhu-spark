@@ -14,7 +14,8 @@ import {
   Layout
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useCurrentTenant } from "@/hooks/use-tenant";
+import { useAccountType, useCurrentTenant, useMyTenantRole } from "@/hooks/use-tenant";
+import { SoloServicesPanel } from "@/components/solo-services-panel";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -48,13 +49,22 @@ export const Route = createFileRoute("/_authenticated/servicos")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: ClinicaPage,
+  component: ServicosPage,
 });
 
 /**
  * Nota: Esta é uma implementação inicial da funcionalidade de Equipes/Clínica.
  * Atualmente as tabelas 'tenant_members' e 'invitations' precisam ser criadas via migração.
  */
+
+/** Contas individuais veem apenas seus serviços; clínicas (gestão) veem a equipe. */
+function ServicosPage() {
+  const { isClinic, isLoading } = useAccountType();
+  const { isTenantAdmin, isLoading: roleLoading } = useMyTenantRole();
+  if (isLoading || roleLoading) return null;
+  if (!isClinic || !isTenantAdmin) return <SoloServicesPanel />;
+  return <ClinicaPage />;
+}
 
 function ClinicaPage() {
   const { data: tenant } = useCurrentTenant();
