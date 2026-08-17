@@ -35,6 +35,7 @@ import { Route as AuthenticatedPerfilPublicoRouteImport } from './routes/_authen
 import { Route as AuthenticatedPlanosRouteImport } from './routes/_authenticated.planos'
 import { Route as AuthenticatedRemarketingRouteImport } from './routes/_authenticated.remarketing'
 import { Route as AuthenticatedServicosRouteImport } from './routes/_authenticated.servicos'
+import { Route as AuthenticatedSubContasRouteImport } from './routes/_authenticated.sub-contas'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminResetPasswordRouteImport } from './routes/admin.reset-password'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
@@ -195,6 +196,11 @@ const AuthenticatedRemarketingRoute =
 const AuthenticatedServicosRoute = AuthenticatedServicosRouteImport.update({
   id: '/servicos',
   path: '/servicos',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedSubContasRoute = AuthenticatedSubContasRouteImport.update({
+  id: '/sub-contas',
+  path: '/sub-contas',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
@@ -365,6 +371,7 @@ export interface FileRoutesByFullPath {
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
   '/servicos': typeof AuthenticatedServicosRoute
+  '/sub-contas': typeof AuthenticatedSubContasRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
   '/p/$slug': typeof PSlugRoute
@@ -415,6 +422,7 @@ export interface FileRoutesByTo {
   '/planos': typeof AuthenticatedPlanosRoute
   '/remarketing': typeof AuthenticatedRemarketingRoute
   '/servicos': typeof AuthenticatedServicosRoute
+  '/sub-contas': typeof AuthenticatedSubContasRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
   '/p/$slug': typeof PSlugRoute
@@ -469,6 +477,7 @@ export interface FileRoutesById {
   '/_authenticated/planos': typeof AuthenticatedPlanosRoute
   '/_authenticated/remarketing': typeof AuthenticatedRemarketingRoute
   '/_authenticated/servicos': typeof AuthenticatedServicosRoute
+  '/_authenticated/sub-contas': typeof AuthenticatedSubContasRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/reset-password': typeof AdminResetPasswordRoute
   '/p/$slug': typeof PSlugRoute
@@ -524,6 +533,7 @@ export interface FileRouteTypes {
     | '/planos'
     | '/remarketing'
     | '/servicos'
+    | '/sub-contas'
     | '/admin/login'
     | '/admin/reset-password'
     | '/p/$slug'
@@ -574,6 +584,7 @@ export interface FileRouteTypes {
     | '/planos'
     | '/remarketing'
     | '/servicos'
+    | '/sub-contas'
     | '/admin/login'
     | '/admin/reset-password'
     | '/p/$slug'
@@ -627,6 +638,7 @@ export interface FileRouteTypes {
     | '/_authenticated/planos'
     | '/_authenticated/remarketing'
     | '/_authenticated/servicos'
+    | '/_authenticated/sub-contas'
     | '/admin/login'
     | '/admin/reset-password'
     | '/p/$slug'
@@ -862,6 +874,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedServicosRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/sub-contas': {
+      id: '/_authenticated/sub-contas'
+      path: '/sub-contas'
+      fullPath: '/sub-contas'
+      preLoaderRoute: typeof AuthenticatedSubContasRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/admin/login'
@@ -1091,6 +1110,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPlanosRoute: typeof AuthenticatedPlanosRoute
   AuthenticatedRemarketingRoute: typeof AuthenticatedRemarketingRoute
   AuthenticatedServicosRoute: typeof AuthenticatedServicosRoute
+  AuthenticatedSubContasRoute: typeof AuthenticatedSubContasRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
@@ -1114,6 +1134,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPlanosRoute: AuthenticatedPlanosRoute,
   AuthenticatedRemarketingRoute: AuthenticatedRemarketingRoute,
   AuthenticatedServicosRoute: AuthenticatedServicosRoute,
+  AuthenticatedSubContasRoute: AuthenticatedSubContasRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
