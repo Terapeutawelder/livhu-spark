@@ -86,8 +86,8 @@ function AdminLoginPage() {
   }
 
   return (
-    <div className="flex min-h-svh items-center justify-center bg-sidebar p-4 text-sidebar-foreground">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-black/40 p-8 shadow-2xl backdrop-blur">
+    <div className="dark flex min-h-svh items-center justify-center bg-[oklch(0.11_0.008_80)] p-4 text-white">
+      <div className="w-full max-w-md rounded-2xl border border-gold/25 bg-[oklch(0.16_0.01_80)] p-8 shadow-[0_30px_80px_-30px_rgba(0,0,0,0.9)]">
         <div className="mb-6 flex items-center gap-3">
           <div className="grid h-11 w-11 place-items-center rounded-xl bg-gold text-sidebar-active-foreground">
             <ShieldCheck className="h-5 w-5" />
@@ -103,7 +103,7 @@ function AdminLoginPage() {
         <h1 className="font-display text-2xl font-bold tracking-tight text-white">
           {mode === "login" ? "Acesso restrito" : "Recuperar senha"}
         </h1>
-        <p className="mt-1 text-sm text-sidebar-muted">
+        <p className="mt-1 text-sm text-white/60">
           {mode === "login"
             ? "Este console é exclusivo para administradores da plataforma. Psicoterapeutas devem entrar pela página principal."
             : "Informe o e-mail administrativo. Você receberá um link seguro para redefinir a senha."}
@@ -114,7 +114,7 @@ function AdminLoginPage() {
             {mode === "login" ? "Acesso restrito - Super Admin" : "Recuperar senha de Super Admin"}
           </h1>
           <div className="space-y-1">
-            <label htmlFor="admin-email" className="text-xs font-medium text-sidebar-muted">E-mail administrativo</label>
+            <label htmlFor="admin-email" className="text-xs font-medium text-white/60">E-mail administrativo</label>
             <input
               id="admin-email"
               type="email"
@@ -122,12 +122,12 @@ function AdminLoginPage() {
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="email"
-              className="h-10 w-full rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-white placeholder:text-sidebar-muted focus:border-gold/40 focus:outline-none focus:ring-2 focus:ring-gold/30"
+              className="h-10 w-full rounded-lg border border-white/10 bg-black/40 px-3 text-sm text-white placeholder:text-white/60 focus:border-gold/40 focus:outline-none focus:ring-2 focus:ring-gold/30"
             />
           </div>
           {mode === "login" && (
             <div className="space-y-1">
-              <label htmlFor="admin-password" className="text-xs font-medium text-sidebar-muted">Senha</label>
+              <label htmlFor="admin-password" className="text-xs font-medium text-white/60">Senha</label>
               <input
                 id="admin-password"
                 type="password"
@@ -136,7 +136,7 @@ function AdminLoginPage() {
                 required
                 minLength={6}
                 autoComplete="current-password"
-                className="h-10 w-full rounded-lg border border-white/10 bg-white/5 px-3 text-sm text-white focus:border-gold/40 focus:outline-none focus:ring-2 focus:ring-gold/30"
+                className="h-10 w-full rounded-lg border border-white/10 bg-black/40 px-3 text-sm text-white focus:border-gold/40 focus:outline-none focus:ring-2 focus:ring-gold/30"
               />
             </div>
           )}
@@ -155,7 +155,7 @@ function AdminLoginPage() {
           </button>
         </form>
 
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-2 text-xs text-sidebar-muted">
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-2 text-xs text-white/60">
           {mode === "login" ? (
             <>
               <Link to="/auth" className="hover:text-white">

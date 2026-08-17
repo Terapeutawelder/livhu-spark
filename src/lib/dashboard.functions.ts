@@ -257,3 +257,78 @@ export const createWhitelabelSubAccount = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return created;
   });
+
+/** Atualiza os dados de uma sub-conta da rede White-label. */
+export const updateWhitelabelSubAccount = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator(
+    (input: {
+      id: string;
+      name: string;
+      slug: string;
+      accountType: "individual" | "clinic";
+      plan?: string;
+    }) => input,
+  )
+  .handler(async ({ data, context }) => {
+    const { assertWhitelabelParent, assertOwnsSubAccount, normalizeSlug } = await import(
+      "@/lib/whitelabel.server"
+    );
+    const parentId = await assertWhitelabelParent(context.supabase, context.userId);
+    await assertOwnsSubAccount(context.supabase, parentId, data.id);
+
+    const slug = normalizeSlug(data.slug);
+    if (!data.name.trim()) throw new Error("Informe o nome da conta.");
+    if (slug.length < 3) throw new Error("Informe um identificador com ao menos 3 caracteres.");
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
+      .from("tenants")
+      .update({
+        name: data.name.trim(),
+        slug,
+        account_type: data.accountType,
+        ...(data.plan ? { plan: data.plan } : {}),
+      })
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+/** Suspende ou reativa uma sub-conta (bloqueia o acesso ao painel). */
+export const setWhitelabelSubAccountActive = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { id: string; isActive: boolean }) => input)
+  .handler(async ({ data, context }) => {
+    const { assertWhitelabelParent, assertOwnsSubAccount } = await import("@/lib/whitelabel.server");
+    const parentId = await assertWhitelabelParent(context.supabase, context.userId);
+    await assertOwnsSubAccount(context.supabase, parentId, data.id);
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
+      .from("tenants")
+      .update({ is_active: data.isActive })
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+/** Remove definitivamente uma sub-conta e os vínculos da equipe. */
+export const deleteWhitelabelSubAccount = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { id: string }) => input)
+  .handler(async ({ data, context }) => {
+    const { assertWhitelabelParent, assertOwnsSubAccount } = await import("@/lib/whitelabel.server");
+    const parentId = await assertWhitelabelParent(context.supabase, context.userId);
+    await assertOwnsSubAccount(context.supabase, parentId, data.id);
+
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await supabaseAdmin.from("tenant_members").delete().eq("tenant_id", data.id);
+    const { error } = await supabaseAdmin.from("tenants").delete().eq("id", data.id);
+    if (error) {
+      throw new Error(
+        "Não foi possível remover: a conta já possui dados vinculados. Suspenda a conta em vez de removê-la.",
+      );
+    }
+    return { ok: true };
+  });

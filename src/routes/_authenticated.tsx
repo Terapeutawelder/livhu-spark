@@ -5,9 +5,12 @@ import { NotificationBell } from "@/components/notification-bell";
 import { Search } from "lucide-react";
 import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useCurrentTenant } from "@/hooks/use-tenant";
+import { SuspendedAccount } from "@/components/suspended-account";
 import { provisionZernioProfile } from "@/lib/zernio.functions";
+
 
 /** Garante o cadastro do consultório na Zernio (POST /v1/profiles) uma vez por sessão. */
 function useZernioProvisioning(enabled: boolean) {
@@ -64,13 +67,13 @@ function AuthenticatedShell() {
 
 function TherapistShell() {
   const { collapsed } = useSidebar();
-  const [tenantName, setTenantName] = useState<string | null>(null);
+  const { data: tenant, isLoading: tenantLoading } = useCurrentTenant();
+  const tenantName = tenant?.name ?? null;
 
-  useEffect(() => {
-    supabase.from('tenants').select('name').single().then(({ data }) => {
-      if (data?.name) setTenantName(data.name);
-    });
-  }, []);
+  if (!tenantLoading && tenant && tenant.is_active === false) {
+    return <SuspendedAccount name={tenant.name} />;
+  }
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
