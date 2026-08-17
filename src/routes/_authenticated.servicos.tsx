@@ -41,10 +41,10 @@ import {
 export const Route = createFileRoute("/_authenticated/servicos")({
   head: () => ({
     meta: [
-      { title: "Clínica & Equipe — LivHub" },
-      { name: "description", content: "Gerencie os membros da sua equipe e as permissões da clínica." },
-      { property: "og:title", content: "Clínica & Equipe — LivHub" },
-      { property: "og:description", content: "Gerencie os membros da sua equipe e as permissões da clínica." },
+      { title: "Serviços — LivHub" },
+      { name: "description", content: "Gerencie seus serviços de terapia — ou a equipe, no plano Clínica." },
+      { property: "og:title", content: "Serviços — LivHub" },
+      { property: "og:description", content: "Gerencie seus serviços de terapia — ou a equipe, no plano Clínica." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
