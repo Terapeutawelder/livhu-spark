@@ -5,9 +5,12 @@ import { NotificationBell } from "@/components/notification-bell";
 import { Search } from "lucide-react";
 import { createFileRoute, Outlet, redirect, useRouterState } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useCurrentTenant } from "@/hooks/use-tenant";
+import { SuspendedAccount } from "@/components/suspended-account";
 import { provisionZernioProfile } from "@/lib/zernio.functions";
+
 
 /** Garante o cadastro do consultório na Zernio (POST /v1/profiles) uma vez por sessão. */
 function useZernioProvisioning(enabled: boolean) {
