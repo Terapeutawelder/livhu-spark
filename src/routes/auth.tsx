@@ -57,7 +57,7 @@ function AuthPage() {
           email,
           password,
           options: {
-            emailRedirectTo: window.location.origin,
+            emailRedirectTo: absoluteRedirect(redirectTo),
             data: { full_name: fullName },
           },
         });
