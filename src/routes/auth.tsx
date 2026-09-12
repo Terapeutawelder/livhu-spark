@@ -13,6 +13,12 @@ export const Route = createFileRoute("/auth")({
 
 type Mode = "login" | "signup" | "forgot";
 
+/** Converte um caminho interno em URL absoluta da mesma origem. */
+function absoluteRedirect(path: string) {
+  if (!path.startsWith("/") || path.startsWith("//")) return window.location.origin;
+  return `${window.location.origin}${path}`;
+}
+
 function AuthPage() {
   const navigate = useNavigate();
   const search = useRouterState({ select: (s) => s.location.search }) as {
@@ -28,13 +34,18 @@ function AuthPage() {
 
   // If already signed in, bounce out
   useEffect(() => {
+    const target = redirectTo || "/";
+    const go = () => {
+      // Paths carrying a query string (ex.: tela de autorização) precisam de
+      // navegação por URL completa.
+      if (target.includes("?")) window.location.replace(target);
+      else navigate({ to: target, replace: true });
+    };
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: redirectTo || "/", replace: true });
+      if (data.session) go();
     });
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" && session) {
-        navigate({ to: redirectTo || "/", replace: true });
-      }
+      if (event === "SIGNED_IN" && session) go();
     });
     return () => sub.subscription.unsubscribe();
   }, [navigate, redirectTo]);
@@ -52,7 +63,7 @@ function AuthPage() {
           email,
           password,
           options: {
-            emailRedirectTo: window.location.origin,
+            emailRedirectTo: absoluteRedirect(redirectTo),
             data: { full_name: fullName },
           },
         });
@@ -77,7 +88,7 @@ function AuthPage() {
     setLoading(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+        redirect_uri: absoluteRedirect(redirectTo),
       });
       if (result.error) {
         toast.error(translateAuthError(result.error));

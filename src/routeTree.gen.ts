@@ -12,9 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ExclusaoDeDadosRouteImport } from './routes/exclusao-de-dados'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermosRouteImport } from './routes/termos'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated.index'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as AuthenticatedAgendamentoRouteImport } from './routes/_authenticated.agendamento'
@@ -42,6 +44,7 @@ import { Route as ClinicaLoginRouteImport } from './routes/clinica.login'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as PagamentoRetornoRouteImport } from './routes/pagamento.retorno'
 import { Route as WhiteLabelLoginRouteImport } from './routes/white-label.login'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
 import { Route as AuthenticatedAdminCalendarioRouteImport } from './routes/_authenticated.admin.calendario'
 import { Route as AuthenticatedAdminConfiguracaoRouteImport } from './routes/_authenticated.admin.configuracao'
@@ -79,6 +82,11 @@ const ExclusaoDeDadosRoute = ExclusaoDeDadosRouteImport.update({
   path: '/exclusao-de-dados',
   getParentRoute: () => rootRouteImport,
 } as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacidadeRoute = PrivacidadeRouteImport.update({
   id: '/privacidade',
   path: '/privacidade',
@@ -94,6 +102,12 @@ const TermosRoute = TermosRouteImport.update({
   path: '/termos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -236,6 +250,11 @@ const WhiteLabelLoginRoute = WhiteLabelLoginRouteImport.update({
   path: '/white-label/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -367,9 +386,11 @@ export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/auth': typeof AuthRoute
   '/exclusao-de-dados': typeof ExclusaoDeDadosRoute
+  '/mcp': typeof McpRoute
   '/privacidade': typeof PrivacidadeRoute
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/agendamento': typeof AuthenticatedAgendamentoRoute
   '/agentes': typeof AuthenticatedAgentesRoute
@@ -396,6 +417,7 @@ export interface FileRoutesByFullPath {
   '/p/$slug': typeof PSlugRoute
   '/pagamento/retorno': typeof PagamentoRetornoRoute
   '/white-label/login': typeof WhiteLabelLoginRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
   '/admin/dados': typeof AuthenticatedAdminDadosRoute
@@ -422,9 +444,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/exclusao-de-dados': typeof ExclusaoDeDadosRoute
+  '/mcp': typeof McpRoute
   '/privacidade': typeof PrivacidadeRoute
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/agendamento': typeof AuthenticatedAgendamentoRoute
   '/agentes': typeof AuthenticatedAgentesRoute
   '/calendario': typeof AuthenticatedCalendarioRoute
@@ -451,6 +475,7 @@ export interface FileRoutesByTo {
   '/pagamento/retorno': typeof PagamentoRetornoRoute
   '/white-label/login': typeof WhiteLabelLoginRoute
   '/': typeof AuthenticatedIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
   '/admin/dados': typeof AuthenticatedAdminDadosRoute
@@ -479,9 +504,11 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
   '/exclusao-de-dados': typeof ExclusaoDeDadosRoute
+  '/mcp': typeof McpRoute
   '/privacidade': typeof PrivacidadeRoute
   '/reset-password': typeof ResetPasswordRoute
   '/termos': typeof TermosRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/agendamento': typeof AuthenticatedAgendamentoRoute
   '/_authenticated/agentes': typeof AuthenticatedAgentesRoute
@@ -509,6 +536,7 @@ export interface FileRoutesById {
   '/pagamento/retorno': typeof PagamentoRetornoRoute
   '/white-label/login': typeof WhiteLabelLoginRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/_authenticated/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/_authenticated/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
   '/_authenticated/admin/dados': typeof AuthenticatedAdminDadosRoute
@@ -538,9 +566,11 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/exclusao-de-dados'
+    | '/mcp'
     | '/privacidade'
     | '/reset-password'
     | '/termos'
+    | '/.well-known/oauth-protected-resource'
     | '/admin'
     | '/agendamento'
     | '/agentes'
@@ -567,6 +597,7 @@ export interface FileRouteTypes {
     | '/p/$slug'
     | '/pagamento/retorno'
     | '/white-label/login'
+    | '/.lovable/oauth/consent'
     | '/admin/calendario'
     | '/admin/configuracao'
     | '/admin/dados'
@@ -593,9 +624,11 @@ export interface FileRouteTypes {
   to:
     | '/auth'
     | '/exclusao-de-dados'
+    | '/mcp'
     | '/privacidade'
     | '/reset-password'
     | '/termos'
+    | '/.well-known/oauth-protected-resource'
     | '/agendamento'
     | '/agentes'
     | '/calendario'
@@ -622,6 +655,7 @@ export interface FileRouteTypes {
     | '/pagamento/retorno'
     | '/white-label/login'
     | '/'
+    | '/.lovable/oauth/consent'
     | '/admin/calendario'
     | '/admin/configuracao'
     | '/admin/dados'
@@ -649,9 +683,11 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/exclusao-de-dados'
+    | '/mcp'
     | '/privacidade'
     | '/reset-password'
     | '/termos'
+    | '/.well-known/oauth-protected-resource'
     | '/_authenticated/admin'
     | '/_authenticated/agendamento'
     | '/_authenticated/agentes'
@@ -679,6 +715,7 @@ export interface FileRouteTypes {
     | '/pagamento/retorno'
     | '/white-label/login'
     | '/_authenticated/'
+    | '/.lovable/oauth/consent'
     | '/_authenticated/admin/calendario'
     | '/_authenticated/admin/configuracao'
     | '/_authenticated/admin/dados'
@@ -707,15 +744,18 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
   ExclusaoDeDadosRoute: typeof ExclusaoDeDadosRoute
+  McpRoute: typeof McpRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   TermosRoute: typeof TermosRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminResetPasswordRoute: typeof AdminResetPasswordRoute
   ClinicaLoginRoute: typeof ClinicaLoginRoute
   PSlugRoute: typeof PSlugRoute
   PagamentoRetornoRoute: typeof PagamentoRetornoRoute
   WhiteLabelLoginRoute: typeof WhiteLabelLoginRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   ApiPublicEvolutionWebhookRoute: typeof ApiPublicEvolutionWebhookRoute
   ApiPublicHooksNotificationsDispatchRoute: typeof ApiPublicHooksNotificationsDispatchRoute
   ApiPublicMetaDataDeletionRoute: typeof ApiPublicMetaDataDeletionRoute
@@ -751,6 +791,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExclusaoDeDadosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacidade': {
       id: '/privacidade'
       path: '/privacidade'
@@ -770,6 +817,13 @@ declare module '@tanstack/react-router' {
       path: '/termos'
       fullPath: '/termos'
       preLoaderRoute: typeof TermosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/': {
@@ -959,6 +1013,13 @@ declare module '@tanstack/react-router' {
       path: '/white-label/login'
       fullPath: '/white-label/login'
       preLoaderRoute: typeof WhiteLabelLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -1207,15 +1268,19 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
   ExclusaoDeDadosRoute: ExclusaoDeDadosRoute,
+  McpRoute: McpRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   TermosRoute: TermosRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminResetPasswordRoute: AdminResetPasswordRoute,
   ClinicaLoginRoute: ClinicaLoginRoute,
   PSlugRoute: PSlugRoute,
   PagamentoRetornoRoute: PagamentoRetornoRoute,
   WhiteLabelLoginRoute: WhiteLabelLoginRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   ApiPublicEvolutionWebhookRoute: ApiPublicEvolutionWebhookRoute,
   ApiPublicHooksNotificationsDispatchRoute:
     ApiPublicHooksNotificationsDispatchRoute,
