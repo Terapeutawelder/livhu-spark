@@ -46,10 +46,7 @@ const PUBLIC_TABLES = [
   "zernio_profiles",
 ];
 
-async function assertSuperAdmin(context: {
-  supabase: ReturnType<typeof import("@/integrations/supabase/client").createClient>;
-  userId: string;
-}) {
+async function assertSuperAdmin(context: { supabase: any; userId: string }) {
   const { data } = await context.supabase
     .from("user_roles")
     .select("role")
@@ -59,16 +56,13 @@ async function assertSuperAdmin(context: {
   if (!data) throw new Error("Apenas super admins podem exportar dados.");
 }
 
-async function fetchTable(
-  supabaseAdmin: ReturnType<typeof import("@/integrations/supabase/client.server").supabaseAdmin>,
-  table: string,
-) {
+async function fetchTable(supabaseAdmin: any, table: string) {
   const { data, error } = await supabaseAdmin.from(table).select("*");
   if (error) throw new Error(`Erro ao ler ${table}: ${error.message}`);
-  return data ?? [];
+  return (data ?? []) as any[];
 }
 
-function belongsToTenant(row: Record<string, unknown>, tenantId: string): boolean {
+function belongsToTenant(row: Record<string, any>, tenantId: string): boolean {
   if (row.tenant_id === tenantId) return true;
   if (row.id === tenantId) return true;
   if (row.owner_id === tenantId) return true;
@@ -81,7 +75,7 @@ export const exportAllData = createServerFn({ method: "POST" })
     await assertSuperAdmin(context as { supabase: any; userId: string });
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const result: Record<string, unknown[]> = {};
+    const result: Record<string, any[]> = {};
     for (const table of PUBLIC_TABLES) {
       result[table] = await fetchTable(supabaseAdmin, table);
     }
@@ -90,7 +84,7 @@ export const exportAllData = createServerFn({ method: "POST" })
       exported_at: new Date().toISOString(),
       schema: "public",
       tables: result,
-    };
+    } as any;
   });
 
 export const exportTenantData = createServerFn({ method: "POST" })
@@ -101,21 +95,20 @@ export const exportTenantData = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { tenantId } = data;
-    const result: Record<string, unknown[]> = {};
+    const result: Record<string, any[]> = {};
 
-    // Busca membros para incluir profiles relacionados
     const { data: members } = await supabaseAdmin
       .from("tenant_members")
       .select("user_id")
       .eq("tenant_id", tenantId);
-    const memberIds = new Set((members ?? []).map((m) => m.user_id));
+    const memberIds = new Set((members ?? []).map((m: any) => m.user_id));
 
     for (const table of PUBLIC_TABLES) {
       const rows = await fetchTable(supabaseAdmin, table);
       if (table === "profiles") {
-        result[table] = rows.filter((r) => memberIds.has((r as { id: string }).id));
+        result[table] = rows.filter((r: any) => memberIds.has(r.id));
       } else {
-        result[table] = rows.filter((r) => belongsToTenant(r as Record<string, unknown>, tenantId));
+        result[table] = rows.filter((r: any) => belongsToTenant(r, tenantId));
       }
     }
 
@@ -124,5 +117,5 @@ export const exportTenantData = createServerFn({ method: "POST" })
       schema: "public",
       tenant_id: tenantId,
       tables: result,
-    };
+    } as any;
   });
