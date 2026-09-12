@@ -13,6 +13,12 @@ export const Route = createFileRoute("/auth")({
 
 type Mode = "login" | "signup" | "forgot";
 
+/** Converte um caminho interno em URL absoluta da mesma origem. */
+function absoluteRedirect(path: string) {
+  if (!path.startsWith("/") || path.startsWith("//")) return window.location.origin;
+  return `${window.location.origin}${path}`;
+}
+
 function AuthPage() {
   const navigate = useNavigate();
   const search = useRouterState({ select: (s) => s.location.search }) as {
