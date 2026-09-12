@@ -19,6 +19,7 @@ import {
   Globe,
   Menu,
   X,
+  Database,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
