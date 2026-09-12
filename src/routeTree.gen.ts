@@ -42,6 +42,7 @@ import { Route as ClinicaLoginRouteImport } from './routes/clinica.login'
 import { Route as PSlugRouteImport } from './routes/p.$slug'
 import { Route as PagamentoRetornoRouteImport } from './routes/pagamento.retorno'
 import { Route as WhiteLabelLoginRouteImport } from './routes/white-label.login'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated.admin.index'
 import { Route as AuthenticatedAdminCalendarioRouteImport } from './routes/_authenticated.admin.calendario'
 import { Route as AuthenticatedAdminConfiguracaoRouteImport } from './routes/_authenticated.admin.configuracao'
@@ -236,6 +237,11 @@ const WhiteLabelLoginRoute = WhiteLabelLoginRouteImport.update({
   path: '/white-label/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -396,6 +402,7 @@ export interface FileRoutesByFullPath {
   '/p/$slug': typeof PSlugRoute
   '/pagamento/retorno': typeof PagamentoRetornoRoute
   '/white-label/login': typeof WhiteLabelLoginRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
   '/admin/dados': typeof AuthenticatedAdminDadosRoute
@@ -451,6 +458,7 @@ export interface FileRoutesByTo {
   '/pagamento/retorno': typeof PagamentoRetornoRoute
   '/white-label/login': typeof WhiteLabelLoginRoute
   '/': typeof AuthenticatedIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
   '/admin/dados': typeof AuthenticatedAdminDadosRoute
@@ -509,6 +517,7 @@ export interface FileRoutesById {
   '/pagamento/retorno': typeof PagamentoRetornoRoute
   '/white-label/login': typeof WhiteLabelLoginRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/_authenticated/admin/calendario': typeof AuthenticatedAdminCalendarioRoute
   '/_authenticated/admin/configuracao': typeof AuthenticatedAdminConfiguracaoRoute
   '/_authenticated/admin/dados': typeof AuthenticatedAdminDadosRoute
@@ -567,6 +576,7 @@ export interface FileRouteTypes {
     | '/p/$slug'
     | '/pagamento/retorno'
     | '/white-label/login'
+    | '/.lovable/oauth/consent'
     | '/admin/calendario'
     | '/admin/configuracao'
     | '/admin/dados'
@@ -622,6 +632,7 @@ export interface FileRouteTypes {
     | '/pagamento/retorno'
     | '/white-label/login'
     | '/'
+    | '/.lovable/oauth/consent'
     | '/admin/calendario'
     | '/admin/configuracao'
     | '/admin/dados'
@@ -679,6 +690,7 @@ export interface FileRouteTypes {
     | '/pagamento/retorno'
     | '/white-label/login'
     | '/_authenticated/'
+    | '/.lovable/oauth/consent'
     | '/_authenticated/admin/calendario'
     | '/_authenticated/admin/configuracao'
     | '/_authenticated/admin/dados'
@@ -716,6 +728,7 @@ export interface RootRouteChildren {
   PSlugRoute: typeof PSlugRoute
   PagamentoRetornoRoute: typeof PagamentoRetornoRoute
   WhiteLabelLoginRoute: typeof WhiteLabelLoginRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   ApiPublicEvolutionWebhookRoute: typeof ApiPublicEvolutionWebhookRoute
   ApiPublicHooksNotificationsDispatchRoute: typeof ApiPublicHooksNotificationsDispatchRoute
   ApiPublicMetaDataDeletionRoute: typeof ApiPublicMetaDataDeletionRoute
@@ -959,6 +972,13 @@ declare module '@tanstack/react-router' {
       path: '/white-label/login'
       fullPath: '/white-label/login'
       preLoaderRoute: typeof WhiteLabelLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
@@ -1216,6 +1236,7 @@ const rootRouteChildren: RootRouteChildren = {
   PSlugRoute: PSlugRoute,
   PagamentoRetornoRoute: PagamentoRetornoRoute,
   WhiteLabelLoginRoute: WhiteLabelLoginRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   ApiPublicEvolutionWebhookRoute: ApiPublicEvolutionWebhookRoute,
   ApiPublicHooksNotificationsDispatchRoute:
     ApiPublicHooksNotificationsDispatchRoute,
