@@ -82,7 +82,7 @@ function AuthPage() {
     setLoading(true);
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+        redirect_uri: absoluteRedirect(redirectTo),
       });
       if (result.error) {
         toast.error(translateAuthError(result.error));
