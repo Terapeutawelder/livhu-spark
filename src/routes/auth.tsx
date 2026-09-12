@@ -28,13 +28,18 @@ function AuthPage() {
 
   // If already signed in, bounce out
   useEffect(() => {
+    const target = redirectTo || "/";
+    const go = () => {
+      // Paths carrying a query string (ex.: tela de autorização) precisam de
+      // navegação por URL completa.
+      if (target.includes("?")) window.location.replace(target);
+      else navigate({ to: target, replace: true });
+    };
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: redirectTo || "/", replace: true });
+      if (data.session) go();
     });
     const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" && session) {
-        navigate({ to: redirectTo || "/", replace: true });
-      }
+      if (event === "SIGNED_IN" && session) go();
     });
     return () => sub.subscription.unsubscribe();
   }, [navigate, redirectTo]);
