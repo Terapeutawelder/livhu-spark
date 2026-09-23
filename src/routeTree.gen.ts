@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ConectarRouteImport } from './routes/conectar'
 import { Route as ExclusaoDeDadosRouteImport } from './routes/exclusao-de-dados'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
@@ -75,6 +76,11 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConectarRoute = ConectarRouteImport.update({
+  id: '/conectar',
+  path: '/conectar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExclusaoDeDadosRoute = ExclusaoDeDadosRouteImport.update({
@@ -385,6 +391,7 @@ const ApiPublicPerfilImgSplatRoute = ApiPublicPerfilImgSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/auth': typeof AuthRoute
+  '/conectar': typeof ConectarRoute
   '/exclusao-de-dados': typeof ExclusaoDeDadosRoute
   '/mcp': typeof McpRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -443,6 +450,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
+  '/conectar': typeof ConectarRoute
   '/exclusao-de-dados': typeof ExclusaoDeDadosRoute
   '/mcp': typeof McpRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -503,6 +511,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
+  '/conectar': typeof ConectarRoute
   '/exclusao-de-dados': typeof ExclusaoDeDadosRoute
   '/mcp': typeof McpRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -565,6 +574,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/conectar'
     | '/exclusao-de-dados'
     | '/mcp'
     | '/privacidade'
@@ -623,6 +633,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth'
+    | '/conectar'
     | '/exclusao-de-dados'
     | '/mcp'
     | '/privacidade'
@@ -682,6 +693,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_authenticated'
     | '/auth'
+    | '/conectar'
     | '/exclusao-de-dados'
     | '/mcp'
     | '/privacidade'
@@ -743,6 +755,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ConectarRoute: typeof ConectarRoute
   ExclusaoDeDadosRoute: typeof ExclusaoDeDadosRoute
   McpRoute: typeof McpRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
@@ -782,6 +795,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conectar': {
+      id: '/conectar'
+      path: '/conectar'
+      fullPath: '/conectar'
+      preLoaderRoute: typeof ConectarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/exclusao-de-dados': {
@@ -1267,6 +1287,7 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
+  ConectarRoute: ConectarRoute,
   ExclusaoDeDadosRoute: ExclusaoDeDadosRoute,
   McpRoute: McpRoute,
   PrivacidadeRoute: PrivacidadeRoute,
