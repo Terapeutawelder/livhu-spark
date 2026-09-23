@@ -97,6 +97,7 @@ export function LegalShell({
             <Link to="/privacidade">Privacidade</Link>
             <Link to="/termos">Termos</Link>
             <Link to="/exclusao-de-dados">Excluir dados</Link>
+            <Link to="/conectar">Conectar IA</Link>
           </nav>
         </div>
       </header>
