@@ -33,6 +33,7 @@ export const Route = createFileRoute("/_authenticated")({
     const { data } = await supabase.auth.getSession();
     const user = data.session?.user;
     if (!user) {
+      if (location.pathname === "/") throw redirect({ to: "/site" });
       const isAdminArea = location.pathname.startsWith("/admin");
       throw redirect({
         to: isAdminArea ? "/admin/login" : "/auth",
