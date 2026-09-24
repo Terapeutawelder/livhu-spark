@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f1cf7a"/>
+      <stop offset="1" stop-color="#c9952f"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#1d1a17"/>
+  <!-- conexão hub -> canal -->
+  <path d="M22 42 L44 20" stroke="#e0b454" stroke-opacity=".45" stroke-width="4" stroke-linecap="round"/>
+  <!-- "L" do LivHub -->
+  <path d="M22 14 V42 H46" fill="none" stroke="url(#g)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- nós (canais conectados) -->
+  <circle cx="44" cy="20" r="6.5" fill="url(#g)"/>
+  <circle cx="22" cy="42" r="7" fill="#1d1a17" stroke="url(#g)" stroke-width="4"/>
+</svg>
